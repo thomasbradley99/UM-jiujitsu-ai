@@ -119,7 +119,7 @@ Provide comprehensive profiles for both fighters that will help with detailed te
   
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.5-pro',
       contents: { parts: [ { text: prompt }, { inlineData: { data: base64Video, mimeType: mimeType } } ] },
       config: {
         responseMimeType: "application/json",
@@ -165,7 +165,7 @@ For each event, provide a precise timestamp in seconds, a short punchy title, an
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.5-pro',
       contents: { parts: [ { text: enhancedPrompt }, { inlineData: { data: base64Video, mimeType: mimeType } } ] },
       config: {
         responseMimeType: "application/json",
@@ -224,7 +224,7 @@ In description, append concise coaching notes in this exact format: " F1: <advic
 
     try {
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-2.5-pro',
         contents: { parts: [ { text: segmentPrompt }, { inlineData: { data: base64Video, mimeType } } ] },
         config: {
           responseMimeType: 'application/json',
@@ -268,7 +268,7 @@ export async function getCoachingOverlay(base64Image: string, prompt: string): P
         const textPart = { text: fullPrompt };
         
         const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.5-pro',
             contents: { parts: [textPart, imagePart] },
             config: {
                 responseMimeType: "application/json",

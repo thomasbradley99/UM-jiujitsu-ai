@@ -10,10 +10,21 @@ lerna-debug.log*
 # Analysis runs
 runs/
 
+# Test / sample videos kept locally only
+*.mp4
+*.mov
+*.MP4
+*.MOV
+
 node_modules
 dist
 dist-ssr
 *.local
+
+# Python venvs
+.venv/
+__pycache__/
+*.pyc
 
 # Editor directories and files
 .vscode/*

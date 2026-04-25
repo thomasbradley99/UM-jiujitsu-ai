@@ -1,0 +1,15 @@
+# Project-root Python deps. Lightweight scripting / agent / Gemini work.
+#
+# Heavy CV/ML stack (torch, torchreid, ultralytics, opencv) lives in a
+# SEPARATE venv at tracking_service/.venv/ — see tracking_service/requirements.txt.
+# Keeping them apart so this venv stays small and fast to recreate.
+
+mubit-sdk>=0.7.0           # operational memory for AI agents
+python-dotenv>=1.0         # read .env.local from Python
+google-genai>=1.0          # new unified Gemini SDK (matches @google/genai used by webapp).
+google-generativeai>=0.8   # legacy SDK still used by VLM-gemini/video_processor_v3_fast.py
+                           # and mma_gemini/*.py. NB: pins protobuf<6 which conflicts
+                           # with mubit-sdk's protobuf>=6.33.4 — coexists in practice
+                           # but split into separate venvs if the conflict bites.
+Pillow>=10.0               # used by VLM-gemini for frame I/O during fighter profiling
+
