@@ -1,7 +1,11 @@
 """Centralized config for the MuBit submission-detection demo.
 
-Edit AGENT_ID here if you created the agent in the Console with a different name.
-PROJECT_ID is the one already created at console.mubit.ai.
+Architecture: VLM-gemini/video_processor_v3_fast.py produces a rich
+result.json. MuBit owns a "submission filter" prompt (versioned) that
+takes that result.json's events and outputs a canonical submission list.
+That filtered list is then evaluated against subs.json by VLM-gemini/eval/.
+
+So the optimizer iterates on the filter prompt — fast, cheap, no video calls.
 """
 
 from pathlib import Path
@@ -17,23 +21,26 @@ REPO_ROOT = MUBIT_DIR.parent
 PROMPTS_DIR = MUBIT_DIR / "prompts"
 OUTPUTS_DIR = MUBIT_DIR / "outputs"
 
-DEFAULT_VIDEO = REPO_ROOT / "full-gym-short.mov"
-DEFAULT_GT = REPO_ROOT / "eval" / "gt.json"
+VLM_GEMINI_DIR = REPO_ROOT / "VLM-gemini"
+VLM_PROCESSOR = VLM_GEMINI_DIR / "video_processor_v3_fast.py"
+
+# Default ryan-thomas dataset committed under VLM-gemini/input-data/.
+DEFAULT_GAME = "ryan-thomas"
+DEFAULT_VIDEO = VLM_GEMINI_DIR / "input-data" / DEFAULT_GAME / "video.mov"
+DEFAULT_GT = VLM_GEMINI_DIR / "input-data" / DEFAULT_GAME / "subs.json"
+DEFAULT_VLM_OUT = VLM_GEMINI_DIR / "runs" / DEFAULT_GAME / "baseline"  # where v3-fast writes result.json
 
 # --- Gemini ---
-GEMINI_MODEL = "gemini-2.5-pro"
+# Filter call is text-only; flash is plenty.
+GEMINI_FILTER_MODEL = "gemini-2.5-flash"
 
 # --- Eval matching ---
-# A predicted submission counts as matching a GT submission if their timestamps
-# are within this many seconds AND (later, optionally) sub_type matches.
-TIMESTAMP_TOLERANCE_S = 5.0
+# Tolerance window for greedy timestamp matching (seconds). Mirrors the default
+# in VLM-gemini/eval/run_eval.py; keep them in sync.
+MATCH_TOLERANCE_S = 10.0
 
-# Event types in the GT that count as "submission-related" for this detector.
-# Anything not in this set is filtered out by gt.load_submission_gt().
-SUBMISSION_EVENT_TYPES = {"submission", "sub_attempt", "near_finish"}
 
 # --- MuBit run scoping ---
-# Each detect run is one "run" in MuBit. Format keeps videos separable
-# while letting cross-run reflection pull in patterns from previous fights.
 def run_id_for_video(video_path: Path) -> str:
+    """One MuBit run per (game, video) — re-running the same video accumulates outcomes."""
     return f"sub-detect:{video_path.stem}"

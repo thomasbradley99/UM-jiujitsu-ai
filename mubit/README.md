@@ -1,42 +1,41 @@
-# `mubit/` — Submission detection driven by MuBit
+# `mubit/` — Submission detection driven by MuBit prompt optimization
 
-This folder contains the **MuBit-track hackathon work**. It's self-contained: the React
-webapp (`App.tsx`, `services/`, `server.js`) is the existing product demo and is left
-alone. Everything in here is about **using MuBit's prompt-optimization loop to make
-Gemini detect BJJ submissions better over time**.
+This folder contains the **MuBit-track hackathon work**. It's self-contained: the React webapp (`App.tsx`, `services/`, `server.js`) is the existing product demo and is left alone. Everything in here is about **using MuBit's prompt-optimization loop to make submission detection better over time** — by iterating on a prompt that filters the output of the existing `VLM-gemini/video_processor_v3_fast.py` pipeline.
 
-## What it does
+## Architecture
 
 ```
-                  ┌──────────────────────┐
-                  │   MuBit Project       │
-                  │   jiujitsu-rt3hsz     │
-                  │   ┌────────────────┐  │
-                  │   │ submission-    │  │
-                  │   │ detector       │  │
-                  │   │  v1 (active)   │  │
-                  │   │  v2 (candidate)│  │
-                  │   └────────────────┘  │
-                  └──────────┬────────────┘
-                             │ get_prompt
-                             ▼
-  GT events ──► detect.py ──► Gemini ──► predictions
-       │                                       │
-       └───────► match.py ◄────────────────────┘
-                     │
-                     ▼
-                metrics.py + outcomes.py
-                     │
-                     ▼
-                ┌───────────┐
-                │ MuBit     │  ── outcomes accumulate ──► optimize_prompt → v2 candidate
-                │ outcomes  │
-                └───────────┘
+                    ┌────────────────────────────┐
+                    │   MuBit project            │
+                    │   jiujitsu-rt3hsz          │
+                    │   ┌──────────────────────┐ │
+                    │   │ submission-detector  │ │
+                    │   │   v1 (active)        │ │   <- get_prompt
+                    │   │   v2 (candidate)     │ │
+                    │   └──────────────────────┘ │
+                    └────────────┬───────────────┘
+                                 │
+   video.mov ──► v3-fast ──► result.json
+                              │   (rich narrative + candidate events)
+                              ▼
+                       MuBit filter prompt ──► filtered events ──► predicted.json
+                                                                       │
+                                                                       ▼
+   subs.json (GT) ────────────────────────► VLM-gemini/eval ──► Report (TP/FP/FN, prec/rec/F1)
+                                                                       │
+                                                                       ▼
+                                                           mubit/outcomes.py
+                                                                       │  archive + record_outcome
+                                                                       ▼
+                                                                MuBit run history
+                                                                       │  optimize_prompt
+                                                                       ▼
+                                                              v2 candidate (review in Console)
 ```
 
-The CLI runs the whole loop. We run it once with prompt v1, accumulate outcomes,
-ask MuBit for a candidate, approve it in the Console, then re-run with v2 and
-compare.
+The CLI runs the loop. We run once with prompt v1, accumulate outcomes, ask MuBit for a candidate, approve in the Console, re-run with v2, render the side-by-side HTML report.
+
+**Key design choice**: MuBit owns the *filter prompt*, not the video-analysis prompt. The v3-fast pipeline runs unchanged and produces a noisy candidate list. The MuBit-versioned filter decides which candidates are real, completed submissions. This is what the optimizer iterates on. Trade-off: the filter can't recover submissions v3-fast missed entirely, but the iteration is fast (text-only Gemini call, no video upload).
 
 ## Setup
 
@@ -65,91 +64,105 @@ MUBIT_API_KEY=mbt_<instance>_<key_id>_<secret>
 python -m mubit.cli setup
 ```
 
-Idempotent. Creates the `submission-detector` agent in project
-`proj-0ea4de0c-5ca2-4eed-a443-9df064ec2099` if it doesn't exist, seeded with
-`prompts/submission_v1.md` as its v1 active PromptVersion. Re-run safely after
-`config.py` edits.
+Idempotent. Creates the `submission-detector` agent in project `proj-0ea4de0c-5ca2-4eed-a443-9df064ec2099` if it doesn't exist, seeded with `prompts/submission_v1.md` as its v1 active PromptVersion. Re-run safely after `config.py` edits.
 
 ## Running the loop
 
+The default CLI args target the committed `ryan-thomas` dataset (`VLM-gemini/input-data/ryan-thomas/`).
+
 ```bash
-# Full eval cycle: detect on the video, match against GT, compute metrics, record outcomes.
-python -m mubit.cli eval --video full-gym-short.mov --gt eval/gt.json
+# Full eval cycle. First run is SLOW (~minutes) because v3-fast processes the video.
+# Subsequent runs reuse VLM-gemini/runs/ryan-thomas/baseline/result.json — fast.
+python -m mubit.cli eval
 
 # After 10-20 outcomes accumulate, ask MuBit for a candidate prompt + print diff.
 python -m mubit.cli optimize
 
 # (You go to the MuBit Console and click "Approve & Activate" on the candidate.)
 
-# Run the eval again — `detect.py` fetches the now-active v2 prompt automatically.
-python -m mubit.cli eval --video full-gym-short.mov --gt eval/gt.json
+# Run eval again. detect.py picks up the now-active v2 prompt automatically.
+# v3-fast result.json is reused; only the filter call re-runs.
+python -m mubit.cli eval
 
 # Render the side-by-side HTML report.
 python -m mubit.cli report \
-    --run-id sub-detect:full-gym-short \
+    --run-id sub-detect:video \
     --version-a <v1_version_id> \
     --version-b <v2_version_id>
+```
+
+To run on a different game (after Ali drops more annotated data into `VLM-gemini/input-data/<game>/`):
+
+```bash
+python -m mubit.cli eval \
+    --video VLM-gemini/input-data/<game>/video.mov \
+    --gt    VLM-gemini/input-data/<game>/subs.json \
+    --vlm-out VLM-gemini/runs/<game>/baseline
 ```
 
 ## File layout
 
 | File | Role |
 | ---- | ---- |
-| `config.py` | Project ID, agent ID, paths, tolerance constants. Edit if Ali used a different agent name in the Console. |
-| `prompts/submission_v1.md` | Seed v1 system prompt. Source of truth lives in MuBit after `setup` runs. |
-| `schema.py` | Gemini response schema (the JSON shape Gemini must produce). |
+| `config.py` | Project + agent IDs, default paths, match tolerance. Edit if you change the agent name in the Console. |
+| `prompts/submission_v1.md` | Seed v1 filter prompt. Source of truth lives in MuBit after `setup` runs. |
 | `setup_project.py` | One-time agent provisioning. |
-| `detect.py` | Fetches active prompt from MuBit, uploads video to Gemini File API, gets predictions. |
-| `gt.py` | Loads GT JSON, filters to submission-relevant events, infers `sub_type` from text. |
-| `match.py` | Greedy timestamp matching of predictions to GT (within `TIMESTAMP_TOLERANCE_S`). |
-| `metrics.py` | Precision / recall / F1 / MAE + per-type recall. |
-| `outcomes.py` | For each match, archive the event in MuBit and record_outcome with rationale. |
+| `detect.py` | Stage 1: subprocess `video_processor_v3_fast.py` (cached). Stage 2: fetch active prompt from MuBit, run filter Gemini call, write `predicted.json` in v3-fast result.json shape. |
+| `outcomes.py` | For each `EventDetail` in the eval `Report`: archive + record_outcome with directive rationale. |
 | `optimize.py` | Asks MuBit's optimizer for a candidate prompt, prints diff. Does NOT auto-activate. |
-| `report.py` | Renders side-by-side HTML report. |
+| `report.py` | Renders side-by-side HTML report comparing two prompt versions on the same fight. |
 | `cli.py` | Single argparse entry point with `setup / detect / eval / optimize / report` subcommands. |
-| `outputs/` | Gitignored. Per-run JSON: `predicted.json`, `matched.<ver>.json`, `metrics.<ver>.json`, `report.html`. |
+| `outputs/` | Gitignored. Per-run + per-prompt-version JSON: `predicted.json`, `report.json`, plus a `report.html` per run. |
 
-## GT format
+**Eval is delegated, not duplicated.** Matching, metrics, fighter-alias resolution, and per-event reporting all live in `VLM-gemini/eval/{load,match,metrics}.py`. `mubit/cli.py` imports them; `mubit/` does NOT re-implement that logic.
 
-`mubit/gt.py` expects JSON shaped exactly like `eval/gt_template.json`:
+## Data shapes
+
+**GT** lives at `VLM-gemini/input-data/<game>/subs.json`. Schema:
 
 ```json
 {
-  "video": "full-gym-short.mov",
-  "duration_s": 281,
-  "fighter1_id": "blue gi",
-  "fighter2_id": "white gi",
-  "events": [
-    {
-      "timestamp": 12.4,
-      "event_type": "submission",
-      "who": "fighter1",
-      "title": "Armbar",
-      "description": "Armbar from closed guard, opponent taps",
-      "importance": 4
-    }
+  "video": "ryan-thomas",
+  "video_file": "video.mov",
+  "duration_sec": 370,
+  "fighters": {
+    "ryan":   { "ai_descriptor": "BALD FIGHTER",    "rich_gt_descriptor": "BLACK RASHGUARD" },
+    "thomas": { "ai_descriptor": "STRIPED FIGHTER", "rich_gt_descriptor": "GREEN STRIPE" }
+  },
+  "submissions": [
+    { "timestamp": 68, "technique": "armbar", "submitter": "ryan", "submittee": "thomas",
+      "notes": "1:08 - Ryan armbars Thomas" }
   ]
 }
 ```
 
-`gt.py` filters to events where `event_type ∈ {submission, sub_attempt, near_finish}`
-(see `config.SUBMISSION_EVENT_TYPES`) and infers a canonical `sub_type` from the
-title/description so we can score type accuracy. If your annotated GT is in a
-different shape, write a one-shot converter rather than making the loader polymorphic.
+`VLM-gemini/eval/load.py` canonicalises techniques and resolves AI fighter descriptors (e.g. `"BALD FIGHTER"`) to GT fighter keys (e.g. `"ryan"`) by token overlap.
+
+**Predicted** is shaped like a v3-fast `result.json`. We only populate the fields the loader cares about:
+
+```json
+{
+  "fighter_stats": {"BALD FIGHTER": {...}, "STRIPED FIGHTER": {...}},
+  "events": [
+    {"timestamp": 68, "title": "armbar", "submission": true, "attempt": false,
+     "completed": true, "attacker": "BALD FIGHTER", "defender": "STRIPED FIGHTER"}
+  ],
+  "position_timeline": {"submissions": []},
+  "key_moments": []
+}
+```
 
 ## How outcomes feed prompt optimization
 
-For each match, we:
+For each event in the `Report`:
 
 1. `archive(content, labels)` the event in MuBit → returns a `reference_id`.
-2. `record_outcome(reference_id, signal, rationale)` against that reference.
-   - **TP**: `signal ∈ [+0.4, +1.0]` scaled by Gemini's confidence. Rationale: "Correctly detected X."
-   - **FP**: `signal ∈ [-1.0, -0.3]` scaled by confidence. Rationale: "Hallucinated X — be more conservative."
-   - **FN**: `signal ∈ [-1.0, -0.3]` scaled by GT importance. Rationale: "Missed real X — attend more carefully."
+2. `record_outcome(reference_id, signal, rationale)`:
+   - **matched (TP)**: `signal ∈ [+0.3, +1.0]` based on technique-match + submitter-match + |Δt|. Rationale: "Correctly detected X."
+   - **hallucination (FP)**: `signal = -0.7`. Rationale: "Tighten the filter — require explicit tap or clearly isolated joint."
+   - **missed_gt (FN)**: `signal = -0.85`. Rationale: "Don't discard candidates whose title contains the technique name."
 
-The MuBit optimizer reads these rationales heavily — the **wording matters more than
-the signal magnitude**. If you want the optimizer to push Gemini in a specific
-direction, make the rationale text read like a directive (`outcomes.py` does this).
+The MuBit optimizer reads these rationales heavily — the **wording matters more than the signal magnitude**. If you want the optimizer to push the prompt in a specific direction, make the rationale read like a directive (`outcomes.py` does this).
 
 ## MuBit Console
 
@@ -159,17 +172,9 @@ direction, make the rationale text read like a directive (`outcomes.py` does thi
   - **Runs** tab — outcome aggregates per run
   - **Memory** tab — archived predictions and missed GT events
 
-## Division of labour suggestion
-
-- **One person**: prompt iteration. Edits `prompts/submission_v1.md` for hand-tweaks,
-  reviews optimizer candidates in the Console, designs the response schema in `schema.py`.
-- **Other person**: the eval spine. Iterates on `gt.py` (better sub_type inference),
-  `match.py` (better matching logic), `outcomes.py` (sharper rationales), `report.py` (demo polish).
-
-Both run `python -m mubit.cli eval` and look at the same MuBit Console.
-
 ## Out of scope (deliberately)
 
 - The React webapp / `App.tsx` — left alone. Demo points at it in slide 1, then we move to the loop.
 - `tracking_service/` — abandoned for the MuBit track.
 - Other agents (`fighter-identifier`, `coach-overlay`) — focusing one wedge: submissions.
+- The video-analysis prompt itself (inside `video_processor_v3_fast.py`) — we filter its output rather than rewriting it.

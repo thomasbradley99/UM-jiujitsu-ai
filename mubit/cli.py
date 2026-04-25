@@ -1,49 +1,40 @@
 """Single CLI entry point for the MuBit submission-detection demo.
 
 Subcommands:
-    setup     One-time: create the agent in the MuBit project.
-    detect    Run Gemini submission detection on a video using the active prompt.
-    eval      detect + match + compute metrics + record outcomes (full eval cycle).
+    setup     One-time: create the agent in MuBit and seed the v1 prompt.
+    detect    Run v3-fast (cached) + MuBit-versioned filter on a video.
+    eval      detect + match-against-GT + record outcomes back to MuBit.
     optimize  Ask MuBit for a candidate prompt and print the diff.
-    report    Render a side-by-side HTML report comparing two prompt versions.
+    report    Render the side-by-side HTML report comparing two prompt versions.
+
+The eval command does NOT re-implement matching/metrics — it delegates to
+VLM-gemini/eval/{load,match,metrics}.py, which is the canonical eval spine.
+mubit/ only owns the MuBit-orchestration parts (prompt fetch, filter call,
+outcomes, optimization, report).
 
 Examples:
     python -m mubit.cli setup
-    python -m mubit.cli eval --video full-gym-short.mov --gt eval/gt.json
+    python -m mubit.cli eval                                  # uses default ryan-thomas dataset
+    python -m mubit.cli eval --video VLM-gemini/input-data/<game>/video.mov \\
+                             --gt    VLM-gemini/input-data/<game>/subs.json
     python -m mubit.cli optimize
-    python -m mubit.cli report --version-a abc123 --version-b def456
+    python -m mubit.cli report --run-id sub-detect:video --version-a <v1> --version-b <v2>
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import sys
 from dataclasses import asdict
 from pathlib import Path
 
 from mubit import config
 
 
-def _save_metrics(run_dir: Path, prompt_version_id: str, payload: dict) -> Path:
-    out = run_dir / f"metrics.{prompt_version_id}.json"
-    out.write_text(json.dumps(payload, indent=2))
-    return out
-
-
-def _save_matches(run_dir: Path, prompt_version_id: str, matches: list) -> Path:
-    out = run_dir / f"matched.{prompt_version_id}.json"
-
-    def _serialize(m):
-        return {
-            "kind": m.kind,
-            "dt": m.dt,
-            "type_match": m.type_match,
-            "gt": asdict(m.gt) if m.gt else None,
-            "pred": asdict(m.pred) if m.pred else None,
-        }
-
-    out.write_text(json.dumps({"matches": [_serialize(m) for m in matches]}, indent=2))
-    return out
+# Make `from eval.<mod>` work — VLM-gemini/eval is a sibling package whose
+# parent dir (VLM-gemini/) needs to be on sys.path. Mirrors run_eval.py.
+sys.path.insert(0, str(config.VLM_GEMINI_DIR))
 
 
 def cmd_setup(args: argparse.Namespace) -> None:
@@ -55,70 +46,48 @@ def cmd_setup(args: argparse.Namespace) -> None:
 def cmd_detect(args: argparse.Namespace) -> None:
     from mubit.detect import detect
 
-    detect(args.video)
+    detect(args.video, vlm_out_dir=args.vlm_out, force_v3_fast=args.force_v3_fast)
 
 
 def cmd_eval(args: argparse.Namespace) -> None:
     from mubit.detect import detect
-    from mubit.gt import load_submission_gt, gt_summary
-    from mubit.match import Prediction, match_predictions
-    from mubit.metrics import compute as compute_metrics
-    from mubit.outcomes import record_outcomes_for_matches
 
-    print("=== STEP 1: detect ===")
-    payload = detect(args.video)
-    predictions = [Prediction.from_dict(p) for p in payload["predictions"]]
-    version_id = payload["prompt_version_id"]
+    print("=== STEP 1: detect (v3-fast + MuBit filter) ===")
+    meta = detect(args.video, vlm_out_dir=args.vlm_out, force_v3_fast=args.force_v3_fast)
+    predicted_path = Path(meta["predicted_path"])
+    version_id = meta["prompt_version_id"]
+    run_id = meta["run_id"]
 
-    print()
-    print("=== STEP 2: load GT ===")
-    gt = load_submission_gt(args.gt)
-    print(f"  {gt_summary(gt)}")
+    # Imports deferred until after sys.path is set up.
+    from eval.load import load_gt, load_prediction  # type: ignore[import-not-found]
+    from eval.match import greedy_match  # type: ignore[import-not-found]
+    from eval.metrics import evaluate, format_report  # type: ignore[import-not-found]
 
-    print()
-    print("=== STEP 3: match predictions to GT ===")
-    matches = match_predictions(gt, predictions, tolerance_s=config.TIMESTAMP_TOLERANCE_S)
-    print(f"  {sum(1 for m in matches if m.kind == 'true_positive')} TP")
-    print(f"  {sum(1 for m in matches if m.kind == 'false_positive')} FP")
-    print(f"  {sum(1 for m in matches if m.kind == 'false_negative')} FN")
+    print("\n=== STEP 2: eval against GT ===")
+    gt = load_gt(args.gt)
+    pred = load_prediction(predicted_path)
+    mr = greedy_match(gt.subs, pred.subs, tau=args.tau)
+    report = evaluate(gt, mr, config=f"{run_id}:{version_id[:12]}")
+    print(format_report(report))
 
-    print()
-    print("=== STEP 4: compute metrics ===")
-    metrics = compute_metrics(matches)
-    print(metrics.render())
-
-    run_id = payload["run_id"]
-    run_dir = config.OUTPUTS_DIR / "runs" / run_id
-
-    metrics_payload = {
-        "video": str(args.video),
-        "run_id": run_id,
-        "prompt_version_id": version_id,
-        "n_gt": metrics.n_gt,
-        "n_pred": metrics.n_pred,
-        "tp": metrics.tp,
-        "fp": metrics.fp,
-        "fn": metrics.fn,
-        "precision": metrics.precision,
-        "recall": metrics.recall,
-        "f1": metrics.f1,
-        "timestamp_mae": metrics.timestamp_mae,
-        "type_accuracy": metrics.type_accuracy,
-        "per_type_recall": {k: list(v) for k, v in metrics.per_type_recall.items()},
-    }
-    _save_metrics(run_dir, version_id, metrics_payload)
-    _save_matches(run_dir, version_id, matches)
+    out_dir = predicted_path.parent
+    report_dict = asdict(report)
+    report_path = out_dir / "report.json"
+    report_path.write_text(json.dumps(report_dict, indent=2, default=str))
+    print(f"\n  wrote {report_path}")
 
     if args.skip_outcomes:
-        print("\nSkipping outcome recording (--skip-outcomes).")
+        print("Skipping outcome recording (--skip-outcomes).")
         return
 
-    print()
-    print("=== STEP 5: record outcomes to MuBit ===")
-    out = record_outcomes_for_matches(matches, run_id=run_id)
-    print(f"  recorded {len(out)} outcomes ({sum(1 for o in out if o['kind']=='tp')} TP, "
-          f"{sum(1 for o in out if o['kind']=='fp')} FP, "
-          f"{sum(1 for o in out if o['kind']=='fn')} FN)")
+    print("\n=== STEP 3: record outcomes to MuBit ===")
+    from mubit.outcomes import record_outcomes_for_report
+
+    out = record_outcomes_for_report(report, run_id=run_id)
+    counts = {"tp": 0, "fp": 0, "fn": 0}
+    for o in out:
+        counts[o["kind"]] = counts.get(o["kind"], 0) + 1
+    print(f"  recorded {len(out)} outcomes  ({counts['tp']} TP, {counts['fp']} FP, {counts['fn']} FN)")
     print(
         f"\nDone. View runs in MuBit Console: project {config.PROJECT_ID}, "
         f"agent {config.AGENT_ID}."
@@ -150,13 +119,22 @@ def build_parser() -> argparse.ArgumentParser:
     p_setup = sub.add_parser("setup", help="Create the agent in the MuBit project.")
     p_setup.set_defaults(func=cmd_setup)
 
-    p_detect = sub.add_parser("detect", help="Run Gemini detection only.")
-    p_detect.add_argument("--video", type=Path, default=config.DEFAULT_VIDEO)
+    def _add_detect_args(p: argparse.ArgumentParser) -> None:
+        p.add_argument("--video", type=Path, default=config.DEFAULT_VIDEO)
+        p.add_argument("--vlm-out", type=Path, default=config.DEFAULT_VLM_OUT,
+                       help="Where v3-fast writes result.json + clips/.")
+        p.add_argument("--force-v3-fast", action="store_true",
+                       help="Re-run v3-fast even if result.json exists.")
+
+    p_detect = sub.add_parser("detect", help="v3-fast (cached) + MuBit filter only.")
+    _add_detect_args(p_detect)
     p_detect.set_defaults(func=cmd_detect)
 
-    p_eval = sub.add_parser("eval", help="Detect + match + metrics + outcomes.")
-    p_eval.add_argument("--video", type=Path, default=config.DEFAULT_VIDEO)
+    p_eval = sub.add_parser("eval", help="Detect + match against GT + record outcomes.")
+    _add_detect_args(p_eval)
     p_eval.add_argument("--gt", type=Path, default=config.DEFAULT_GT)
+    p_eval.add_argument("--tau", type=float, default=config.MATCH_TOLERANCE_S,
+                        help="Match tolerance in seconds.")
     p_eval.add_argument("--skip-outcomes", action="store_true",
                         help="Compute metrics but do not record outcomes to MuBit.")
     p_eval.set_defaults(func=cmd_eval)
@@ -164,7 +142,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_opt = sub.add_parser("optimize", help="Request a candidate prompt and print diff.")
     p_opt.set_defaults(func=cmd_optimize)
 
-    p_rep = sub.add_parser("report", help="Render side-by-side HTML report.")
+    p_rep = sub.add_parser("report", help="Side-by-side HTML report for two prompt versions.")
     p_rep.add_argument("--run-id", required=True)
     p_rep.add_argument("--version-a", required=True, help="Prompt version_id for left column.")
     p_rep.add_argument("--version-b", required=True, help="Prompt version_id for right column.")

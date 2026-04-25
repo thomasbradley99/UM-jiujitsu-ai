@@ -45,10 +45,12 @@ def main() -> None:
     created = client.create_agent_definition(
         project_id=PROJECT_ID,
         agent_id=AGENT_ID,
-        role="bjj submission detector",
+        role="bjj submission filter",
         description=(
-            "Detects submission attempts and finishes in BJJ video footage. "
-            "Outputs structured JSON with sub_type, attacker, defender, outcome, confidence."
+            "Takes candidate submission events from a BJJ video-analysis pipeline "
+            "(VLM-gemini/video_processor_v3_fast.py) and decides which represent "
+            "real, completed submissions vs hallucinations / attempts / scrambles. "
+            "Outputs a strict JSON array with timestamp / technique / attacker / defender."
         ),
         system_prompt_content=prompt_content,
     )
