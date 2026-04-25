@@ -1,5 +1,6 @@
 # Use the project root .venv (created at /Users/.../UM-jiujitsu-ai/.venv).
-# These are already in /requirements.txt; listed here so this folder is documented standalone.
+# These are mirrored in /requirements.txt; listed here so this folder is
+# documented standalone.
 
 mubit-sdk>=0.7.0
 google-genai>=1.0

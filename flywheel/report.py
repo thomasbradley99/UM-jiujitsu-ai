@@ -1,11 +1,11 @@
 """Render a side-by-side HTML report comparing two prompt versions.
 
-Reads `mubit/outputs/runs/<run_id>/<prompt_version_id>/report.json` (which is
-`asdict(VLM-gemini/eval/metrics.py:Report)` written by mubit.cli.cmd_eval)
-for two distinct prompt versions and produces report.html in the run dir.
+Reads `outputs/runs/<run_id>/<prompt_version_id>/report.json` (which is
+`asdict(VLM-gemini/eval/metrics.py:Report)` written by `spin`) for two
+distinct prompt versions and writes `outputs/runs/<run_id>/report.html`.
 
-The report is the demo visual: per-event rows on each side colored by status
-(matched / missed_gt / hallucination), with a metrics table at the top.
+This is the demo visual: per-event rows on each side colored by status
+(matched / missed_gt / hallucination), with a metrics-delta table at the top.
 """
 
 from __future__ import annotations
@@ -13,11 +13,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from mubit.config import OUTPUTS_DIR
+from flywheel.config import OUTPUTS_DIR
 
 
 HTML_TEMPLATE = """<!doctype html>
-<html><head><meta charset="utf-8"><title>MuBit Submission Detection — {run_id}</title>
+<html><head><meta charset="utf-8"><title>Flywheel — {run_id}</title>
 <style>
   body {{ font-family: ui-monospace, Menlo, monospace; background:#0b0c10; color:#e6e6e6; margin: 24px; max-width: 1400px; }}
   h1 {{ margin: 0 0 8px 0; font-weight: 600; }}
@@ -45,8 +45,8 @@ HTML_TEMPLATE = """<!doctype html>
   small {{ color: #888; }}
 </style></head>
 <body>
-<h1>MuBit Submission Detection — {run_id}</h1>
-<div><small>Side-by-side comparison of two prompt versions on the same fight, against the same GT.</small></div>
+<h1>Flywheel — {run_id}</h1>
+<div><small>Same fight, same GT — two prompt versions side-by-side.</small></div>
 
 <h2>Metrics</h2>
 {metrics_table}
@@ -67,31 +67,23 @@ HTML_TEMPLATE = """<!doctype html>
 
 
 def _pct(x):
-    if x is None:
-        return "—"
-    return f"{x * 100:.0f}%"
+    return "—" if x is None else f"{x * 100:.0f}%"
 
 
 def _f(x, suffix=""):
-    if x is None:
-        return "—"
-    return f"{x:.2f}{suffix}"
+    return "—" if x is None else f"{x:.2f}{suffix}"
 
 
-def _delta_cell(a, b, *, higher_is_better=True, pct=False):
-    """HTML <td> with arrow + colour for the b-vs-a delta."""
+def _delta_cell(a, b, *, higher_is_better=True, pct=False) -> str:
     if a is None or b is None:
         return "<td>—</td>"
     delta = b - a
     if abs(delta) < 1e-9:
-        cls = "delta-zero"
-        arrow = "→"
+        cls, arrow = "delta-zero", "→"
     elif (delta > 0) == higher_is_better:
-        cls = "delta-pos"
-        arrow = "▲"
+        cls, arrow = "delta-pos", "▲"
     else:
-        cls = "delta-neg"
-        arrow = "▼"
+        cls, arrow = "delta-neg", "▼"
     if pct:
         return f'<td class="{cls}">{arrow} {delta * 100:+.0f}pp</td>'
     return f'<td class="{cls}">{arrow} {delta:+.2f}</td>'
@@ -102,8 +94,8 @@ def _metrics_table(report_a: dict, report_b: dict, label_a: str, label_b: str) -
 
     def row(name, key, *, fmt=lambda x: str(x), pct_delta=False, higher_is_better=True):
         a, b = report_a.get(key), report_b.get(key)
-        delta = _delta_cell(a, b, higher_is_better=higher_is_better, pct=pct_delta)
-        rows.append((name, fmt(a), fmt(b), delta))
+        rows.append((name, fmt(a), fmt(b),
+                     _delta_cell(a, b, higher_is_better=higher_is_better, pct=pct_delta)))
 
     row("GT count", "n_gt")
     row("Predictions", "n_pred")
@@ -133,14 +125,10 @@ def _render_event(d: dict) -> str:
     tag = f'<span class="tag {status}">{status.upper()}</span>'
 
     if status == "matched":
-        tick_t = (
-            '<span class="tick-ok">✓</span>' if d.get("technique_correct")
-            else '<span class="tick-bad">✗</span>'
-        )
-        tick_s = (
-            '<span class="tick-ok">✓</span>' if d.get("submitter_correct")
-            else '<span class="tick-bad">✗</span>'
-        )
+        tick_t = ('<span class="tick-ok">✓</span>' if d.get("technique_correct")
+                  else '<span class="tick-bad">✗</span>')
+        tick_s = ('<span class="tick-ok">✓</span>' if d.get("submitter_correct")
+                  else '<span class="tick-bad">✗</span>')
         body = (
             f"<b>{d.get('pred_technique')}</b> "
             f"(GT: <i>{d.get('gt_technique')}</i>) "
@@ -165,7 +153,6 @@ def _events_html(report: dict) -> str:
     details = report.get("details", []) or []
     if not details:
         return "<i>no events</i>"
-    # Sort by whichever timestamp is available, missed_gt by gt_t.
     details_sorted = sorted(
         details,
         key=lambda d: (d.get("pred_t") if d.get("pred_t") is not None else d.get("gt_t")) or 0.0,
@@ -177,7 +164,7 @@ def _load_report(run_id: str, version_id: str) -> dict:
     path = OUTPUTS_DIR / "runs" / run_id / version_id / "report.json"
     if not path.exists():
         raise SystemExit(
-            f"missing {path}. Run `python -m mubit.cli eval` for prompt version {version_id}."
+            f"missing {path}.  Run `python -m flywheel.cli spin` for prompt version {version_id}."
         )
     return json.loads(path.read_text())
 
