@@ -20,14 +20,14 @@ PROJECT_SLUG = "jiujitsu-rt3hsz"
 # We optimize the DOMAIN RULES layer of the Stage-1 scan prompt inside
 # analyze.py. The rest of the prompt (framing, fighter block, JSON schema)
 # stays locked in Python so the optimizer can only touch domain reasoning.
-AGENT_ID = "submission-detector-v3-flash"
+AGENT_ID = "submission-detector-naive"
 
 # --- Paths -----------------------------------------------------------------
 FLYWHEEL_DIR = Path(__file__).resolve().parent
 REPO_ROOT = FLYWHEEL_DIR.parent
 PROMPTS_DIR = FLYWHEEL_DIR / "prompts"
 OUTPUTS_DIR = FLYWHEEL_DIR / "outputs"
-SEED_PROMPT = PROMPTS_DIR / "verifier_v1.md"
+SEED_PROMPT = PROMPTS_DIR / "verifier_naive.md"
 
 VLM_GEMINI_DIR = REPO_ROOT / "VLM-gemini"
 ANALYZE_SCRIPT = VLM_GEMINI_DIR / "analyze.py"
