@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+models/
+*.pt
+*.onnx
+
+.uvicorn.pid
+*.log
+
+# CLI artifacts (picker previews, tracked outputs)
+*_picker.jpg
+*_tracked_box.mp4
+*_tracked_crop.mp4
+
+# Local pipeline outputs (per-run artifacts)
+outputs/

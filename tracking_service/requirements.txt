@@ -1,0 +1,19 @@
+# Pin to known-working majors; tighten if you hit conflicts.
+ultralytics>=8.3.0,<9
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-multipart>=0.0.9
+opencv-python>=4.9
+pillow>=10.0
+numpy>=1.26
+scipy>=1.11        # Hungarian matching in cluster_pipeline.assign_unique_per_frame
+torchreid>=0.2.5   # OSNet appearance embeddings used by embedder.py
+# torch is pulled in by ultralytics; on macOS this gives you MPS,
+# on Linux+NVIDIA you'll get CUDA via the default wheels.
+
+# Person ReID for appearance-aware track merging.
+# torchreid wraps OSNet etc.; tensorboard is an indirect import dep
+# of torchreid.reid.engine even when we only use the feature extractor.
+torchreid>=0.2.5
+tensorboard>=2.20
+gdown>=6.0   # used by torchreid to fetch pretrained weights

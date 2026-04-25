@@ -1,0 +1,27 @@
+# BoT-SORT with ReID for fighter tracking in jiujitsu/MMA video.
+#
+# track_buffer is bumped to 150 (vs default 30) because grappling has
+# long occlusions where one fighter is fully covered for seconds at a
+# time. Lower this if you see ID drift / new-track explosion.
+#
+# with_reid: true switches on appearance embeddings so the tracker
+# does not swap fighter IDs when they roll/scramble. Required for B.
+
+tracker_type: botsort
+
+track_high_thresh: 0.5
+track_low_thresh: 0.1
+new_track_thresh: 0.6
+track_buffer: 150
+match_thresh: 0.8
+fuse_score: true
+
+gmc_method: sparseOptFlow
+proximity_thresh: 0.5
+appearance_thresh: 0.25
+with_reid: true
+# Ultralytics >=8.4 requires this field when with_reid=true.
+# "auto" reuses the YOLO detector's backbone features for ReID
+# (no second model download). Swap for a path to a dedicated ReID
+# checkpoint if you need stronger appearance embeddings.
+model: auto
