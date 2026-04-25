@@ -51,7 +51,7 @@ def _safe_div(a: float, b: float) -> float:
 
 
 def evaluate(gt: GroundTruth, mr: MatchResult, *, config: str = "baseline") -> Report:
-    aliases = gt.fighter_aliases
+    fighter_tokens = gt.fighter_tokens
 
     technique_hits: list[bool] = []
     submitter_hits: list[bool] = []
@@ -62,7 +62,7 @@ def evaluate(gt: GroundTruth, mr: MatchResult, *, config: str = "baseline") -> R
         tech_ok = m.pred.technique == m.gt.technique
         technique_hits.append(tech_ok)
 
-        resolved = resolve_fighter(m.pred.submitter, aliases)
+        resolved = resolve_fighter(m.pred.submitter, fighter_tokens)
         submitter_ok = (resolved is not None) and (resolved == m.gt.submitter)
         submitter_hits.append(submitter_ok)
 
@@ -109,7 +109,7 @@ def evaluate(gt: GroundTruth, mr: MatchResult, *, config: str = "baseline") -> R
                 pred_t=p.timestamp,
                 pred_technique=p.technique,
                 pred_submitter_raw=p.submitter,
-                pred_submitter_resolved=resolve_fighter(p.submitter, aliases),
+                pred_submitter_resolved=resolve_fighter(p.submitter, fighter_tokens),
                 delta_t=None,
                 technique_correct=None,
                 submitter_correct=None,

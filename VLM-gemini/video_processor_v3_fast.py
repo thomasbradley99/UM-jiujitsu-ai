@@ -22,6 +22,53 @@ from dotenv import load_dotenv
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
+def extract_first_json_object(text: str) -> str:
+    """Extract the first balanced JSON object from a string.
+
+    Tolerates leading/trailing whitespace, ```json``` markdown fences, and
+    trailing extra data after the closing brace (the failure mode we hit on
+    Flash output despite response_mime_type=application/json).
+
+    Raises ValueError if no balanced object found.
+    """
+    s = text.strip()
+    if s.startswith('```'):
+        # Drop the opening fence line (```json or ```), and the trailing ``` if present.
+        first_nl = s.find('\n')
+        if first_nl != -1:
+            s = s[first_nl + 1:]
+        if s.rstrip().endswith('```'):
+            s = s.rstrip()[:-3].rstrip()
+
+    start = s.find('{')
+    if start == -1:
+        raise ValueError("no '{' found in response")
+
+    depth = 0
+    in_string = False
+    escape = False
+    for i in range(start, len(s)):
+        ch = s[i]
+        if in_string:
+            if escape:
+                escape = False
+            elif ch == '\\':
+                escape = True
+            elif ch == '"':
+                in_string = False
+        else:
+            if ch == '"':
+                in_string = True
+            elif ch == '{':
+                depth += 1
+            elif ch == '}':
+                depth -= 1
+                if depth == 0:
+                    return s[start:i + 1]
+
+    raise ValueError("unterminated JSON object (depth never reached 0)")
+
+
 def get_api_key():
     """Resolve the Gemini API key from env or .env.local at the repo root."""
     api_key = os.getenv('GEMINI_API_KEY')
@@ -635,30 +682,44 @@ def process_video(video_path, out_dir=None):
     
     # Sort by start time
     clip_narratives.sort(key=lambda x: x['start_time'])
-    
+
     stage1_time = time.time() - stage1_start
     print(f"\n✅ Stage 1 complete: Analyzed {len(clip_narratives)} clips ({stage1_time:.1f}s)\n")
-    
+
+    # Persist Stage 1 narratives so we never lose them to a Stage 2 parse failure.
+    narratives_path = out_dir / "stage1_narratives.json"
+    narratives_path.write_text(json.dumps(
+        {
+            "profiles": profiles,
+            "clip_narratives": [
+                {"start_time": n["start_time"], "description": n["description"]}
+                for n in clip_narratives
+            ],
+        },
+        indent=2,
+    ))
+    print(f"💾 wrote Stage 1 narratives -> {narratives_path}")
+
     # Combine all clip narratives
     combined_narrative = "\n\n".join([
-        f"[{n['start_time']}s - {n['start_time']+90}s]\n{n['description']}" 
+        f"[{n['start_time']}s - {n['start_time']+90}s]\n{n['description']}"
         for n in clip_narratives
     ])
-    
+
     # Stage 2: Parse combined narrative into structured JSON
     print(f"📊 Stage 2: Parsing narratives into structured JSON...", flush=True)
     parsing_prompt = build_parsing_prompt(profiles, combined_narrative)
-    
+
     model = genai.GenerativeModel('gemini-2.5-flash')
     stage2_start = time.time()
-    
+
     safety_settings = {
         HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
         HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
         HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
         HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
     }
-    
+
     response = model.generate_content(
         parsing_prompt,
         request_options={"timeout": 600},
@@ -666,30 +727,24 @@ def process_video(video_path, out_dir=None):
     )
     stage2_time = time.time() - stage2_start
     print(f"✅ Stage 2 complete: Parsed to JSON ({stage2_time:.1f}s)\n")
-    
-    # Parse JSON response
+
+    # ALWAYS save the raw response before parsing — the model's most expensive
+    # output should never be ephemeral.
+    response_text = response.text or ""
+    raw_response_path = out_dir / "stage2_response_raw.txt"
+    raw_response_path.write_text(response_text)
+    print(f"💾 wrote raw Stage 2 response -> {raw_response_path}")
+
+    # Parse JSON response — robust to fences and trailing extra data.
     print(f"📊 Parsing response...")
     try:
-        # Extract JSON from response
-        response_text = response.text.strip()
-        
-        # Remove markdown code blocks if present
-        if response_text.startswith('```'):
-            lines = response_text.split('\n')
-            # Remove first line (```json or ```)
-            lines = lines[1:]
-            # Remove last line (```)
-            if lines[-1].strip() == '```':
-                lines = lines[:-1]
-            response_text = '\n'.join(lines)
-        
-        result = json.loads(response_text)
+        json_blob = extract_first_json_object(response_text)
+        result = json.loads(json_blob)
         print(f"✅ Successfully parsed JSON\n")
-        
-    except json.JSONDecodeError as e:
-        print(f"❌ Failed to parse JSON response")
-        print(f"Error: {e}")
-        print(f"\nResponse preview:")
+    except (ValueError, json.JSONDecodeError) as e:
+        print(f"❌ Failed to parse JSON response: {e}")
+        print(f"   Raw response saved at: {raw_response_path}")
+        print(f"\nResponse preview (first 500 chars):")
         print(response_text[:500])
         raise
     

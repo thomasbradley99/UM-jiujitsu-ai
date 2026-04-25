@@ -2,12 +2,14 @@
 
 Minimal dataset for a submissions-only Jiu-Jitsu evaluation MVP.
 
-One folder per game. Each game has the raw video and a structured `subs.json` listing every completed submission with timestamp, technique, and which fighter submitted which.
+One folder per game. Each game has the raw video and a structured `subs.json`
+listing every completed submission with timestamp, technique, and which
+fighter submitted which.
 
 ## Layout
 
 ```
-jj-mvp-data/
+input-data/
 ├── README.md                    this file
 └── <game>/
     ├── video.mov                raw match footage
@@ -15,6 +17,11 @@ jj-mvp-data/
 ```
 
 ## `subs.json` schema
+
+Fighters are keyed by a **visual descriptor** (e.g. `BALD`, `STRIPED`) — the
+single thing the AI pipeline can also see. There's deliberately no real-name
+layer; the AI doesn't see names, and we don't (yet) need cross-game person
+tracking. If/when we do, that lives in a separate `persons.json`.
 
 ```jsonc
 {
@@ -24,25 +31,31 @@ jj-mvp-data/
   "description": "free text",
 
   "fighters": {
-    "<name>": {
-      "role": "submitter | submittee | mixed",
-      "visual": "human-readable description",
-      "ai_descriptor": "what the AI calls them, e.g. BALD FIGHTER",
-      "rich_gt_descriptor": "what the rich GT calls them, e.g. BLACK RASHGUARD"
+    "<DESCRIPTOR>": {
+      "visual": "human-readable description of what makes them visually distinctive"
     }
   },
 
   "submissions": [
     {
       "timestamp": 68,                  // seconds from start
-      "technique": "armbar",            // canonical: armbar | rnc | triangle | americana | guillotine | omoplata | kimura | smother | other
-      "submitter": "ryan",              // key into fighters
-      "submittee": "thomas",            // key into fighters
-      "notes": "1:08 - Ryan armbars Thomas"
+      "technique": "armbar",            // canonical token, see vocabulary below
+      "submitter": "<DESCRIPTOR>",      // key into fighters
+      "submittee": "<DESCRIPTOR>",
+      "notes": "free text, optional"
     }
   ]
 }
 ```
+
+### Descriptor conventions
+
+- **All caps**, ≤2 tokens (`BALD`, `STRIPED`, `BLUE_GI`, `BLACK_RASH`).
+- Pick the most stable visual feature: clothing > hair > body type.
+- The eval matches the AI's free-text output (e.g. `"BALD RASHGUARD"`,
+  `"STRIPED FIGHTER"`) to these keys via token overlap, so a single
+  distinctive token (`BALD`) is enough — you don't need to anticipate
+  exactly what the AI will say.
 
 ## Canonical technique vocabulary
 
@@ -59,14 +72,6 @@ jj-mvp-data/
 | `smother` | Smother choke |
 | `other` | Anything not in the list above |
 
-## Why two descriptors per fighter
-
-Real names (Ryan, Thomas) are useful for humans but the AI pipeline can't see them — it only sees what's visually distinctive. So each fighter has both:
-- `ai_descriptor` — what the v3-fast pipeline auto-labels them as (e.g. `"BALD FIGHTER"`).
-- `rich_gt_descriptor` — what the manual rich GT labels them as (e.g. `"BLACK RASHGUARD"`).
-
-This lets the eval script compare "Ryan submits Thomas" (from `subs.json`) ↔ "BLACK RASHGUARD submits GREEN STRIPE" (rich GT) ↔ "BALD FIGHTER submits STRIPED FIGHTER" (AI output) without ambiguity.
-
 ## Games included
 
 | Game | Duration | Submissions | Status |
@@ -76,4 +81,5 @@ This lets the eval script compare "Ryan submits Thomas" (from `subs.json`) ↔ "
 | columba | 5m13s | 1 | TODO |
 | gio-thomas | 1m56s | 1 | TODO |
 
-Note: `video.mov` is currently a symlink back to `jj/jj-ai/games/<game>/input/video.mov`. Replace with a real copy before shipping the dataset off this machine.
+Note: `video.mov` is currently a symlink back to `jj/jj-ai/games/<game>/input/video.mov`.
+Replace with a real copy before shipping the dataset off this machine.

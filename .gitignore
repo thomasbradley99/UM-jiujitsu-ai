@@ -26,6 +26,19 @@ dist-ssr
 __pycache__/
 *.pyc
 
+# Model weights / checkpoints
+*.pt
+*.pth
+*.onnx
+*.safetensors
+*.ckpt
+*.h5
+*.pkl
+*.weights
+*.tflite
+*.pb
+*.bin
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

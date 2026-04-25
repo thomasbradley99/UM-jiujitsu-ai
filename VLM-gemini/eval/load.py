@@ -72,12 +72,18 @@ class SubEvent:
 
 @dataclass
 class GroundTruth:
-    """Parsed subs.json plus a fighter alias map for descriptor matching."""
+    """Parsed subs.json.
+
+    `fighter_tokens[KEY]` is the set of distinctive tokens we'll match the AI's
+    free-text fighter descriptors against. For a key like "BALD" with visual
+    "bald, black rashguard", we get tokens {"BALD", "BLACK"} (RASHGUARD/GI etc.
+    are stripped as too generic to disambiguate).
+    """
 
     video_id: str
     duration_sec: float
     fighter_keys: list[str]
-    fighter_aliases: dict[str, set[str]]
+    fighter_tokens: dict[str, set[str]]
     subs: list[SubEvent]
     raw: dict = field(repr=False, compare=False, default_factory=dict)
 
@@ -102,42 +108,44 @@ def _tokens(s: str) -> set[str]:
     return {t for t in re.findall(r"[A-Z0-9]+", s.upper()) if len(t) > 1}
 
 
-def _build_fighter_aliases(fighters_block: dict) -> dict[str, set[str]]:
-    """Aliases per fighter key. Each set holds normalised descriptors *plus*
-    individual distinctive tokens, so 'BALD FIGHTER' and 'BALD RASHGUARD'
-    both resolve to the same fighter via the shared 'BALD' token."""
-    aliases: dict[str, set[str]] = {}
+# Generic tokens that aren't distinctive enough to disambiguate fighters.
+_GENERIC_TOKENS = frozenset({
+    "FIGHTER", "RASHGUARD", "RASH", "GI", "GUY",
+    "PERSON", "ATHLETE", "PLAYER", "GRAPPLER", "BJJ",
+})
+
+
+def _build_fighter_tokens(fighters_block: dict) -> dict[str, set[str]]:
+    """Distinctive token set per fighter key.
+
+    Includes: the key itself + every token in `visual`, minus generic tokens.
+    """
+    tokens: dict[str, set[str]] = {}
     for key, info in fighters_block.items():
         s: set[str] = set()
-        s.add(_normalise_descriptor(key))
-        for field_name in ("ai_descriptor", "rich_gt_descriptor", "visual"):
-            v = info.get(field_name)
-            if v:
-                norm = _normalise_descriptor(v)
-                s.add(norm)
-                s.update(_tokens(norm))
-        # Strip generic tokens that wouldn't disambiguate.
-        for noise in ("FIGHTER", "RASHGUARD", "GI", "PERSON", "ATHLETE"):
-            s.discard(noise)
-        aliases[key] = s
-    return aliases
+        s.update(_tokens(key))
+        visual = (info or {}).get("visual") or ""
+        s.update(_tokens(visual))
+        s -= _GENERIC_TOKENS
+        tokens[key] = s
+    return tokens
 
 
-def resolve_fighter(descriptor: str | None, aliases: dict[str, set[str]]) -> str | None:
+def resolve_fighter(descriptor: str | None, fighter_tokens: dict[str, set[str]]) -> str | None:
     """Map an AI-emitted fighter descriptor to a canonical GT fighter key.
 
-    Strategy: pick the fighter whose alias set has the largest token overlap
-    with the descriptor. None on tie / no overlap.
+    Strategy: pick the fighter whose distinctive-token set has the largest
+    overlap with the descriptor. Returns None on tie or no overlap.
     """
     if not descriptor:
         return None
-    desc_tokens = _tokens(descriptor)
+    desc_tokens = _tokens(descriptor) - _GENERIC_TOKENS
     if not desc_tokens:
         return None
     best_key: str | None = None
     best_score = 0
-    for key, alias_set in aliases.items():
-        score = len(desc_tokens & alias_set)
+    for key, tok_set in fighter_tokens.items():
+        score = len(desc_tokens & tok_set)
         if score > best_score:
             best_score = score
             best_key = key
@@ -150,7 +158,7 @@ def load_gt(path: str | Path) -> GroundTruth:
     p = Path(path)
     data = json.loads(p.read_text())
     fighters = data.get("fighters", {})
-    aliases = _build_fighter_aliases(fighters)
+    fighter_tokens = _build_fighter_tokens(fighters)
     subs = [
         SubEvent(
             timestamp=float(s["timestamp"]),
@@ -165,7 +173,7 @@ def load_gt(path: str | Path) -> GroundTruth:
         video_id=data.get("video", p.parent.name),
         duration_sec=float(data.get("duration_sec", 0)),
         fighter_keys=list(fighters.keys()),
-        fighter_aliases=aliases,
+        fighter_tokens=fighter_tokens,
         subs=subs,
         raw=data,
     )

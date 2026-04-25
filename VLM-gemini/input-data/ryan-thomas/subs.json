@@ -2,56 +2,16 @@
   "video": "ryan-thomas",
   "video_file": "video.mov",
   "duration_sec": 370,
-  "description": "Ryan vs Thomas rolling session. Ryan dominates and finishes 5 submissions across 6 minutes.",
+  "description": "Ryan vs Thomas rolling session. BALD dominates and finishes 5 submissions across 6 minutes.",
   "fighters": {
-    "ryan": {
-      "role": "submitter",
-      "visual": "bald, black rashguard",
-      "ai_descriptor": "BALD FIGHTER",
-      "rich_gt_descriptor": "BLACK RASHGUARD"
-    },
-    "thomas": {
-      "role": "submittee",
-      "visual": "striped rashguard, green stripe",
-      "ai_descriptor": "STRIPED FIGHTER",
-      "rich_gt_descriptor": "GREEN STRIPE"
-    }
+    "BALD":    { "visual": "bald, black rashguard" },
+    "STRIPED": { "visual": "striped rashguard with green stripe" }
   },
   "submissions": [
-    {
-      "timestamp": 68,
-      "technique": "armbar",
-      "submitter": "ryan",
-      "submittee": "thomas",
-      "notes": "1:08 - Ryan armbars Thomas"
-    },
-    {
-      "timestamp": 155,
-      "technique": "armbar",
-      "submitter": "ryan",
-      "submittee": "thomas",
-      "notes": "2:35 - Ryan armbars Thomas"
-    },
-    {
-      "timestamp": 185,
-      "technique": "rnc",
-      "submitter": "ryan",
-      "submittee": "thomas",
-      "notes": "3:05 - Ryan chokes Thomas (rear naked choke)"
-    },
-    {
-      "timestamp": 267,
-      "technique": "armbar",
-      "submitter": "ryan",
-      "submittee": "thomas",
-      "notes": "4:27 - Ryan armbars Thomas"
-    },
-    {
-      "timestamp": 318,
-      "technique": "rnc",
-      "submitter": "ryan",
-      "submittee": "thomas",
-      "notes": "5:18 - Ryan chokes Thomas (rear naked choke)"
-    }
+    { "timestamp": 68,  "technique": "armbar", "submitter": "BALD", "submittee": "STRIPED", "notes": "1:08 - BALD armbars STRIPED" },
+    { "timestamp": 155, "technique": "armbar", "submitter": "BALD", "submittee": "STRIPED", "notes": "2:35 - BALD armbars STRIPED" },
+    { "timestamp": 185, "technique": "rnc",    "submitter": "BALD", "submittee": "STRIPED", "notes": "3:05 - BALD chokes STRIPED (rear naked choke)" },
+    { "timestamp": 267, "technique": "armbar", "submitter": "BALD", "submittee": "STRIPED", "notes": "4:27 - BALD armbars STRIPED" },
+    { "timestamp": 318, "technique": "rnc",    "submitter": "BALD", "submittee": "STRIPED", "notes": "5:18 - BALD chokes STRIPED (rear naked choke)" }
   ]
 }
