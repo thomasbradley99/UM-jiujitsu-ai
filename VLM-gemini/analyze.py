@@ -453,7 +453,7 @@ def scan_window(
     try:
         parsed = json.loads(extract_first_json_object(text))
     except Exception as e:
-        return {**window, "error": f"json: {e}", "raw": text, "is_submission": False}
+        return {**window, "error": f"json: {e}", "raw_response": text, "is_submission": False}
 
     tap_offset = float(parsed.get("tap_offset_sec") or 0)
     return {
@@ -466,6 +466,7 @@ def scan_window(
         "reasoning": parsed.get("reasoning") or "",
         "tap_offset_sec": tap_offset,
         "absolute_timestamp": start + tap_offset,
+        "raw_response": text,
     }
 
 
