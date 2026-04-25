@@ -1,0 +1,8 @@
+KILL EXISTING:
+pkill -f "node server.js" && pkill -f "vite"
+
+
+npm run server
+
+
+npm run dev

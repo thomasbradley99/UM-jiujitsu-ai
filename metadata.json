@@ -1,0 +1,5 @@
+{
+  "name": "Retro Copy of Gemini Video Analyser",
+  "description": "An application that allows users to upload a video and uses the Gemini API to generate a detailed analysis of its contents.",
+  "requestFramePermissions": []
+}
