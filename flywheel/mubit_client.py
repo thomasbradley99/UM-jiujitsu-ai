@@ -40,14 +40,14 @@ def _client():
 
 def find_agent() -> dict | None:
     """Return the existing agent definition, or None if not yet created."""
-    resp = _client().list_agent_definitions(project_id=PROJECT_ID)
+    resp = _client().advanced.list_agent_definitions(project_id=PROJECT_ID)
     agents = resp.get("agents", []) if isinstance(resp, dict) else []
     return next((a for a in agents if a.get("agent_id") == AGENT_ID), None)
 
 
 def create_agent(*, role: str, description: str, system_prompt: str) -> dict:
     """Create the agent and seed its v1 prompt. Call once."""
-    return _client().create_agent_definition(
+    return _client().advanced.create_agent_definition(
         project_id=PROJECT_ID,
         agent_id=AGENT_ID,
         role=role,
@@ -60,12 +60,26 @@ def create_agent(*, role: str, description: str, system_prompt: str) -> dict:
 
 
 def get_active_prompt() -> tuple[str, str]:
-    """Return `(prompt_text, version_id)` for the currently active prompt."""
-    resp = _client().get_prompt(agent_id=AGENT_ID)
-    obj = resp.get("prompt", resp) if isinstance(resp, dict) else resp
-    if isinstance(obj, dict):
-        return str(obj.get("content", "")), str(obj.get("version_id", "unknown"))
-    return str(obj), "unknown"
+    """Return `(prompt_text, version_id)` for the currently active prompt.
+
+    The SDK shape is `{"version": {"content": ..., "version_id": ...}}`. We
+    fail loud if either field is empty rather than silently running with
+    no rules.
+    """
+    resp = _client().advanced.get_prompt(agent_id=AGENT_ID)
+    obj = resp.get("version") if isinstance(resp, dict) else None
+    if not isinstance(obj, dict):
+        raise RuntimeError(
+            f"unexpected get_prompt response shape: {type(resp).__name__} -> {resp!r}"
+        )
+    content = str(obj.get("content") or "")
+    version_id = str(obj.get("version_id") or "")
+    if not content or not version_id:
+        raise RuntimeError(
+            f"MuBit returned an empty prompt for agent {AGENT_ID!r}. "
+            f"Run `python -m flywheel.cli setup` first."
+        )
+    return content, version_id
 
 
 # ---- 3. feedback ----------------------------------------------------------
@@ -99,7 +113,7 @@ def record_outcome(
 ) -> None:
     """Record an outcome against an archived event. The optimizer reads `rationale`."""
     _client().record_outcome(
-        run_id=run_id,
+        session_id=run_id,
         reference_id=reference_id,
         outcome="success" if success else "failure",
         signal=signal,
@@ -114,15 +128,28 @@ def record_outcome(
 def request_optimization() -> dict:
     """Ask MuBit's LLM optimizer for a candidate prompt informed by recent outcomes.
 
-    The candidate stays in `pending` state until a human approves it in the
-    Console. We don't auto-activate.
+    The candidate stays in `pending` state until a human (or `activate_version`)
+    promotes it.
     """
     return _client().optimize_prompt(agent_id=AGENT_ID, project_id=PROJECT_ID)
 
 
+def activate_version(version_id: str) -> dict:
+    """Promote `version_id` to active for this agent.
+
+    Used by `flywheel.cli loop` to run the wheel without a human gating
+    every iteration. For a careful demo, use `flywheel.cli improve` (no
+    --activate) and approve in the Console instead.
+    """
+    return _client().advanced.activate_prompt_version(
+        agent_id=AGENT_ID,
+        version_id=version_id,
+    )
+
+
 def get_prompt_diff(version_a: str, version_b: str) -> str:
     """Plain-text diff between two prompt versions for the same agent."""
-    resp = _client().get_prompt_diff(
+    resp = _client().advanced.get_prompt_diff(
         agent_id=AGENT_ID,
         version_a_id=version_a,
         version_b_id=version_b,

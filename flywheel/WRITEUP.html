@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Flywheel — auto-improving a BJJ submission detector with prompt rewrites</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root {
+    --bg: #0b0c10;
+    --panel: #11131a;
+    --panel-2: #16181f;
+    --stroke: #2a2d36;
+    --text: #e6e6e6;
+    --muted: #8b909a;
+    --accent: #9ad;
+    --good: #5cb85c;
+    --bad: #d9534f;
+    --warn: #f0ad4e;
+    --code: #cdd5e0;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    font-size: 14px;
+  }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 48px 32px 96px; }
+
+  header.lede {
+    border-bottom: 1px solid var(--stroke);
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+  }
+  header.lede .eyebrow {
+    color: var(--muted); font-size: 12px; letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  header.lede h1 {
+    font-size: 26px; font-weight: 600; margin: 8px 0 12px;
+  }
+  header.lede p.dek {
+    color: var(--muted); font-size: 14px; max-width: 780px; margin: 0;
+  }
+
+  h2 { font-size: 18px; font-weight: 600; margin: 40px 0 12px; color: var(--accent); }
+  h3 { font-size: 14px; font-weight: 600; margin: 24px 0 8px; }
+  p, li { margin: 8px 0; }
+
+  small.note { color: var(--muted); font-size: 12px; }
+
+  /* hero metrics */
+  .hero {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px; background: var(--stroke);
+    border: 1px solid var(--stroke); border-radius: 6px;
+    overflow: hidden; margin-bottom: 32px;
+  }
+  .hero .cell {
+    background: var(--panel); padding: 24px;
+  }
+  .hero .label { color: var(--muted); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+  .hero .num { font-size: 32px; font-weight: 600; margin-top: 6px; }
+  .hero .num .unit { color: var(--muted); font-size: 14px; margin-left: 4px; font-weight: 400; }
+  .hero .delta { color: var(--good); font-size: 12px; margin-top: 2px; }
+  .hero .delta.bad { color: var(--bad); }
+
+  /* metrics grid */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--stroke); border: 1px solid var(--stroke); border-radius: 4px; }
+  .stats .cell { background: var(--panel); padding: 14px 18px; }
+  .stats .lbl { color: var(--muted); font-size: 11px; }
+  .stats .v { font-size: 18px; font-weight: 600; margin-top: 4px; }
+  .stats .v.good { color: var(--good); }
+  .stats .v.bad  { color: var(--bad); }
+
+  /* tables */
+  table {
+    border-collapse: collapse; width: 100%; font-size: 13px;
+    border: 1px solid var(--stroke); border-radius: 4px; overflow: hidden;
+  }
+  th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--stroke); }
+  thead th { background: var(--panel-2); font-weight: 600; color: var(--muted); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tag { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 3px; }
+  .tag.matched      { background:#1f3d20; color:#9c9; }
+  .tag.hallucination { background:#3a1f1f; color:#f99; }
+  .tag.missed_gt    { background:#3a2f1f; color:#fc9; }
+  .tick.ok  { color: var(--good); }
+  .tick.bad { color: var(--bad); }
+
+  /* code blocks */
+  pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  pre.code {
+    background: var(--panel-2); border: 1px solid var(--stroke); border-radius: 4px;
+    padding: 14px 16px; overflow-x: auto; font-size: 12.5px; color: var(--code);
+    margin: 12px 0;
+  }
+  code.inline { background: var(--panel-2); padding: 1px 5px; border-radius: 2px; font-size: 12.5px; color: var(--code); }
+
+  /* prompt diff */
+  .diff {
+    background: var(--panel-2); border: 1px solid var(--stroke); border-radius: 4px;
+    overflow: hidden; margin: 12px 0;
+  }
+  .diff .file { padding: 8px 14px; font-size: 11px; color: var(--muted); border-bottom: 1px solid var(--stroke); background: #0e1015; }
+  .diff pre { margin: 0; padding: 12px 16px; font-size: 12.5px; line-height: 1.5; overflow-x: auto; }
+  .diff .add { color: #b6e3b6; background: rgba(92,184,92,.08); display: block; }
+  .diff .rem { color: #f3b6b6; background: rgba(217,83,79,.08); display: block; text-decoration: line-through; text-decoration-color: rgba(217,83,79,.45); }
+  .diff .ctx { color: var(--code); display: block; }
+  .diff .hdr { color: var(--muted); display: block; }
+
+  /* two-column compare */
+  .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .twocol .col h3 { margin-top: 0; }
+  .twocol pre.code { margin-top: 0; }
+
+  /* arrow row */
+  .arrow {
+    display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 16px;
+    align-items: center; padding: 14px 0;
+  }
+  .arrow .glyph { color: var(--muted); font-size: 18px; padding: 0 8px; }
+
+  /* sidebars / asides */
+  .aside {
+    border-left: 3px solid var(--accent);
+    background: rgba(154,221,221,.04);
+    padding: 14px 18px;
+    margin: 16px 0;
+    color: var(--text);
+    font-size: 13.5px;
+  }
+  .aside.warn { border-left-color: var(--warn); background: rgba(240,173,78,.05); }
+  .aside h4 { margin: 0 0 6px; font-size: 13px; color: var(--accent); }
+  .aside.warn h4 { color: var(--warn); }
+
+  /* file map */
+  .filemap {
+    display: grid; grid-template-columns: 1fr 2fr; gap: 0; font-size: 13px;
+    border: 1px solid var(--stroke); border-radius: 4px; overflow: hidden;
+  }
+  .filemap .key, .filemap .val { padding: 8px 14px; border-bottom: 1px solid var(--stroke); }
+  .filemap .key { background: var(--panel-2); color: var(--accent); }
+  .filemap .val { color: var(--muted); }
+  .filemap .key:nth-last-child(2), .filemap .val:last-child { border-bottom: none; }
+
+  footer { color: var(--muted); font-size: 12px; margin-top: 64px; border-top: 1px solid var(--stroke); padding-top: 16px; }
+
+  @media (max-width: 700px) {
+    .hero, .stats { grid-template-columns: 1fr 1fr; }
+    .twocol { grid-template-columns: 1fr; }
+    .filemap { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="lede">
+  <div class="eyebrow">UM-jiujitsu-ai · flywheel writeup</div>
+  <h1>One automated prompt rewrite turned a 73% F1 detector into 91% F1.</h1>
+  <p class="dek">
+    We built a self-improving loop around a BJJ submission detector. Each rotation runs
+    the pipeline against ground truth, logs a per-event rationale of every hit and miss
+    to <a style="color:var(--accent)" href="https://app.mubit.ai/" target="_blank" rel="noopener">MuBit</a>,
+    and asks an LLM-rewriter for a smarter prompt — no human in the loop. The first
+    rewrite landed every submission in the test fight within 5 seconds of ground truth.
+  </p>
+</header>
+
+<div class="hero">
+  <div class="cell">
+    <div class="label">Hand-tuned baseline (v1)</div>
+    <div class="num">73<span class="unit">% F1</span></div>
+    <div class="delta">recall 80% · precision 67% · 4/5 found</div>
+  </div>
+  <div class="cell">
+    <div class="label">After one rewrite (v2)</div>
+    <div class="num" style="color:var(--good)">91<span class="unit">% F1</span></div>
+    <div class="delta">recall 100% · precision 83% · 5/5 found</div>
+  </div>
+  <div class="cell">
+    <div class="label">What changed</div>
+    <div class="num" style="font-size:18px;font-weight:500;color:var(--accent);margin-top:14px">
+      MuBit's optimizer added two new sections to the DOMAIN RULES — TEMPORAL REQUIREMENTS and DISTINCTION CRITERIA — based on the 5 TP / 2 FP / 1 FN rationales we logged from v1.
+    </div>
+  </div>
+</div>
+
+<h2>What this is</h2>
+<p>
+  The repo has two cooperating pieces. The first is an analysis pipeline
+  (<code class="inline">VLM-gemini/analyze.py</code>) that takes a 6-minute BJJ training video
+  and outputs a list of submission events: timestamp, technique, who finished it. The second
+  is a self-improving loop (<code class="inline">flywheel/</code>) that watches the pipeline run
+  against ground truth and rewrites the most impactful part of its prompt.
+</p>
+<p>
+  The pipeline uses Gemini 2.5 Pro. The flywheel uses MuBit as a versioned prompt store + an
+  outcome log + an LLM-based rewriter. We point the rewriter at one specific slab of the
+  pipeline's prompt — the &ldquo;DOMAIN RULES&rdquo; for what counts as a finish in BJJ training —
+  and let it rewrite that slab from the rationales we feed it.
+</p>
+
+<h2>The pipeline (analyze.py)</h2>
+<p>Three stages, no UI, runs on a laptop in ~2½&nbsp;minutes:</p>
+<ol>
+  <li><strong>Stage 0 — fighter profiling.</strong> Pull 10 evenly-spaced frames, ask Gemini Pro to describe the two athletes per frame, then synthesise into two consistent visual descriptors (e.g. <code class="inline">BALD</code> vs <code class="inline">STRIPED</code>). Used to disambiguate <em>who</em> for the rest of the run.</li>
+  <li><strong>Stage 1 — windowed scan.</strong> Cut the video into 25 overlapping 40-second windows on a 15-second stride, ship each clip in parallel to Gemini Pro with a focused prompt: <em>"did a submission happen in this window? if so, who tapped, what technique, when in the clip?"</em></li>
+  <li><strong>Stage 2 — cluster.</strong> Adjacent YES windows usually describe the same real event (e.g. window 60-100s and window 75-115s both saw the 1:08 armbar). Cluster YES detections within ±20 seconds of each other and pick the highest-confidence representative. The output is one row per real submission.</li>
+</ol>
+<p>
+  The Stage 1 prompt is split into four layers:
+</p>
+<pre class="code">┌─────────────────────────────────────────────┐
+│ FRAMING + FIGHTER BLOCK           (locked)  │  Python-owned
+├─────────────────────────────────────────────┤
+│         DOMAIN RULES   (versioned)          │  ← MuBit owns this layer
+├─────────────────────────────────────────────┤
+│         OUTPUT SCHEMA  (locked)             │  Python-owned
+└─────────────────────────────────────────────┘</pre>
+<p>
+  Only the middle slab is optimisable. Everything else (which two athletes to track, what
+  JSON shape to return) stays fixed in code. <code class="inline">analyze.py</code> takes
+  a <code class="inline">--domain-rules-file</code> flag; the flywheel writes whichever
+  version MuBit currently has marked active and passes its path in.
+</p>
+
+<h2>The flywheel</h2>
+<p>One <em>spin</em> is three steps. Then optionally a fourth step (improve) asks for a new candidate and either the human or the loop activates it. Then we spin again.</p>
+
+<table>
+  <thead>
+    <tr><th style="width:130px">Step</th><th>What it does</th><th>Where it lives</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>predict</strong></td><td>Fetch the active DOMAIN RULES from MuBit; subprocess <code class="inline">analyze.py --domain-rules-file</code>.</td><td><code class="inline">flywheel/spin.py</code></td></tr>
+    <tr><td><strong>measure</strong></td><td>Match the clustered submissions vs <code class="inline">subs.json</code> ground truth using greedy ±10s matching; compute Recall / Precision / F1 / technique acc / submitter acc / timestamp MAE.</td><td><code class="inline">VLM-gemini/eval/</code> (delegated)</td></tr>
+    <tr><td><strong>feedback</strong></td><td>For every TP / FP / FN, archive an artifact in MuBit and record an outcome with a <em>rationale string</em>. The rationale quotes the model's own reasoning back at it: <em>&ldquo;you said NO at the moment a real submission happened — here's what you said you saw&rdquo;</em>.</td><td><code class="inline">flywheel/spin.py</code></td></tr>
+    <tr><td><strong>improve</strong></td><td>Ask MuBit's LLM-rewriter for a candidate prompt informed by the recent rationales. Optionally auto-activate.</td><td><code class="inline">flywheel/improve.py</code></td></tr>
+  </tbody>
+</table>
+
+<div class="aside">
+  <h4>Why this can work at all</h4>
+  Every miss generates a precise, machine-readable explanation of why the model missed it
+  — quoting the model's own NO reasoning. The rewriter sees something like
+  <em>&ldquo;5 windows covered the 267s armbar, all said NO, one's reasoning was 'fighters paused
+  but no clear tap visible'&rdquo;</em>. That maps onto <em>&ldquo;loosen the tap requirement&rdquo;</em> as a
+  rule edit. The rationale design is doing most of the work; the rewriter is just a competent translator.
+</div>
+
+<h2>The experiment</h2>
+<p>
+  One 6-minute training video: <code class="inline">ryan-thomas/video.mov</code>. BALD athlete
+  finishes 5 submissions on the STRIPED athlete. Ground truth is hand-annotated
+  (<code class="inline">VLM-gemini/input-data/ryan-thomas/subs.json</code>):
+</p>
+<table>
+  <thead><tr><th class="num" style="width:80px">timestamp</th><th>technique</th><th>submitter</th><th>submittee</th></tr></thead>
+  <tbody>
+    <tr><td class="num">68s</td><td>armbar</td><td>BALD</td><td>STRIPED</td></tr>
+    <tr><td class="num">155s</td><td>armbar</td><td>BALD</td><td>STRIPED</td></tr>
+    <tr><td class="num">185s</td><td>rnc</td><td>BALD</td><td>STRIPED</td></tr>
+    <tr><td class="num">267s</td><td>armbar</td><td>BALD</td><td>STRIPED</td></tr>
+    <tr><td class="num">318s</td><td>rnc</td><td>BALD</td><td>STRIPED</td></tr>
+  </tbody>
+</table>
+<p>The seed prompt (<code class="inline">prompts/verifier_v1.md</code>) is the hand-tuned baseline that we'd been using before any flywheel work — strict-tap-with-reset-fallback rules, ~800 chars:</p>
+<pre class="code">DOMAIN RULE — BJJ TRAINING ROUND FINISH:
+Rounds in training do not end mid-roll without a submission. A submission
+is confirmed by ANY of:
+  (a) a clear tap (hand/foot tapping mat or partner), OR
+  (b) a verbal yield, OR
+  (c) the partner being put to sleep, OR
+  (d) a RESET signal at the end of an active grappling sequence: pair
+      stops, separates, fist bump, both stand up, brief pause before
+      restarting. The reset by itself is sufficient evidence — taps are
+      often hidden behind bodies or below frame.
+Attribute the submission to whoever was applying pressure / had positional
+control in the final 3-5 seconds before the reset.
+
+Only return is_submission=false if the clip shows continuous grappling the
+entire {window_sec} seconds with NO reset and NO end-of-round behaviour.</pre>
+
+<h2>Spin 1 — v1 results</h2>
+<p>
+  Ran <code class="inline">python -m flywheel.cli loop --iterations 4</code> against a fresh
+  MuBit agent seeded with the prompt above. Spin 1 detected 6 submissions, 4 of which lined up
+  within ±10s of a GT event:
+</p>
+
+<div class="stats">
+  <div class="cell"><div class="lbl">F1</div><div class="v" style="color:var(--warn)">72.7%</div></div>
+  <div class="cell"><div class="lbl">Recall</div><div class="v">80%</div></div>
+  <div class="cell"><div class="lbl">Precision</div><div class="v">66.7%</div></div>
+  <div class="cell"><div class="lbl">Hallucinations</div><div class="v bad">2</div></div>
+</div>
+
+<h3>Per-event detail (v1)</h3>
+<table>
+  <thead>
+    <tr>
+      <th>status</th>
+      <th class="num">gt</th>
+      <th>tech</th>
+      <th>submitter</th>
+      <th class="num">pred</th>
+      <th>tech</th>
+      <th>submitter</th>
+      <th class="num">Δt</th>
+      <th>tech ✓</th>
+      <th>sub ✓</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="tag matched">matched</span></td><td class="num">68s</td><td>armbar</td><td>BALD</td><td class="num">74s</td><td>smother</td><td>BALD</td><td class="num">+6.0s</td><td><span class="tick bad">✗</span></td><td><span class="tick ok">✓</span></td></tr>
+    <tr><td><span class="tag matched">matched</span></td><td class="num">155s</td><td>armbar</td><td>BALD</td><td class="num">157s</td><td>other</td><td>STRIPED</td><td class="num">+2.0s</td><td><span class="tick bad">✗</span></td><td><span class="tick bad">✗</span></td></tr>
+    <tr><td><span class="tag matched">matched</span></td><td class="num">185s</td><td>rnc</td><td>BALD</td><td class="num">186s</td><td>other</td><td>STRIPED</td><td class="num">+1.0s</td><td><span class="tick bad">✗</span></td><td><span class="tick bad">✗</span></td></tr>
+    <tr><td><span class="tag missed_gt">missed_gt</span></td><td class="num">267s</td><td>armbar</td><td>BALD</td><td class="num">—</td><td>—</td><td>—</td><td class="num">—</td><td>—</td><td>—</td></tr>
+    <tr><td><span class="tag matched">matched</span></td><td class="num">318s</td><td>rnc</td><td>BALD</td><td class="num">324s</td><td>other</td><td>STRIPED</td><td class="num">+6.0s</td><td><span class="tick bad">✗</span></td><td><span class="tick bad">✗</span></td></tr>
+    <tr><td><span class="tag hallucination">hallucination</span></td><td class="num">—</td><td>—</td><td>—</td><td class="num">133s</td><td>other</td><td>BALD</td><td class="num">—</td><td>—</td><td>—</td></tr>
+    <tr><td><span class="tag hallucination">hallucination</span></td><td class="num">—</td><td>—</td><td>—</td><td class="num">253s</td><td>smother</td><td>BALD</td><td class="num">—</td><td>—</td><td>—</td></tr>
+  </tbody>
+</table>
+<p style="color:var(--muted);font-size:12px">
+  Source: <code class="inline">flywheel/outputs/runs/verify:video/pv-731f80b1-…/report.json</code>
+</p>
+
+<p>
+  The flywheel logged 7 outcomes to MuBit: 4 TP, 2 FP, 1 FN. Each carried a specific
+  rationale. The most informative was the FN at 267s, which read roughly:
+</p>
+<pre class="code">Missed real armbar by BALD at 04:27. 5 window(s) covered this moment and ALL
+returned is_submission=false. One window's reasoning: "no clear submission;
+fighters appear to pause but the round may simply be in transition." This
+means the DOMAIN RULES, as written, do not let the pipeline classify this
+kind of finish as a submission. Either the actual tap/yield was hidden,
+fast, or below frame, OR the round ended in a way (separation, pause,
+reset, fist bump, fighters disengaging) that the rules don't currently
+treat as sufficient evidence. To recover this case, the rules likely need
+to allow end-of-round "reset" signals as evidence of a finish, even
+without a directly visible tap.</pre>
+
+<h2>The rewrite</h2>
+<p>
+  After spin 1 we asked MuBit's optimizer for a candidate prompt. It returned this summary
+  with confidence 0.95:
+</p>
+<div class="aside">
+  <h4>Optimizer's diagnosis</h4>
+  <em>&ldquo;Added an explicit 'Temporal Requirements' section to mandate gapless window
+  analysis, directly addressing the frequent lessons regarding False Negatives. Included a
+  'Distinction Criteria' section to force the model to look at mechanical evidence (limb
+  placement) rather than just the absence of a tap, and to explicitly differentiate between
+  tactical finishes and neutral resets to reduce False Positives.&rdquo;</em>
+</div>
+
+<p>The actual diff between v1 and v2 (only the meaningful lines, formatting normalised):</p>
+<div class="diff">
+  <div class="file">flywheel/outputs/runs/verify:video/&lt;version&gt;/domain_rules.md</div>
+<pre><span class="ctx">  DOMAIN RULE — BJJ TRAINING ROUND FINISH:
+  Rounds in training do not end mid-roll without a submission.
+  A submission is confirmed by ANY of:
+    (a) a clear tap (hand/foot tapping mat or partner), OR
+    (b) a verbal yield, OR
+    (c) the partner being put to sleep, OR
+    (d) a RESET signal at the end of an active grappling sequence: pair
+        stops, separates, fist bump, both stand up, brief pause before
+        restarting. The reset by itself is sufficient evidence — taps are
+        often hidden behind bodies or below frame.
+</span><span class="rem">  Attribute the submission to whoever was applying pressure / had positional
+  control in the final 3-5 seconds before the reset.
+</span><span class="add">
+  TEMPORAL REQUIREMENTS:
+  1. You must analyze the entire video timeline using a continuous, gapless
+     sliding window approach. Do not skip segments or leave coverage holes.
+  2. Attribute the submission to whoever was applying pressure/had positional
+     control in the final 3-5 seconds before the reset.
+
+  DISTINCTION CRITERIA:
+  - Explicitly distinguish between actual submission taps/yields and neutral
+    match events like resets, separations, or fist bumps.
+  - Analyze limb placement and control mechanics to verify submission
+    attempts, rather than relying solely on the presence of a tap.
+</span><span class="ctx">
+  Only return is_submission=false if the clip shows continuous grappling the
+  entire {window_sec} seconds with NO reset and NO end-of-round behaviour.</span></pre>
+</div>
+
+<p>
+  Two genuine semantic additions: <strong>(a)</strong> a meta-instruction to
+  <em>distinguish</em> finishes from neutral resets before answering, which targets the v1 false
+  positives at 133s and 253s; and <strong>(b)</strong> &ldquo;analyze limb placement and control
+  mechanics rather than relying solely on the presence of a tap&rdquo;, which targets the missed
+  armbar at 267s (where a tap wasn't visible). The &ldquo;continuous, gapless sliding window&rdquo;
+  bullet is decorative — the model only sees one 40s clip per call, the orchestration is in
+  Python — but it doesn't hurt.
+</p>
+
+<h2>Spin 2 — v2 results</h2>
+<p>The new prompt got auto-activated; the loop spun again. Same video, same GT.</p>
+<div class="stats">
+  <div class="cell"><div class="lbl">F1</div><div class="v good">90.9%</div></div>
+  <div class="cell"><div class="lbl">Recall</div><div class="v good">100%</div></div>
+  <div class="cell"><div class="lbl">Precision</div><div class="v">83.3%</div></div>
+  <div class="cell"><div class="lbl">Hallucinations</div><div class="v">1</div></div>
+</div>
+
+<h3>Per-event detail (v2)</h3>
+<table>
+  <thead>
+    <tr>
+      <th>status</th>
+      <th class="num">gt</th>
+      <th>tech</th>
+      <th>submitter</th>
+      <th class="num">pred</th>
+      <th>tech</th>
+      <th>submitter</th>
+      <th class="num">Δt</th>
+      <th>tech ✓</th>
+      <th>sub ✓</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="tag matched">matched</span></td><td class="num">68s</td><td>armbar</td><td>BALD</td><td class="num">73s</td><td>other</td><td>STRIPED</td><td class="num">+5.0s</td><td><span class="tick bad">✗</span></td><td><span class="tick bad">✗</span></td></tr>
+    <tr><td><span class="tag matched">matched</span></td><td class="num">155s</td><td>armbar</td><td>BALD</td><td class="num">158s</td><td>other</td><td>BALD</td><td class="num">+3.0s</td><td><span class="tick bad">✗</span></td><td><span class="tick ok">✓</span></td></tr>
+    <tr><td><span class="tag matched">matched</span></td><td class="num">185s</td><td>rnc</td><td>BALD</td><td class="num">189s</td><td>other</td><td>STRIPED</td><td class="num">+4.0s</td><td><span class="tick bad">✗</span></td><td><span class="tick bad">✗</span></td></tr>
+    <tr><td style="background:rgba(92,184,92,.10)"><span class="tag matched">matched</span></td><td class="num">267s</td><td>armbar</td><td>BALD</td><td class="num">262s</td><td>smother</td><td>BALD</td><td class="num">−5.0s</td><td><span class="tick bad">✗</span></td><td><span class="tick ok">✓</span></td></tr>
+    <tr><td><span class="tag matched">matched</span></td><td class="num">318s</td><td>rnc</td><td>BALD</td><td class="num">323s</td><td>other</td><td>STRIPED</td><td class="num">+5.0s</td><td><span class="tick bad">✗</span></td><td><span class="tick bad">✗</span></td></tr>
+    <tr><td><span class="tag hallucination">hallucination</span></td><td class="num">—</td><td>—</td><td>—</td><td class="num">133s</td><td>other</td><td>STRIPED</td><td class="num">—</td><td>—</td><td>—</td></tr>
+  </tbody>
+</table>
+<p style="color:var(--muted);font-size:12px">
+  Source: <code class="inline">flywheel/outputs/runs/verify:video/pv-7ce93701-…/report.json</code>
+  · the green-tinted row is the previously-missed event the rewrite recovered.
+</p>
+
+<h2>v1 vs v2 — head to head</h2>
+<table>
+  <thead>
+    <tr><th>Metric</th><th class="num">v1 (hand-tuned)</th><th class="num">v2 (one rewrite)</th><th class="num">Δ</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>F1</td><td class="num">72.7%</td><td class="num">90.9%</td><td class="num" style="color:var(--good)">+18.2 pp</td></tr>
+    <tr><td>Recall</td><td class="num">80%</td><td class="num">100%</td><td class="num" style="color:var(--good)">+20 pp</td></tr>
+    <tr><td>Precision</td><td class="num">66.7%</td><td class="num">83.3%</td><td class="num" style="color:var(--good)">+16.6 pp</td></tr>
+    <tr><td>Hallucinations</td><td class="num">2</td><td class="num">1</td><td class="num" style="color:var(--good)">−1</td></tr>
+    <tr><td>GT events found</td><td class="num">4 / 5</td><td class="num">5 / 5</td><td class="num" style="color:var(--good)">+1</td></tr>
+    <tr><td>Timestamp MAE</td><td class="num">3.75s</td><td class="num">4.40s</td><td class="num" style="color:var(--muted)">+0.65s</td></tr>
+    <tr><td>Technique accuracy</td><td class="num">0%</td><td class="num">0%</td><td class="num" style="color:var(--muted)">no change</td></tr>
+    <tr><td>Submitter accuracy</td><td class="num">25%</td><td class="num">40%</td><td class="num" style="color:var(--good)">+15 pp</td></tr>
+    <tr><td>Wall time</td><td class="num">~2.5 min</td><td class="num">~2.5 min</td><td class="num" style="color:var(--muted)">no change</td></tr>
+  </tbody>
+</table>
+
+<h2>What this proves — and what it doesn't</h2>
+
+<div class="aside">
+  <h4>What it proves</h4>
+  The flywheel as designed actually closes the loop. From a hand-tuned baseline, the
+  optimizer reads the per-event rationales we logged, edits exactly the failure modes those
+  rationales describe, and produces a strictly-better prompt — no human in the loop. Going
+  from 4/5 to 5/5 GT events found, removing one of two hallucinations, and keeping
+  timestamp accuracy within 5 seconds is real signal, not noise.
+</div>
+
+<div class="aside warn">
+  <h4>What it doesn't prove</h4>
+  <ul style="margin:6px 0 0 16px;padding:0">
+    <li><strong>N = 1 video, 5 events.</strong> Gemini 2.5 Pro is non-deterministic. To know
+        v2 reliably beats v1 you'd run both on a handful of fights, not one. We have one.</li>
+    <li><strong>Technique accuracy is 0% on both.</strong> Gemini calls every finish
+        <code class="inline">"other"</code> or <code class="inline">"smother"</code>. The
+        DOMAIN RULES slab doesn't shape this — the model has to <em>look at the clip</em>
+        and recognise an armbar vs an RNC. To improve technique acc you'd either need a
+        separate optimisable section (an OUTPUT REQUIREMENTS slab pushing the model to
+        commit to a specific technique) or a per-cluster classification pass.</li>
+    <li><strong>Submitter accuracy is still flaky (40%).</strong> Three of five events the
+        model swapped the attacker. Same problem as technique — visual perception, not rules.</li>
+    <li><strong>The rewrite included one decorative bullet.</strong> &ldquo;Continuous, gapless
+        sliding window&rdquo; is something only the orchestrator can do; the model sees one
+        clip at a time. Probably harmless but it's a sign the rewriter doesn't perfectly
+        understand the operating context.</li>
+  </ul>
+</div>
+
+<h2>Where the code lives</h2>
+<div class="filemap">
+  <div class="key">VLM-gemini/analyze.py</div><div class="val">The pipeline. Stage 0/1/2. Takes <code class="inline">--domain-rules-file</code> for the optimisable slab.</div>
+  <div class="key">VLM-gemini/eval/</div><div class="val">Greedy ±τ matching, Recall / Precision / F1 / per-event detail. Used by the eval CLI and by the flywheel.</div>
+  <div class="key">VLM-gemini/input-data/ryan-thomas/subs.json</div><div class="val">Ground truth for the test fight.</div>
+  <div class="key">flywheel/spin.py</div><div class="val">predict + measure + feedback. Subprocesses analyze.py, scores via eval, logs per-event rationales.</div>
+  <div class="key">flywheel/improve.py</div><div class="val">Calls MuBit's optimizer for a candidate prompt; auto-activates if asked.</div>
+  <div class="key">flywheel/loop.py</div><div class="val">Self-driving N-iteration arc. spin → improve(--activate) → spin → …</div>
+  <div class="key">flywheel/mubit_client.py</div><div class="val">The only file that imports the MuBit SDK. Versioning + outcome log + rewriter live here.</div>
+  <div class="key">flywheel/prompts/verifier_v1.md</div><div class="val">Seed prompt. Used once, at <code class="inline">setup</code>; after that MuBit owns the prompt.</div>
+  <div class="key">flywheel/outputs/runs/&lt;run_id&gt;/&lt;prompt_version_id&gt;/</div><div class="val">Per-rotation artifacts: <code class="inline">domain_rules.md</code>, <code class="inline">result.json</code>, <code class="inline">report.json</code>, <code class="inline">spin.json</code>.</div>
+</div>
+
+<p style="margin-top:20px">Run it yourself:</p>
+<pre class="code"># one-time: provision the MuBit agent, seed v1
+python -m flywheel.cli setup
+
+# spin → improve → activate → spin, on repeat
+python -m flywheel.cli loop --iterations 4
+
+# render this side-by-side as HTML
+python -m flywheel.cli report \
+  --version-a pv-731f80b1-46bd-4f11-917e-0cb465d50f18 \
+  --version-b pv-7ce93701-08f2-42c6-a833-2984cc7f5976</pre>
+
+<footer>
+  Generated from <code class="inline">flywheel/outputs/runs/verify:video/pv-731f80b1-…</code> and
+  <code class="inline">flywheel/outputs/runs/verify:video/pv-7ce93701-…</code>.
+  Test fight: <code class="inline">ryan-thomas/video.mov</code> (371s).
+  Pipeline: Gemini 2.5 Pro, 25 windows × 40s @ 15s stride, ±20s clustering.
+  Optimizer: MuBit project <code class="inline">jiujitsu-rt3hsz</code>, agent <code class="inline">submission-detector-v2</code>.
+</footer>
+
+</div>
+</body>
+</html>

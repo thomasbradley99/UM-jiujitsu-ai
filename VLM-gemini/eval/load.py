@@ -1,8 +1,10 @@
 """Load + canonicalise GT (subs.json) and pipeline output (result.json).
 
-Both schemas live in input-data/README.md and the v3-fast pipeline output spec
-(see VLM-gemini/video_processor_v3_fast.py). This module turns both into a
-single uniform shape the matcher and metrics can consume.
+Both schemas mirror each other:
+    {fighters: {<key>: {visual: "..."}}, submissions: [...]}
+
+GT lives at VLM-gemini/input-data/<game>/subs.json. Predictions are written
+by VLM-gemini/analyze.py.
 """
 
 from __future__ import annotations
@@ -11,7 +13,6 @@ import json
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable
 
 
 # Canonical technique vocabulary (from input-data/README.md).
@@ -90,10 +91,16 @@ class GroundTruth:
 
 @dataclass
 class Prediction:
-    """Parsed result.json subset relevant to submissions-only eval."""
+    """Parsed result.json subset relevant to submissions-only eval.
 
-    fighter_descriptors: list[str]  # e.g. ["BALD RASHGUARD", "STRIPED RASHGUARD"]
-    subs: list[SubEvent]  # `submitter`/`submittee` left as raw AI descriptors
+    `fighter_tokens` mirrors the GT side: distinctive tokens per AI-emitted
+    fighter key, used by `resolve_fighter()` so the metrics layer can map
+    AI keys (e.g. "BALD GUY") to GT keys (e.g. "BALD") via overlap.
+    """
+
+    fighter_keys: list[str]
+    fighter_tokens: dict[str, set[str]]
+    subs: list[SubEvent]  # `submitter`/`submittee` left as raw AI keys
     raw: dict = field(repr=False, compare=False, default_factory=dict)
 
 
@@ -179,65 +186,32 @@ def load_gt(path: str | Path) -> GroundTruth:
     )
 
 
-def _iter_predicted_subs(result: dict) -> Iterable[dict]:
-    """Yield raw predicted submission dicts from the v3-fast result.json.
-
-    Two sources in the schema; we union them and dedupe by (rounded_ts, attacker).
-
-    1. events[] with {submission: true, completed: true, attempt: false}
-    2. position_timeline.submissions[] with {completed: true}
-    """
-    seen: set[tuple[int, str]] = set()
-    for ev in result.get("events", []) or []:
-        if not ev.get("submission"):
-            continue
-        if ev.get("attempt"):
-            continue
-        if ev.get("completed") is False:  # accept missing == treat as completed
-            continue
-        key = (int(round(float(ev.get("timestamp", 0)))), str(ev.get("attacker") or ""))
-        if key in seen:
-            continue
-        seen.add(key)
-        yield {
-            "timestamp": ev.get("timestamp"),
-            "title": ev.get("title") or ev.get("description") or "",
-            "attacker": ev.get("attacker"),
-            "defender": ev.get("defender"),
-            "source": "events",
-            "raw": ev,
-        }
-    pt_subs = (result.get("position_timeline") or {}).get("submissions") or []
-    for s in pt_subs:
-        if s.get("completed") is False:
-            continue
-        key = (int(round(float(s.get("timestamp", 0)))), str(s.get("fighter") or ""))
-        if key in seen:
-            continue
-        seen.add(key)
-        yield {
-            "timestamp": s.get("timestamp"),
-            "title": s.get("type") or "",
-            "attacker": s.get("fighter"),
-            "defender": None,
-            "source": "position_timeline",
-            "raw": s,
-        }
-
-
 def load_prediction(path: str | Path) -> Prediction:
+    """Load `result.json` from VLM-gemini/analyze.py.
+
+    Schema (mirrors GT subs.json):
+        {
+          "fighters": {"<key>": {"visual": "..."}},
+          "submissions": [{"timestamp", "technique", "submitter", "submittee", ...}]
+        }
+    """
     p = Path(path)
     data = json.loads(p.read_text())
-    fighter_stats = data.get("fighter_stats") or {}
-    descriptors = list(fighter_stats.keys())
+    fighters = data.get("fighters") or {}
+    fighter_tokens = _build_fighter_tokens(fighters)
     subs = [
         SubEvent(
             timestamp=float(s["timestamp"]),
-            technique=canonicalize_technique(s.get("title")),
-            submitter=str(s.get("attacker") or ""),
-            submittee=str(s.get("defender") or "") or None,
+            technique=canonicalize_technique(s.get("technique")),
+            submitter=str(s.get("submitter") or ""),
+            submittee=str(s.get("submittee") or "") or None,
             raw=s,
         )
-        for s in _iter_predicted_subs(data)
+        for s in data.get("submissions") or []
     ]
-    return Prediction(fighter_descriptors=descriptors, subs=subs, raw=data)
+    return Prediction(
+        fighter_keys=list(fighters.keys()),
+        fighter_tokens=fighter_tokens,
+        subs=subs,
+        raw=data,
+    )

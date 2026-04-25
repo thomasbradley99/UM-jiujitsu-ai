@@ -1,40 +1,51 @@
 """One rotation of the flywheel.
 
-  predict → measure → feedback
+    predict → measure → feedback
 
-predict:  fetch the active prompt from MuBit, run v3-fast (cached) + filter call.
-measure:  match predictions vs GT, compute metrics. Delegates to VLM-gemini/eval.
-feedback: archive each event and record_outcome to MuBit (per TP / FP / FN).
+predict:  fetch the active DOMAIN RULES from MuBit, run the full pipeline
+          (VLM-gemini/analyze.py) with those rules injected into the
+          Stage 1 scan prompt, write result.json.
+measure:  match clustered submissions vs GT and compute metrics. Delegates
+          to VLM-gemini/eval.
+feedback: archive each cluster + each missed-GT window-set and record an
+          outcome in MuBit. The optimizer reads `rationale` text — we go
+          out of our way to make per-event rationales specific (quote the
+          window's own reasoning, name the technique, name the submitter).
 
 Outputs (all under `outputs/runs/<run_id>/<prompt_version_id>/`):
-  predicted.json   — filtered submissions, shaped like a v3-fast result.json
-  report.json      — VLM-gemini/eval/metrics.py:Report dataclass, serialized
+  domain_rules.md  — the rules text we passed to analyze.py (for audit)
+  result.json      — analyze.py output (`submissions` + per-window data)
+  report.json      — eval Report dataclass, serialized
   spin.json        — small run-metadata blob
 
-Re-running with the same active prompt overwrites these. Re-running after
-`improve` (which produced a new active version) writes a new sub-folder.
+Re-running with the same active prompt re-uses `result.json` (pipeline
+calls are slow + expensive). Force a re-run with `--force`. Re-running
+after `improve` (which produces a new active version) writes a new sub-
+folder and a fresh analysis.
 """
 
 from __future__ import annotations
 
 import json
 import os
-import re
 import subprocess
 import sys
 from dataclasses import asdict
 from pathlib import Path
 
-from dotenv import load_dotenv
-
 from flywheel.config import (
-    DEFAULT_VLM_OUT,
-    GEMINI_FILTER_MODEL,
+    ANALYZE_CLUSTER_TAU,
+    ANALYZE_GRID_STEP,
+    ANALYZE_MODEL,
+    ANALYZE_PYTHON,
+    ANALYZE_SCRIPT,
+    ANALYZE_WINDOW_SEC,
+    ANALYZE_WORKERS,
+    DEFAULT_GT,  # noqa: F401  (re-exported for callers)
     MATCH_TOLERANCE_S,
     OUTPUTS_DIR,
     REPO_ROOT,
     VLM_GEMINI_DIR,
-    VLM_PROCESSOR,
     run_id_for_video,
 )
 from flywheel.mubit_client import (
@@ -53,159 +64,121 @@ if str(VLM_GEMINI_DIR) not in sys.path:
 # ---- predict --------------------------------------------------------------
 
 
-def _run_v3_fast(video: Path, vlm_out: Path, *, force: bool) -> Path:
-    """Run video_processor_v3_fast.py, or reuse its cached result.json."""
-    result_path = vlm_out / "result.json"
-    if result_path.exists() and not force:
-        print(f"  reusing cached v3-fast result: {result_path}")
-        return result_path
-    if not VLM_PROCESSOR.exists():
-        raise SystemExit(f"v3-fast script not found: {VLM_PROCESSOR}")
-    vlm_out.mkdir(parents=True, exist_ok=True)
-    print(f"  running v3-fast on {video}  (out={vlm_out})")
-    # Subprocess isolates the older google.generativeai SDK from our
-    # google-genai SDK; protobuf versions conflict in-process.
-    subprocess.run(
-        [sys.executable, str(VLM_PROCESSOR), str(video), "--out-dir", str(vlm_out)],
-        check=True,
-    )
+def _run_analyze(
+    *,
+    video: Path,
+    out_dir: Path,
+    domain_rules_path: Path,
+) -> Path:
+    """Subprocess into VLM-gemini/analyze.py.
+
+    Lives in a different SDK ecosystem (google.generativeai vs google-genai)
+    so we keep it process-isolated. analyze.py writes `result.json` directly
+    under `out_dir`. Returns the path to that result.json.
+    """
+    if not ANALYZE_SCRIPT.exists():
+        raise SystemExit(f"analyze script not found: {ANALYZE_SCRIPT}")
+
+    cmd = [
+        str(ANALYZE_PYTHON), str(ANALYZE_SCRIPT),
+        str(video),
+        "--out-dir", str(out_dir),
+        "--domain-rules-file", str(domain_rules_path),
+        "--model", ANALYZE_MODEL,
+        "--window-sec", str(ANALYZE_WINDOW_SEC),
+        "--grid-step", str(ANALYZE_GRID_STEP),
+        "--cluster-tau", str(ANALYZE_CLUSTER_TAU),
+        "--workers", str(ANALYZE_WORKERS),
+    ]
+    # Force-reload .env.local so a stale GEMINI_API_KEY in the parent shell
+    # doesn't leak into the subprocess. python-dotenv's default override=False
+    # would let a stale value win silently.
+    from dotenv import load_dotenv
+    load_dotenv(REPO_ROOT / ".env.local", override=True)
+
+    # analyze.py uses google.generativeai, which forks ffmpeg from worker
+    # threads while gRPC has live event-engine threads. macOS gRPC writes a
+    # FATAL Check failure to stderr per worker; the analysis still completes.
+    # Mute the noise here rather than re-architect the pipeline.
+    env = os.environ.copy()
+    env.setdefault("GRPC_VERBOSITY", "NONE")
+    env.setdefault("GRPC_TRACE", "")
+    env.setdefault("GLOG_minloglevel", "3")
+    env.setdefault("ABSL_min_log_level", "3")
+    env.setdefault("PYTHONWARNINGS", "ignore::FutureWarning,ignore::DeprecationWarning")
+    print(f"  ▶ {' '.join(cmd[:4])} … (see analyze.py stdout below)")
+    subprocess.run(cmd, check=True, env=env)
+
+    result_path = out_dir / "result.json"
     if not result_path.exists():
-        raise RuntimeError(f"v3-fast finished but {result_path} is missing.")
+        raise RuntimeError(f"analyze.py finished but {result_path} is missing.")
     return result_path
 
 
-def _candidate_events(result_data: dict) -> list[dict]:
-    """Pull every event v3-fast considers submission-adjacent from result.json."""
-    events: list[dict] = []
-    for ev in result_data.get("events", []) or []:
-        if ev.get("submission") or ev.get("attempt"):
-            events.append({
-                "source": "events",
-                "timestamp": ev.get("timestamp"),
-                "title": ev.get("title"),
-                "description": ev.get("description"),
-                "submission": bool(ev.get("submission")),
-                "attempt": bool(ev.get("attempt")),
-                "completed": ev.get("completed", True),
-                "attacker": ev.get("attacker"),
-                "defender": ev.get("defender"),
-            })
-    for s in (result_data.get("position_timeline") or {}).get("submissions", []) or []:
-        events.append({
-            "source": "position_timeline",
-            "timestamp": s.get("timestamp"),
-            "title": s.get("type"),
-            "description": s.get("description"),
-            "submission": True,
-            "attempt": not s.get("completed", True),
-            "completed": s.get("completed", True),
-            "attacker": s.get("fighter"),
-            "defender": None,
-        })
-    return events
-
-
-def _strip_md_fences(s: str) -> str:
-    s = s.strip()
-    if s.startswith("```"):
-        s = re.sub(r"^```(?:json)?\s*", "", s)
-        s = re.sub(r"\s*```$", "", s)
-    return s.strip()
-
-
-def _filter_with_gemini(prompt_text: str, candidates: list[dict]) -> list[dict]:
-    """Text-only Gemini call: prompt_text + candidates → filtered JSON array."""
-    load_dotenv(REPO_ROOT / ".env.local")
-    if not os.environ.get("GEMINI_API_KEY"):
-        raise SystemExit("GEMINI_API_KEY missing in .env.local.")
-    from google import genai
-
-    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-    full_prompt = (
-        prompt_text
-        + "\n\n---\n\nINPUT (JSON):\n```json\n"
-        + json.dumps({"candidates": candidates}, indent=2)
-        + "\n```\n\nOUTPUT (JSON array only):"
-    )
-    resp = client.models.generate_content(
-        model=GEMINI_FILTER_MODEL,
-        contents=full_prompt,
-        config={"response_mime_type": "application/json"},
-    )
-    raw = _strip_md_fences(resp.text or "[]")
-    try:
-        out = json.loads(raw)
-    except json.JSONDecodeError:
-        print("  WARN: filter returned non-JSON; treating as empty list.")
-        print(raw[:500])
-        return []
-    return out if isinstance(out, list) else []
-
-
-def _to_v3_event(filtered: dict) -> dict:
-    """Shape a filtered event into v3-fast's events[] schema so eval can read it."""
-    return {
-        "timestamp": float(filtered.get("timestamp", 0)),
-        "title": filtered.get("technique") or "other",
-        "description": filtered.get("description") or "",
-        "submission": True,
-        "attempt": False,
-        "completed": True,
-        "attacker": filtered.get("attacker"),
-        "defender": filtered.get("defender"),
-    }
-
-
-def predict(video: Path, *, vlm_out: Path, force_v3_fast: bool) -> dict:
-    """Stage-1 (v3-fast, cached) + Stage-2 (MuBit-versioned filter call)."""
+def predict(
+    video: Path,
+    gt: Path,
+    *,
+    force: bool = False,
+) -> dict:
+    """Run analyze.py with the MuBit-active DOMAIN RULES injected."""
     print("=== PREDICT ===")
-    result_path = _run_v3_fast(video, vlm_out, force=force_v3_fast)
-    result_data = json.loads(result_path.read_text())
-    candidates = _candidate_events(result_data)
-    print(f"  v3-fast surfaced {len(candidates)} candidate events")
-
     prompt_text, version_id = get_active_prompt()
-    print(f"  active prompt: {version_id}  ({len(prompt_text)} chars)")
-
-    filtered = _filter_with_gemini(prompt_text, candidates)
-    print(f"  filter kept {len(filtered)} of {len(candidates)} candidates")
+    print(f"  active rules: {version_id}  ({len(prompt_text)} chars)")
 
     run_id = run_id_for_video(video)
     out_dir = OUTPUTS_DIR / "runs" / run_id / version_id
     out_dir.mkdir(parents=True, exist_ok=True)
-    payload = {
-        "fighter_stats": result_data.get("fighter_stats") or {},
-        "match_summary": result_data.get("match_summary") or "",
-        "events": [_to_v3_event(e) for e in filtered],
-        "position_timeline": {"submissions": []},
-        "key_moments": [],
-    }
-    predicted_path = out_dir / "predicted.json"
-    predicted_path.write_text(json.dumps(payload, indent=2))
-    print(f"  wrote {predicted_path}")
+
+    rules_path = out_dir / "domain_rules.md"
+    rules_path.write_text(prompt_text)
+
+    result_path = out_dir / "result.json"
+    if result_path.exists() and not force:
+        print(f"  reusing cached pipeline output: {result_path}")
+        print(f"  (pass --force to rerun analyze.py on the same prompt)")
+    else:
+        print(f"  running analyze.py on {video.name} …")
+        _run_analyze(
+            video=video,
+            out_dir=out_dir,
+            domain_rules_path=rules_path,
+        )
+
+    data = json.loads(result_path.read_text())
+    n_subs = len(data.get("submissions") or [])
+    md = data.get("metadata") or {}
+    n_windows = md.get("n_windows", 0)
+    n_yes = md.get("n_yes_windows", 0)
+    print(f"  pipeline saw {n_yes}/{n_windows} YES windows → {n_subs} clustered submissions")
 
     return {
         "video": str(video),
         "run_id": run_id,
         "prompt_version_id": version_id,
-        "predicted_path": str(predicted_path),
-        "n_candidates": len(candidates),
-        "n_kept": len(filtered),
+        "result_path": str(result_path),
+        "n_windows": n_windows,
+        "n_yes_windows": n_yes,
+        "n_clustered_subs": n_subs,
     }
 
 
 # ---- measure --------------------------------------------------------------
 
 
-def measure(predicted_path: Path, gt_path: Path, *, tau: float, label: str):
-    """Match predictions vs GT and compute metrics. Returns a Report dataclass."""
+def measure(result_path: Path, gt_path: Path, *, tau: float, label: str):
+    """Match clustered submissions vs GT and compute metrics.
+
+    `result.json` from analyze.py is the canonical schema eval expects, so
+    we use `eval.load.load_prediction()` directly — no adapter needed.
+    """
     print("=== MEASURE ===")
     from eval.load import load_gt, load_prediction  # type: ignore[import-not-found]
     from eval.match import greedy_match  # type: ignore[import-not-found]
     from eval.metrics import evaluate, format_report  # type: ignore[import-not-found]
 
     gt = load_gt(gt_path)
-    pred = load_prediction(predicted_path)
+    pred = load_prediction(result_path)
     mr = greedy_match(gt.subs, pred.subs, tau=tau)
     report = evaluate(gt, mr, config=label)
     print(format_report(report))
@@ -229,42 +202,106 @@ def _signal_for_match(d) -> float:
     return max(0.3, min(1.0, s))
 
 
-def feedback(report, run_id: str) -> dict[str, int]:
-    """For every EventDetail, archive an artifact and record an outcome.
+def _windows_covering(rows: list[dict], t: float) -> list[dict]:
+    """Per-window rows whose [start, end] contains t."""
+    out: list[dict] = []
+    for v in rows:
+        ws = v.get("start")
+        we = v.get("end")
+        if ws is None or we is None:
+            continue
+        if float(ws) <= float(t) <= float(we):
+            out.append(v)
+    return out
 
-    The optimizer reads each `rationale` text — that's where we tell it what
-    the prompt should do differently. Specifics matter: name the technique,
-    reference the timestamp, give a concrete instruction.
+
+def _windows_near(rows: list[dict], t: float, *, slop: float = 5.0) -> list[dict]:
+    """Per-window rows whose absolute_timestamp is within `slop` of t.
+
+    For TP/FP we want the YES windows that voted into the cluster — these
+    are typically clustered within ~cluster_tau seconds of the cluster
+    center. We also include `slop` for floating-point + rounding noise.
+    """
+    out: list[dict] = []
+    for v in rows:
+        ts = v.get("absolute_timestamp")
+        if ts is None:
+            continue
+        if abs(float(ts) - float(t)) <= slop:
+            out.append(v)
+    return out
+
+
+def _short_reason(v: dict, max_len: int = 120) -> str:
+    """One-line summary of a per-window row, for embedding in rationales."""
+    verdict = "YES" if v.get("is_submission") else "NO"
+    reasoning = (v.get("reasoning") or "").strip().replace("\n", " ")
+    if len(reasoning) > max_len:
+        reasoning = reasoning[: max_len - 1] + "…"
+    ws = v.get("start")
+    we = v.get("end")
+    span = f"[{int(ws):>4}-{int(we):>4}s]" if ws is not None and we is not None else "[??]"
+    return f"{span} {verdict}: {reasoning or '(no reasoning)'}"
+
+
+def feedback(report, result_data: dict, run_id: str) -> dict[str, int]:
+    """For every cluster-level event, archive an artifact and record an outcome.
+
+    Three rationale styles by status:
+      - matched:        "pipeline correctly fired here, keep this rule"
+      - hallucination:  "this cluster shouldn't have fired; here's what
+                         the windows said"
+      - missed_gt:      "real submission at YYs; the windows covering it
+                         all said NO. Their reasoning was ___. The rules
+                         are missing whatever cue was in this clip"
+
+    The third one is the killer — it literally tells the optimizer:
+    "you said NO at the moments a real sub happened, here's why you said NO".
     """
     print("=== FEEDBACK ===")
     counts = {"tp": 0, "fp": 0, "fn": 0}
+
+    md = result_data.get("metadata") or {}
+    rows = md.get("all_window_rows") or []
+    cluster_tau = md.get("cluster_tau") or ANALYZE_CLUSTER_TAU
 
     for d in report.details:
         if d.status == "matched":
             tech_tick = "✓" if d.technique_correct else "✗"
             sub_tick = "✓" if d.submitter_correct else "✗"
+            voting = _windows_near(rows, d.pred_t or 0.0, slop=cluster_tau + 5.0)
+            voting_yes = [v for v in voting if v.get("is_submission")]
+            voting_lines = "\n  ".join(_short_reason(v) for v in voting_yes[:3]) or "(none)"
             content = (
-                f"TP — predicted {d.pred_technique} at {_hms(d.pred_t)} matches GT "
-                f"{d.gt_technique} at {_hms(d.gt_t)} (Δt={d.delta_t:+.1f}s, "
-                f"technique {tech_tick}, attacker {sub_tick})."
+                f"TP cluster — predicted {d.pred_technique} at {_hms(d.pred_t)} "
+                f"matched GT {d.gt_technique} at {_hms(d.gt_t)} "
+                f"(Δt={d.delta_t:+.1f}s, technique {tech_tick}, attacker {sub_tick}).\n"
+                f"Voting windows (YES):\n  {voting_lines}"
             )
             ref_id = archive_event(
-                run_id, content=content, kind="sub_prediction_tp",
+                run_id, content=content, kind="pipeline_cluster_tp",
                 labels=["submission", "true_positive", d.gt_technique or "other"],
             )
             rationale = (
                 f"Correctly detected {d.gt_technique} at {_hms(d.gt_t)} "
-                f"(within {abs(d.delta_t or 0):.1f}s of GT). Keep this behavior."
+                f"(within {abs(d.delta_t or 0):.1f}s of GT). "
+                f"The DOMAIN RULES produced YES on the windows around this moment. "
+                f"Keep the parts of the rules that produced this detection."
             )
             if not d.technique_correct:
                 rationale += (
-                    f" Mis-classified technique as {d.pred_technique}; correct canonical "
-                    f"name is {d.gt_technique}. Be strict about technique names."
+                    f" Mis-classified technique as {d.pred_technique}; correct "
+                    f"canonical name is {d.gt_technique}. Rules can be more "
+                    f"specific about distinguishing similar techniques, OR push "
+                    f"the model to commit to a specific technique rather than "
+                    f"defaulting to 'other'."
                 )
             if not d.submitter_correct:
                 rationale += (
                     f" Wrong attacker ({d.pred_submitter_raw!r}); should be "
-                    f"{d.gt_submitter}. Use the input event's attacker field verbatim."
+                    f"{d.gt_submitter}. The rules should emphasise that the "
+                    f"submitter is whoever is applying pressure / has positional "
+                    f"control just before the finish, not whoever moves last."
                 )
             record_outcome(
                 run_id, ref_id, success=True, signal=_signal_for_match(d), rationale=rationale,
@@ -272,42 +309,85 @@ def feedback(report, run_id: str) -> dict[str, int]:
             counts["tp"] += 1
 
         elif d.status == "hallucination":
+            voting = _windows_near(rows, d.pred_t or 0.0, slop=cluster_tau + 5.0)
+            voting_yes = [v for v in voting if v.get("is_submission")]
+            voting_lines = "\n  ".join(_short_reason(v) for v in voting_yes[:3]) or "(none)"
             content = (
-                f"FP — predicted {d.pred_technique} at {_hms(d.pred_t)} with no GT "
-                f"submission within tolerance. Likely a scramble, position change, "
-                f"or attempt that did not finish."
+                f"FP cluster — predicted {d.pred_technique} at {_hms(d.pred_t)} "
+                f"with no GT submission within tolerance.\n"
+                f"Voting windows (YES, but should have been NO):\n  {voting_lines}"
             )
             ref_id = archive_event(
-                run_id, content=content, kind="sub_prediction_fp",
+                run_id, content=content, kind="pipeline_cluster_fp",
                 labels=["submission", "false_positive", d.pred_technique or "other"],
             )
+            sample_reasoning = ""
+            if voting_yes:
+                sample_reasoning = (voting_yes[0].get("reasoning") or "").strip()
             rationale = (
                 f"Hallucinated submission at {_hms(d.pred_t)} ({d.pred_technique}). "
-                "Tighten the filter: require an explicit tap, an isolated joint or "
-                "windpipe under attack, or a description containing 'taps' / 'finished'. "
-                "Drop attempts, scrambles, position changes."
+                f"The DOMAIN RULES were too liberal — these windows fired YES on "
+                f"something that wasn't a real finish."
             )
+            if sample_reasoning:
+                rationale += (
+                    f" Sample window reasoning: \"{sample_reasoning[:200]}\". "
+                    f"Tighten the rules to require stronger corroboration: e.g. "
+                    f"if a window only sees a position change / scramble / pause, "
+                    f"that should remain is_submission=false unless additional "
+                    f"finish signals are visible."
+                )
+            else:
+                rationale += (
+                    f" No YES windows found near this cluster timestamp — the "
+                    f"clustering is over-merging adjacent windows. Cluster_tau "
+                    f"or window settings may need adjustment, or rules should "
+                    f"emit lower confidence on borderline cases."
+                )
             record_outcome(
                 run_id, ref_id, success=False, signal=-0.7, rationale=rationale,
             )
             counts["fp"] += 1
 
         elif d.status == "missed_gt":
+            covering = _windows_covering(rows, d.gt_t or 0.0)
+            covering_no = [v for v in covering if not v.get("is_submission")]
+            covering_lines = "\n  ".join(_short_reason(v) for v in covering_no[:4]) or "(no windows covered this moment)"
             content = (
                 f"FN — missed GT submission: {d.gt_technique} at {_hms(d.gt_t)} "
-                f"by {d.gt_submitter}."
+                f"by {d.gt_submitter}.\n"
+                f"Windows that should have detected it (all returned NO):\n  {covering_lines}"
             )
             ref_id = archive_event(
-                run_id, content=content, kind="sub_gt_missed",
+                run_id, content=content, kind="pipeline_window_fn",
                 labels=["submission", "false_negative", d.gt_technique or "other"],
             )
             rationale = (
-                f"Missed real {d.gt_technique} at {_hms(d.gt_t)}. Either v3-fast "
-                "didn't surface it as a candidate, or the filter rejected it because "
-                "attempt=true / completed=false. If candidates with technique="
-                f"{d.gt_technique} appear in the input, keep them when title or "
-                "description mentions the technique even if attempt flags are inconsistent."
+                f"Missed real {d.gt_technique} by {d.gt_submitter} at {_hms(d.gt_t)}. "
+                f"{len(covering_no)} window(s) covered this moment and ALL returned "
+                f"is_submission=false."
             )
+            if covering_no:
+                first_reason = (covering_no[0].get("reasoning") or "").strip()
+                if first_reason:
+                    rationale += (
+                        f" One window's reasoning: \"{first_reason[:200]}\". "
+                        f"This means the DOMAIN RULES, as written, do not let the "
+                        f"pipeline classify this kind of finish as a submission. "
+                        f"Either the actual tap/yield was hidden, fast, or below "
+                        f"frame, OR the round ended in a way (separation, pause, "
+                        f"reset, fist bump, fighters disengaging) that the rules "
+                        f"don't currently treat as sufficient evidence. To recover "
+                        f"this case, the rules likely need to allow end-of-round "
+                        f"\"reset\" signals as evidence of a finish, even without "
+                        f"a directly visible tap."
+                    )
+            else:
+                rationale += (
+                    " No windows covered this moment — the grid stride or window "
+                    "size may need to be smaller. (This is a config issue, not "
+                    "a rules issue, but flagged here for completeness.)"
+                )
             record_outcome(
                 run_id, ref_id, success=False, signal=-0.85, rationale=rationale,
             )
@@ -327,19 +407,19 @@ def spin(
     video: Path,
     gt: Path,
     *,
-    vlm_out: Path = DEFAULT_VLM_OUT,
     tau: float = MATCH_TOLERANCE_S,
-    force_v3_fast: bool = False,
+    force: bool = False,
     skip_feedback: bool = False,
 ) -> dict:
     """One full rotation: predict → measure → feedback."""
-    meta = predict(video, vlm_out=vlm_out, force_v3_fast=force_v3_fast)
+    meta = predict(video, gt, force=force)
     print()
 
     label = f"{meta['run_id']}:{meta['prompt_version_id'][:12]}"
-    report = measure(Path(meta["predicted_path"]), gt, tau=tau, label=label)
+    result_path = Path(meta["result_path"])
+    report = measure(result_path, gt, tau=tau, label=label)
 
-    out_dir = Path(meta["predicted_path"]).parent
+    out_dir = result_path.parent
     (out_dir / "report.json").write_text(json.dumps(asdict(report), indent=2, default=str))
     print(f"  wrote {out_dir / 'report.json'}")
 
@@ -347,7 +427,20 @@ def spin(
         print("  (skipping feedback step; pass without --skip-feedback to record outcomes)")
     else:
         print()
-        meta["counts"] = feedback(report, run_id=meta["run_id"])
+        result_data = json.loads(result_path.read_text())
+        meta["counts"] = feedback(report, result_data, run_id=meta["run_id"])
 
+    meta["metrics"] = {
+        "f1": float(getattr(report, "f1", 0.0) or 0.0),
+        "precision": float(getattr(report, "sub_precision", 0.0) or 0.0),
+        "recall": float(getattr(report, "sub_recall", 0.0) or 0.0),
+        "n_gt": int(getattr(report, "n_gt", 0) or 0),
+        "n_pred": int(getattr(report, "n_pred", 0) or 0),
+        "n_matched": int(getattr(report, "matched", 0) or 0),
+        "n_hallucinations": int(getattr(report, "hallucinations", 0) or 0),
+        "technique_acc": float(getattr(report, "technique_acc", 0.0) or 0.0),
+        "submitter_acc": float(getattr(report, "submitter_acc", 0.0) or 0.0),
+        "timestamp_mae": float(getattr(report, "timestamp_mae", 0.0) or 0.0),
+    }
     (out_dir / "spin.json").write_text(json.dumps(meta, indent=2))
     return meta
