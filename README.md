@@ -2,30 +2,43 @@
 
 AI-powered fight-video analysis and live coaching app.
 
-> ## Hackathon submission — MuBit prompt-optimization flywheel
+> # 🥋 Hackathon submission — MuBit prompt-optimization flywheel
 >
-> The submitted track is a **self-improving prompt loop** that uses MuBit
-> as a versioned prompt store + outcome log + LLM-based prompt rewriter.
-> We optimise the **DOMAIN RULES** layer of `VLM-gemini/analyze.py`'s scan
-> prompt — the slab that defines what counts as a finished BJJ submission
-> in training footage.
+> ### 👉 [**Open the visual arc report**](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/arc_report_handtuned.html) · [Source code tour](./flywheel/) · [Results explained](./flywheel/RESULTS.md)
 >
-> **Headline result on the `ryan-thomas` 6-min sparring video:**
-> F1 climbs **57% → 77% → 50% → 100%** across 4 prompt versions, ending
-> at perfect precision/recall (5/5 matched, 0 hallucinations) with
-> 2.4s timestamp MAE.
+> A **self-improving prompt loop** that uses MuBit as a versioned prompt
+> store + outcome log + LLM-based prompt rewriter. We optimise the
+> **DOMAIN RULES** layer of `VLM-gemini/analyze.py`'s BJJ submission
+> detector. Each iteration: run the pipeline → score against ground
+> truth → record per-event outcomes to MuBit → ask MuBit's optimizer for
+> a better prompt → activate it → run again.
 >
-> | Where to look | What it is |
-> |---------------|------------|
-> | [`flywheel/RESULTS.md`](./flywheel/RESULTS.md) | **Start here.** Tour of every result artifact, with explanation. |
-> | [`flywheel/outputs/arc_report_handtuned.html`](./flywheel/outputs/arc_report_handtuned.html) | Self-contained HTML — open in a browser to see the arc, prompt diffs, optimizer rationales, per-event TP/FP/FN. |
-> | [`flywheel/outputs/loop_arc_handtuned.json`](./flywheel/outputs/loop_arc_handtuned.json) | Raw per-iteration metrics that back the HTML. |
-> | [`flywheel/outputs/runs/verify:video/`](./flywheel/outputs/runs/verify:video/) | Per-prompt-version snapshots: prompt text, predictions, eval scores. |
-> | [`flywheel/`](./flywheel/) source | All glue code. `mubit_client.py` is the only file that touches the SDK. |
+> ### Headline arc (4 iterations on the `ryan-thomas` 6-min sparring video)
 >
-> Reproduce with `python -m flywheel.cli loop --iterations 4` (after
-> `flywheel.cli setup`). See [`flywheel/README.md`](./flywheel/README.md)
-> for the full how-it-works.
+> | Iter | F1 | Recall | Precision | Matched | Halls | Prompt version |
+> |------|----|--------|-----------|---------|-------|----------------|
+> | v1 (seed)         |  57% |  80% |  44% | 4/5 | 5 | `pv-ac5575b2-…` |
+> | v2                |  77% | 100% |  62% | 5/5 | 3 | `pv-b535d177-…` |
+> | v3 *(regression)* |  50% |  60% |  43% | 3/5 | 4 | `pv-853f6c04-…` |
+> | **v4 (perfect)**  | **100%** | **100%** | **100%** | **5/5** | **0** | `pv-377be9c6-…` |
+>
+> Same fight, same `analyze.py`, same Gemini model. The only thing that
+> changes between rows is the rules block MuBit owns. At v4: timestamp
+> MAE **2.4s**, submitter attribution **80%** (4/5).
+>
+> ### Where everything lives
+>
+> | Where | What it is |
+> |-------|------------|
+> | [📊 **arc_report_handtuned.html** (rendered)](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/arc_report_handtuned.html) | Self-contained HTML — full arc, prompt diffs, optimizer rationales, per-event TP/FP/FN |
+> | [`flywheel/RESULTS.md`](./flywheel/RESULTS.md) | Plain-text tour of every result artifact |
+> | [`flywheel/outputs/loop_arc_handtuned.json`](./flywheel/outputs/loop_arc_handtuned.json) | Raw per-iteration metrics |
+> | [`flywheel/outputs/runs/verify:video/`](./flywheel/outputs/runs/verify:video/) | Per-prompt-version receipts: prompt text, predictions, eval scores |
+> | [`flywheel/mubit_client.py`](./flywheel/mubit_client.py) | The only file that imports the MuBit SDK (full integration in 160 lines) |
+> | [`flywheel/README.md`](./flywheel/README.md) | How the flywheel works end-to-end |
+>
+> Reproduce: `python -m flywheel.cli loop --iterations 4` (after
+> `flywheel.cli setup`). See [`flywheel/README.md`](./flywheel/README.md).
 
 ---
 

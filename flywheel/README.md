@@ -2,12 +2,15 @@
 
 A self-improving prompt loop. Spin the wheel, the prompt gets better.
 
-> **Hackathon judges, start here:** [`RESULTS.md`](./RESULTS.md) — every
-> artifact, what it means, where it lives. The headline visual is
+> **Hackathon judges, start here:**
+> 👉 [**Visual arc report (rendered HTML)**](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/arc_report_handtuned.html)
+> · [`RESULTS.md`](./RESULTS.md) (plain-text tour of every artifact)
+>
+> The visual report shows F1 climbing **57% → 77% → 50% → 100%** across
+> 4 prompt versions on the same fight, with prompt diffs and the
+> optimizer's rationale at every step. The local file is at
 > [`outputs/arc_report_handtuned.html`](./outputs/arc_report_handtuned.html)
-> (open in a browser); it shows F1 climbing **57% → 77% → 50% → 100%**
-> across 4 prompt versions on the same fight, with prompt diffs and the
-> optimizer's rationale at every step.
+> if you'd rather clone and `open` it.
 
 ## Results at a glance
 

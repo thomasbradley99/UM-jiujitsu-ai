@@ -12,9 +12,12 @@ submission timestamps with the existing `VLM-gemini/eval/` module. Then
 we activate the new version and spin again. Same fight, smarter rules,
 F1 climbs.
 
-**Open this in a browser:**
+**👉 [Open the rendered visual arc report (htmlpreview)](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/arc_report_handtuned.html)**
+
+*Self-contained — side-by-side iterations, prompt diffs, optimizer
+rationales, per-event outcomes. The file lives at
 [`flywheel/outputs/arc_report_handtuned.html`](./outputs/arc_report_handtuned.html)
-*(self-contained — side-by-side, prompt diffs, optimizer rationales, per-event outcomes)*
+if you'd rather clone and `open` it.*
 
 | Iter | F1 | Recall | Precision | Matched | Halls | Prompt version |
 |------|----|--------|-----------|---------|-------|----------------|
