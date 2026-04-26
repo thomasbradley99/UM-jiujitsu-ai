@@ -1,0 +1,17 @@
+{
+  "video": "ryan-thomas",
+  "video_file": "video.mov",
+  "duration_sec": 370,
+  "description": "Ryan vs Thomas rolling session. BALD dominates and finishes 5 submissions across 6 minutes.",
+  "fighters": {
+    "BALD":    { "visual": "bald, black rashguard" },
+    "STRIPED": { "visual": "striped rashguard with green stripe" }
+  },
+  "submissions": [
+    { "timestamp": 68,  "technique": "armbar", "submitter": "BALD", "submittee": "STRIPED", "notes": "1:08 - BALD armbars STRIPED" },
+    { "timestamp": 155, "technique": "armbar", "submitter": "BALD", "submittee": "STRIPED", "notes": "2:35 - BALD armbars STRIPED" },
+    { "timestamp": 185, "technique": "rnc",    "submitter": "BALD", "submittee": "STRIPED", "notes": "3:05 - BALD chokes STRIPED (rear naked choke)" },
+    { "timestamp": 267, "technique": "armbar", "submitter": "BALD", "submittee": "STRIPED", "notes": "4:27 - BALD armbars STRIPED" },
+    { "timestamp": 318, "technique": "rnc",    "submitter": "BALD", "submittee": "STRIPED", "notes": "5:18 - BALD chokes STRIPED (rear naked choke)" }
+  ]
+}

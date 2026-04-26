@@ -7,8 +7,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Analysis runs
+# Analysis runs (scratch). Keep website/data/runs/ — it's the curated bundle.
 runs/
+!website/data/runs/
 
 # Test / sample videos kept locally only
 *.mp4

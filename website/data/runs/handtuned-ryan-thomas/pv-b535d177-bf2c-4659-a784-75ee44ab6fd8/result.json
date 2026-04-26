@@ -1,0 +1,440 @@
+{
+  "video": "video.mov",
+  "duration_sec": 370.985,
+  "fighters": {
+    "BALD MUSCULAR MAN": {
+      "visual": "A muscular bald man with facial stubble wearing a dark rashguard that often features white lettering on the sleeves and black shorts."
+    },
+    "STRIPED RASHGUARD": {
+      "visual": "An athletic man with dark curly hair wearing a green and white horizontally striped rashguard and dark shorts."
+    }
+  },
+  "submissions": [
+    {
+      "timestamp": 52.0,
+      "technique": "triangle",
+      "submitter": "BALD MUSCULAR MAN",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The bald muscular man taps on his partner's leg while caught in a triangle choke, leading to an immediate reset and fist bump.",
+      "cluster_size": 3,
+      "window_starts": [
+        15.0,
+        30.0,
+        45.0
+      ]
+    },
+    {
+      "timestamp": 73.0,
+      "technique": "other",
+      "submitter": "STRIPED RASHGUARD",
+      "submittee": "BALD MUSCULAR MAN",
+      "confidence": "medium",
+      "reasoning": "The pair stops grappling and separates for a reset at 13 seconds, with the athlete in the striped rashguard holding the top position just prior.",
+      "cluster_size": 1,
+      "window_starts": [
+        60.0
+      ]
+    },
+    {
+      "timestamp": 104.0,
+      "technique": "other",
+      "submitter": "STRIPED RASHGUARD",
+      "submittee": "BALD MUSCULAR MAN",
+      "confidence": "high",
+      "reasoning": "The athletes stop their interaction and perform a fist-bump reset at 11 seconds, with the STRIPED RASHGUARD having been the one applying pressure from a standing passing position just before the reset.",
+      "cluster_size": 2,
+      "window_starts": [
+        90.0,
+        75.0
+      ]
+    },
+    {
+      "timestamp": 154.0,
+      "technique": "other",
+      "submitter": "BALD MUSCULAR MAN",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "STRIPED RASHGUARD clearly taps the mat with his right hand while BALD MUSCULAR MAN is in a dominant position during a scramble, leading to a reset and fist bump.",
+      "cluster_size": 2,
+      "window_starts": [
+        120.0,
+        135.0
+      ]
+    },
+    {
+      "timestamp": 188.0,
+      "technique": "other",
+      "submitter": "BALD MUSCULAR MAN",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The pair finishes their roll and separates to stand up and reset at 37 seconds, with the bald man in a dominant top position just before the break.",
+      "cluster_size": 2,
+      "window_starts": [
+        150.0,
+        180.0
+      ]
+    },
+    {
+      "timestamp": 231.0,
+      "technique": "guillotine",
+      "submitter": "BALD MUSCULAR MAN",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The BALD MUSCULAR MAN taps his hand against the STRIPED RASHGUARD's arm at 31 seconds while caught in a front headlock, leading to an immediate reset.",
+      "cluster_size": 3,
+      "window_starts": [
+        195.0,
+        210.0,
+        225.0
+      ]
+    },
+    {
+      "timestamp": 271.0,
+      "technique": "other",
+      "submitter": "BALD MUSCULAR MAN",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "medium",
+      "reasoning": "The athletes stop their engagement and reset at 31 seconds with the bald muscular man in the dominant top position.",
+      "cluster_size": 1,
+      "window_starts": [
+        240.0
+      ]
+    },
+    {
+      "timestamp": 323.0,
+      "technique": "other",
+      "submitter": "BALD MUSCULAR MAN",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The target pair stops their roll and performs a fist bump reset at 00:08, with the athlete in the striped rashguard holding the more dominant position just prior.",
+      "cluster_size": 3,
+      "window_starts": [
+        300.0,
+        285.0,
+        315.0
+      ]
+    }
+  ],
+  "metadata": {
+    "model": "gemini-3-flash-preview",
+    "window_sec": 40.0,
+    "grid_step": 15.0,
+    "cluster_tau": 20.0,
+    "workers": 12,
+    "n_windows": 25,
+    "n_yes_windows": 17,
+    "stage1_elapsed_sec": 117.6,
+    "total_elapsed_sec": 152.1,
+    "domain_rules_source": "custom",
+    "all_window_rows": [
+      {
+        "start": 0.0,
+        "end": 40.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The two athletes engage in continuous grappling throughout the entire 40-second clip without any tap, verbal yield, or reset occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 0.0
+      },
+      {
+        "start": 15.0,
+        "end": 55.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "triangle",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD MUSCULAR MAN",
+        "confidence": "high",
+        "reasoning": "The bald muscular man taps on his partner's leg while caught in a triangle choke, leading to an immediate reset and fist bump.",
+        "tap_offset_sec": 18.0,
+        "absolute_timestamp": 33.0
+      },
+      {
+        "start": 30.0,
+        "end": 70.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The bald muscular man was in a dominant top position applying heavy pressure until the pair stopped and reset with a fist-bump around 27 seconds.",
+        "tap_offset_sec": 22.0,
+        "absolute_timestamp": 52.0
+      },
+      {
+        "start": 45.0,
+        "end": 85.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "armbar",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The bald man transitions into an armbar from the top position, leading to a reset where both athletes stand up and acknowledge the finish.",
+        "tap_offset_sec": 26.0,
+        "absolute_timestamp": 71.0
+      },
+      {
+        "start": 60.0,
+        "end": 100.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD MUSCULAR MAN",
+        "confidence": "medium",
+        "reasoning": "The pair stops grappling and separates for a reset at 13 seconds, with the athlete in the striped rashguard holding the top position just prior.",
+        "tap_offset_sec": 13.0,
+        "absolute_timestamp": 73.0
+      },
+      {
+        "start": 75.0,
+        "end": 115.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The pair resets with a fist bump at 29 seconds immediately after the bald muscular man secures a dominant leg entanglement and attack.",
+        "tap_offset_sec": 29.0,
+        "absolute_timestamp": 104.0
+      },
+      {
+        "start": 90.0,
+        "end": 130.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD MUSCULAR MAN",
+        "confidence": "high",
+        "reasoning": "The athletes stop their interaction and perform a fist-bump reset at 11 seconds, with the STRIPED RASHGUARD having been the one applying pressure from a standing passing position just before the reset.",
+        "tap_offset_sec": 11.0,
+        "absolute_timestamp": 101.0
+      },
+      {
+        "start": 105.0,
+        "end": 145.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in continuous grappling throughout the entire clip, with a brief scramble-induced separation at 00:27 that does not constitute a submission or a round-ending reset.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 105.0
+      },
+      {
+        "start": 120.0,
+        "end": 160.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The BALD MUSCULAR MAN achieves a dominant top position and the pair resets at 34 seconds, which is a valid proxy for a submission in a training context.",
+        "tap_offset_sec": 34.0,
+        "absolute_timestamp": 154.0
+      },
+      {
+        "start": 135.0,
+        "end": 175.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "STRIPED RASHGUARD clearly taps the mat with his right hand while BALD MUSCULAR MAN is in a dominant position during a scramble, leading to a reset and fist bump.",
+        "tap_offset_sec": 19.0,
+        "absolute_timestamp": 154.0
+      },
+      {
+        "start": 150.0,
+        "end": 190.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The pair finishes their roll and separates to stand up and reset at 37 seconds, with the bald man in a dominant top position just before the break.",
+        "tap_offset_sec": 37.0,
+        "absolute_timestamp": 187.0
+      },
+      {
+        "start": 165.0,
+        "end": 205.0,
+        "duration": 40.0,
+        "error": "Command '['ffmpeg', '-ss', '165.00', '-i', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/VLM-gemini/input-data/ryan-thomas/video.mov', '-t', '40.00', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-an', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/flywheel/outputs/runs/verify:video/pv-b535d177-bf2c-4659-a784-75ee44ab6fd8/clips/win_0165s_40s.mp4', '-loglevel', 'error', '-y']' died with <Signals.SIGABRT: 6>.",
+        "is_submission": false
+      },
+      {
+        "start": 180.0,
+        "end": 220.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD MUSCULAR MAN",
+        "confidence": "medium",
+        "reasoning": "The pair concludes a sequence and resets to a standing position at 8 seconds, with the Striped Rashguard athlete having held a dominant attacking position on top just before the separation.",
+        "tap_offset_sec": 8.0,
+        "absolute_timestamp": 188.0
+      },
+      {
+        "start": 195.0,
+        "end": 235.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD MUSCULAR MAN",
+        "confidence": "high",
+        "reasoning": "The BALD MUSCULAR MAN taps his hand against the STRIPED RASHGUARD's arm at 31 seconds while caught in a front headlock, leading to an immediate reset.",
+        "tap_offset_sec": 31.0,
+        "absolute_timestamp": 226.0
+      },
+      {
+        "start": 210.0,
+        "end": 250.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The BALD MUSCULAR MAN secures a front headlock/guillotine position during a scramble and STRIPED RASHGUARD taps at 21 seconds before they reset.",
+        "tap_offset_sec": 21.0,
+        "absolute_timestamp": 231.0
+      },
+      {
+        "start": 225.0,
+        "end": 265.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "STRIPED RASHGUARD taps the mat while BALD MUSCULAR MAN controls his legs from a standing position, followed by a clear reset and fist-bump.",
+        "tap_offset_sec": 11.0,
+        "absolute_timestamp": 236.0
+      },
+      {
+        "start": 240.0,
+        "end": 280.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The athletes stop their engagement and reset at 31 seconds with the bald muscular man in the dominant top position.",
+        "tap_offset_sec": 31.0,
+        "absolute_timestamp": 271.0
+      },
+      {
+        "start": 255.0,
+        "end": 295.0,
+        "duration": 40.0,
+        "error": "Command '['ffmpeg', '-ss', '255.00', '-i', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/VLM-gemini/input-data/ryan-thomas/video.mov', '-t', '40.00', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-an', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/flywheel/outputs/runs/verify:video/pv-b535d177-bf2c-4659-a784-75ee44ab6fd8/clips/win_0255s_40s.mp4', '-loglevel', 'error', '-y']' died with <Signals.SIGABRT: 6>.",
+        "is_submission": false
+      },
+      {
+        "start": 270.0,
+        "end": 310.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair remains in a resting or conversational state in the background and does not engage in active grappling throughout the duration of the clip.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 270.0
+      },
+      {
+        "start": 285.0,
+        "end": 325.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The target pair stops their roll and resets with a handshake at the end of the clip, with the bald muscular man having held top position.",
+        "tap_offset_sec": 38.0,
+        "absolute_timestamp": 323.0
+      },
+      {
+        "start": 300.0,
+        "end": 340.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "In the background, the target pair stops their roll while the bald man is in a dominant top position, followed by a clear reset and fist bump at approximately 17-21 seconds.",
+        "tap_offset_sec": 17.0,
+        "absolute_timestamp": 317.0
+      },
+      {
+        "start": 315.0,
+        "end": 355.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD MUSCULAR MAN",
+        "confidence": "high",
+        "reasoning": "The target pair stops their roll and performs a fist bump reset at 00:08, with the athlete in the striped rashguard holding the more dominant position just prior.",
+        "tap_offset_sec": 8.0,
+        "absolute_timestamp": 323.0
+      },
+      {
+        "start": 330.0,
+        "end": 370.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target athletes are not seen rolling with each other during this clip; the bald muscular man enters the frame only at the end while the striped rashguard athlete is in the background.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 330.0
+      },
+      {
+        "start": 345.0,
+        "end": 370.985,
+        "duration": 25.985000000000014,
+        "error": "Command '['ffmpeg', '-ss', '345.00', '-i', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/VLM-gemini/input-data/ryan-thomas/video.mov', '-t', '25.99', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-an', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/flywheel/outputs/runs/verify:video/pv-b535d177-bf2c-4659-a784-75ee44ab6fd8/clips/win_0345s_25s.mp4', '-loglevel', 'error', '-y']' died with <Signals.SIGABRT: 6>.",
+        "is_submission": false
+      },
+      {
+        "start": 360.0,
+        "end": 370.985,
+        "duration": 10.985000000000014,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair is not shown actively grappling in this clip; the bald muscular man is seen sitting down near the end while the striped rashguard athlete is not visible.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 360.0
+      }
+    ]
+  }
+}

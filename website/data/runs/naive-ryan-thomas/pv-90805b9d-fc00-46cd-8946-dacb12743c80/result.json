@@ -1,0 +1,421 @@
+{
+  "video": "video.mov",
+  "duration_sec": 370.985,
+  "fighters": {
+    "GREEN STRIPED RASHGUARD": {
+      "visual": "Lean man with dark curly hair wearing a green and white horizontal striped rashguard and black shorts."
+    },
+    "BALD BLACK RASHGUARD": {
+      "visual": "Muscular bald man with short facial hair wearing a dark black or green rashguard and black shorts."
+    }
+  },
+  "submissions": [
+    {
+      "timestamp": 26.0,
+      "technique": "armbar",
+      "submitter": "BALD BLACK RASHGUARD",
+      "submittee": "GREEN STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "BALD BLACK RASHGUARD catches an armbar from the bottom guard, causing GREEN STRIPED RASHGUARD to tap at 26 seconds.",
+      "cluster_size": 1,
+      "window_starts": [
+        0.0
+      ]
+    },
+    {
+      "timestamp": 55.0,
+      "technique": "arm_triangle",
+      "submitter": "BALD BLACK RASHGUARD",
+      "submittee": "GREEN STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The bald man in the black rashguard secures an arm-triangle choke from top control, leading the man in the green striped rashguard to tap at the 36-second mark.",
+      "cluster_size": 3,
+      "window_starts": [
+        15.0,
+        30.0,
+        60.0
+      ]
+    },
+    {
+      "timestamp": 101.0,
+      "technique": "other",
+      "submitter": "BALD BLACK RASHGUARD",
+      "submittee": "GREEN STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The bald man in the dark rashguard isolates the green-striped athlete's leg and sits back for a straight ankle lock, resulting in a clear tap at 26 seconds.",
+      "cluster_size": 1,
+      "window_starts": [
+        75.0
+      ]
+    },
+    {
+      "timestamp": 184.0,
+      "technique": "guillotine",
+      "submitter": "BALD BLACK RASHGUARD",
+      "submittee": "GREEN STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "BALD BLACK RASHGUARD secures a front headlock/guillotine from a sprawl position, leading GREEN STRIPED RASHGUARD to tap on his arm at 19 seconds.",
+      "cluster_size": 1,
+      "window_starts": [
+        165.0
+      ]
+    },
+    {
+      "timestamp": 228.0,
+      "technique": "guillotine",
+      "submitter": "GREEN STRIPED RASHGUARD",
+      "submittee": "BALD BLACK RASHGUARD",
+      "confidence": "high",
+      "reasoning": "GREEN STRIPED RASHGUARD applies a guillotine choke from the front headlock position as BALD BLACK RASHGUARD attempts to move, forcing a clear tap on the leg at 33 seconds.",
+      "cluster_size": 1,
+      "window_starts": [
+        195.0
+      ]
+    },
+    {
+      "timestamp": 313.0,
+      "technique": "other",
+      "submitter": "GREEN STRIPED RASHGUARD",
+      "submittee": "BALD BLACK RASHGUARD",
+      "confidence": "medium",
+      "reasoning": "The green striped rashguard athlete maintains a dominant top position on the bald athlete in the background, leading to a tap at 13 seconds.",
+      "cluster_size": 1,
+      "window_starts": [
+        300.0
+      ]
+    }
+  ],
+  "metadata": {
+    "model": "gemini-3-flash-preview",
+    "window_sec": 40.0,
+    "grid_step": 15.0,
+    "cluster_tau": 20.0,
+    "workers": 12,
+    "n_windows": 25,
+    "n_yes_windows": 8,
+    "stage1_elapsed_sec": 109.8,
+    "total_elapsed_sec": 134.2,
+    "domain_rules_source": "custom",
+    "all_window_rows": [
+      {
+        "start": 0.0,
+        "end": 40.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "armbar",
+        "submitter": "BALD BLACK RASHGUARD",
+        "submittee": "GREEN STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD BLACK RASHGUARD catches an armbar from the bottom guard, causing GREEN STRIPED RASHGUARD to tap at 26 seconds.",
+        "tap_offset_sec": 26.0,
+        "absolute_timestamp": 26.0
+      },
+      {
+        "start": 15.0,
+        "end": 55.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "arm_triangle",
+        "submitter": "BALD BLACK RASHGUARD",
+        "submittee": "GREEN STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The bald man in the black rashguard secures an arm-triangle choke from top control, leading the man in the green striped rashguard to tap at the 36-second mark.",
+        "tap_offset_sec": 36.0,
+        "absolute_timestamp": 51.0
+      },
+      {
+        "start": 30.0,
+        "end": 70.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD BLACK RASHGUARD",
+        "submittee": "GREEN STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD BLACK RASHGUARD applies a guillotine from the top position, and GREEN STRIPED RASHGUARD taps on his back at 25 seconds.",
+        "tap_offset_sec": 25.0,
+        "absolute_timestamp": 55.0
+      },
+      {
+        "start": 45.0,
+        "end": 85.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The roll between the bald man in the black rashguard and the man in the green striped rashguard concludes with a neutral reset and a fist-bump rather than a submission tap.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 45.0
+      },
+      {
+        "start": 60.0,
+        "end": 100.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "armbar",
+        "submitter": "BALD BLACK RASHGUARD",
+        "submittee": "GREEN STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD BLACK RASHGUARD transitions from a top control position into a straight armbar, and GREEN STRIPED RASHGUARD taps clearly on his opponent's leg at the 10-second mark.",
+        "tap_offset_sec": 10.0,
+        "absolute_timestamp": 70.0
+      },
+      {
+        "start": 75.0,
+        "end": 115.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD BLACK RASHGUARD",
+        "submittee": "GREEN STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The bald man in the dark rashguard isolates the green-striped athlete's leg and sits back for a straight ankle lock, resulting in a clear tap at 26 seconds.",
+        "tap_offset_sec": 26.0,
+        "absolute_timestamp": 101.0
+      },
+      {
+        "start": 90.0,
+        "end": 130.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in positional drilling and leg lock entries, but no submission tap or finish occurs during the footage.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 90.0
+      },
+      {
+        "start": 105.0,
+        "end": 145.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The athletes are engaged in positional sparring and resets, with no submission or tap occurring within the timeframe.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 105.0
+      },
+      {
+        "start": 120.0,
+        "end": 160.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The two athletes engage in active positional rolling and leg-lock entries, but neither athlete taps or yields to a completed submission during the clip.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 120.0
+      },
+      {
+        "start": 135.0,
+        "end": 175.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in positional grappling and scrambles throughout the clip without any submission being finalized or a tap occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 135.0
+      },
+      {
+        "start": 150.0,
+        "end": 190.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in positional grappling and resets several times, but no submission or tap occurs during the clip.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 150.0
+      },
+      {
+        "start": 165.0,
+        "end": 205.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD BLACK RASHGUARD",
+        "submittee": "GREEN STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD BLACK RASHGUARD secures a front headlock/guillotine from a sprawl position, leading GREEN STRIPED RASHGUARD to tap on his arm at 19 seconds.",
+        "tap_offset_sec": 19.0,
+        "absolute_timestamp": 184.0
+      },
+      {
+        "start": 180.0,
+        "end": 220.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in several scrambles and a reset throughout the clip, but no submission technique is fully secured and no tap occurs.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 180.0
+      },
+      {
+        "start": 195.0,
+        "end": 235.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "GREEN STRIPED RASHGUARD",
+        "submittee": "BALD BLACK RASHGUARD",
+        "confidence": "high",
+        "reasoning": "GREEN STRIPED RASHGUARD applies a guillotine choke from the front headlock position as BALD BLACK RASHGUARD attempts to move, forcing a clear tap on the leg at 33 seconds.",
+        "tap_offset_sec": 33.0,
+        "absolute_timestamp": 228.0
+      },
+      {
+        "start": 210.0,
+        "end": 250.0,
+        "duration": 40.0,
+        "error": "Command '['ffmpeg', '-ss', '210.00', '-i', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/VLM-gemini/input-data/ryan-thomas/video.mov', '-t', '40.00', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-an', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/flywheel/outputs/runs/verify:video/pv-90805b9d-fc00-46cd-8946-dacb12743c80/clips/win_0210s_40s.mp4', '-loglevel', 'error', '-y']' died with <Signals.SIGABRT: 6>.",
+        "is_submission": false
+      },
+      {
+        "start": 225.0,
+        "end": 265.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The two athletes engage in active guard passing and positional transitions throughout the entire clip without any submission or tap occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 225.0
+      },
+      {
+        "start": 240.0,
+        "end": 280.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in positional sparring throughout the clip and eventually resets with a fist-bump at 00:33 without a submission occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 240.0
+      },
+      {
+        "start": 255.0,
+        "end": 295.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair is seen grappling in the background throughout the clip, but they remain in a neutral or transitional state without any submission being finished.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 255.0
+      },
+      {
+        "start": 270.0,
+        "end": 310.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair (green striped rashguard and bald black rashguard) grapples continuously in the background for the entire duration without a submission or reset.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 270.0
+      },
+      {
+        "start": 285.0,
+        "end": 325.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair in the background stops rolling around 00:13 and eventually fist-bumps at 00:37 without a visible submission tap occurring during the clip.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 285.0
+      },
+      {
+        "start": 300.0,
+        "end": 340.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "GREEN STRIPED RASHGUARD",
+        "submittee": "BALD BLACK RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The green striped rashguard athlete maintains a dominant top position on the bald athlete in the background, leading to a tap at 13 seconds.",
+        "tap_offset_sec": 13.0,
+        "absolute_timestamp": 313.0
+      },
+      {
+        "start": 315.0,
+        "end": 355.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair is seen grappling in the background before separating and fist-bumping at approximately 7 seconds, indicating a neutral reset rather than a submission.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 315.0
+      },
+      {
+        "start": 330.0,
+        "end": 370.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target athletes are seen rolling in the background, but they separate and fist-bump at approximately 29 seconds without a visible submission or tap occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 330.0
+      },
+      {
+        "start": 345.0,
+        "end": 370.985,
+        "duration": 25.985000000000014,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair only enters the frame and begins to prepare for their roll in the final seconds of the clip, with no actual engagement or submission taking place.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 345.0
+      },
+      {
+        "start": 360.0,
+        "end": 370.985,
+        "duration": 10.985000000000014,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair is seen entering the mat area and sitting down, but they do not engage in a roll or reach a submission finish within the video segment.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 360.0
+      }
+    ]
+  }
+}

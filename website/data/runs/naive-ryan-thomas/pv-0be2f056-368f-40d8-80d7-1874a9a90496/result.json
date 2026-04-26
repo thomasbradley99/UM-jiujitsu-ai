@@ -1,0 +1,410 @@
+{
+  "video": "video.mov",
+  "duration_sec": 370.985,
+  "fighters": {
+    "STRIPED RASHGUARD": {
+      "visual": "An athletic fighter with dark curly hair wearing a green and white horizontally striped rashguard often featuring the number 10 or JITSU text."
+    },
+    "BALD MUSCULAR": {
+      "visual": "A muscular, bald fighter wearing a dark green or black rashguard that frequently features white markings or text on the shoulders."
+    }
+  },
+  "submissions": [
+    {
+      "timestamp": 53.0,
+      "technique": "guillotine",
+      "submitter": "BALD MUSCULAR",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The bald fighter secures a front headlock/guillotine grip as the fighter in the striped rashguard attempts to sit up, leading to a tap at 19 seconds.",
+      "cluster_size": 4,
+      "window_starts": [
+        30.0,
+        15.0,
+        45.0,
+        60.0
+      ]
+    },
+    {
+      "timestamp": 147.0,
+      "technique": "other",
+      "submitter": "BALD MUSCULAR",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "BALD MUSCULAR applies pressure from a north-south position, causing STRIPED RASHGUARD to tap with his right hand.",
+      "cluster_size": 1,
+      "window_starts": [
+        135.0
+      ]
+    },
+    {
+      "timestamp": 185.0,
+      "technique": "rnc",
+      "submitter": "BALD MUSCULAR",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "BALD MUSCULAR secures back control and applies a rear naked choke, resulting in a clear tap from STRIPED RASHGUARD at the 20-second mark.",
+      "cluster_size": 1,
+      "window_starts": [
+        165.0
+      ]
+    },
+    {
+      "timestamp": 214.0,
+      "technique": "triangle",
+      "submitter": "STRIPED RASHGUARD",
+      "submittee": "BALD MUSCULAR",
+      "confidence": "high",
+      "reasoning": "STRIPED RASHGUARD locks a triangle choke from his back during a scramble and BALD MUSCULAR taps on the mat.",
+      "cluster_size": 1,
+      "window_starts": [
+        180.0
+      ]
+    },
+    {
+      "timestamp": 264.0,
+      "technique": "rnc",
+      "submitter": "BALD MUSCULAR",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "BALD MUSCULAR controls the back of STRIPED RASHGUARD and applies a rear naked choke, leading to a tap at 24 seconds.",
+      "cluster_size": 1,
+      "window_starts": [
+        240.0
+      ]
+    }
+  ],
+  "metadata": {
+    "model": "gemini-3-flash-preview",
+    "window_sec": 40.0,
+    "grid_step": 15.0,
+    "cluster_tau": 20.0,
+    "workers": 12,
+    "n_windows": 25,
+    "n_yes_windows": 8,
+    "stage1_elapsed_sec": 105.6,
+    "total_elapsed_sec": 130.1,
+    "domain_rules_source": "custom",
+    "all_window_rows": [
+      {
+        "start": 0.0,
+        "end": 40.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The two athletes are actively grappling throughout the clip without any visible tap or submission finish.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 0.0
+      },
+      {
+        "start": 15.0,
+        "end": 55.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD MUSCULAR",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The bald fighter locks in a guillotine choke from the bottom position, and the fighter in the striped rashguard taps on his opponent's back.",
+        "tap_offset_sec": 37.0,
+        "absolute_timestamp": 52.0
+      },
+      {
+        "start": 30.0,
+        "end": 70.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD MUSCULAR",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The bald fighter secures a front headlock/guillotine grip as the fighter in the striped rashguard attempts to sit up, leading to a tap at 19 seconds.",
+        "tap_offset_sec": 19.0,
+        "absolute_timestamp": 49.0
+      },
+      {
+        "start": 45.0,
+        "end": 85.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "armbar",
+        "submitter": "BALD MUSCULAR",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD MUSCULAR transitions from a dominant top position to an armbar, forcing STRIPED RASHGUARD to tap on his leg at 8 seconds.",
+        "tap_offset_sec": 8.0,
+        "absolute_timestamp": 53.0
+      },
+      {
+        "start": 60.0,
+        "end": 100.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "armbar",
+        "submitter": "BALD MUSCULAR",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD MUSCULAR transitions from a dominant top position into a seated armbar, forcing a clear tap from STRIPED RASHGUARD at the 9-second mark.",
+        "tap_offset_sec": 9.0,
+        "absolute_timestamp": 69.0
+      },
+      {
+        "start": 75.0,
+        "end": 115.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The two athletes engage in guard work and transitions throughout the clip without any submission being completed or a tap occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 75.0
+      },
+      {
+        "start": 90.0,
+        "end": 130.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The two athletes engage in active guard passing and retention for the duration of the clip without any submission being locked in or a tap occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 90.0
+      },
+      {
+        "start": 105.0,
+        "end": 145.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The two athletes engage in active positional grappling but no submission finish or tap is observed throughout the clip.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 105.0
+      },
+      {
+        "start": 120.0,
+        "end": 160.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The two athletes engage in continuous positional transitions and scrambles throughout the clip without any visible tap or submission finish.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 120.0
+      },
+      {
+        "start": 135.0,
+        "end": 175.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD MUSCULAR",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD MUSCULAR applies pressure from a north-south position, causing STRIPED RASHGUARD to tap with his right hand.",
+        "tap_offset_sec": 12.0,
+        "absolute_timestamp": 147.0
+      },
+      {
+        "start": 150.0,
+        "end": 190.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The athletes engage in positional grappling and scrambles but the clip ends with a neutral separation and no submission tap is observed.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 150.0
+      },
+      {
+        "start": 165.0,
+        "end": 205.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "rnc",
+        "submitter": "BALD MUSCULAR",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD MUSCULAR secures back control and applies a rear naked choke, resulting in a clear tap from STRIPED RASHGUARD at the 20-second mark.",
+        "tap_offset_sec": 20.0,
+        "absolute_timestamp": 185.0
+      },
+      {
+        "start": 180.0,
+        "end": 220.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "triangle",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD MUSCULAR",
+        "confidence": "high",
+        "reasoning": "STRIPED RASHGUARD locks a triangle choke from his back during a scramble and BALD MUSCULAR taps on the mat.",
+        "tap_offset_sec": 34.0,
+        "absolute_timestamp": 214.0
+      },
+      {
+        "start": 195.0,
+        "end": 235.0,
+        "duration": 40.0,
+        "error": "Command '['ffmpeg', '-ss', '195.00', '-i', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/VLM-gemini/input-data/ryan-thomas/video.mov', '-t', '40.00', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-an', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/flywheel/outputs/runs/verify:video/pv-0be2f056-368f-40d8-80d7-1874a9a90496/clips/win_0195s_40s.mp4', '-loglevel', 'error', '-y']' died with <Signals.SIGABRT: 6>.",
+        "is_submission": false
+      },
+      {
+        "start": 210.0,
+        "end": 250.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in continuous positional grappling and transitions throughout the clip without any visible tap or submission finish.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 210.0
+      },
+      {
+        "start": 225.0,
+        "end": 265.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair (Striped Rashguard and Bald Muscular) grapples continuously for the entire clip without any submission or tap occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 225.0
+      },
+      {
+        "start": 240.0,
+        "end": 280.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "rnc",
+        "submitter": "BALD MUSCULAR",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD MUSCULAR controls the back of STRIPED RASHGUARD and applies a rear naked choke, leading to a tap at 24 seconds.",
+        "tap_offset_sec": 24.0,
+        "absolute_timestamp": 264.0
+      },
+      {
+        "start": 255.0,
+        "end": 295.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair (STRIPED RASHGUARD and BALD MUSCULAR) engages in a continuous roll with a brief neutral reset at 28 seconds, but no submission or tap is observed.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 255.0
+      },
+      {
+        "start": 270.0,
+        "end": 310.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair (Striped Rashguard and Bald Muscular) rolls for the duration of the clip, with the Striped Rashguard maintaining top control, but no submission occurs.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 270.0
+      },
+      {
+        "start": 285.0,
+        "end": 325.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair rolls in the background and ends their session with a neutral handshake at approximately 00:37 without any visible submission occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 285.0
+      },
+      {
+        "start": 300.0,
+        "end": 340.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair was seen in the background throughout the clip, but they remained in a neutral or resting state and did not engage in a submission finish.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 300.0
+      },
+      {
+        "start": 315.0,
+        "end": 355.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair is seen grappling in the background and ends their exchange with a handshake around 00:08 without any submission occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 315.0
+      },
+      {
+        "start": 330.0,
+        "end": 370.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair (striped rashguard and bald muscular athlete) are seen rolling in the background, but they reset or end the round without any visible submission or tap occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 330.0
+      },
+      {
+        "start": 345.0,
+        "end": 370.985,
+        "duration": 25.985000000000014,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target athletes are not engaged in live rolling during this clip; instead, they are seen sitting or walking on the mats during a break between rounds.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 345.0
+      },
+      {
+        "start": 360.0,
+        "end": 370.985,
+        "duration": 10.985000000000014,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The two target athletes are entering the mat area and sitting down during a break or preparation period, with no rolling occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 360.0
+      }
+    ]
+  }
+}

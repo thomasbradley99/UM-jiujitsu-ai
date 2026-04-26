@@ -1,0 +1,22 @@
+{
+  "built_at": "2026-04-26T09:35:46.375019+00:00",
+  "games": [
+    "chris-instructor",
+    "ryan-thomas"
+  ],
+  "arcs": [
+    {
+      "id": "handtuned-ryan-thomas",
+      "label": "Hand-tuned arc \u00b7 ryan-thomas",
+      "peak_f1": 1.0
+    },
+    {
+      "id": "naive-ryan-thomas",
+      "label": "Naive seed arc \u00b7 ryan-thomas",
+      "peak_f1": 0.8000000000000002
+    }
+  ],
+  "cross_eval_games": [
+    "chris-instructor"
+  ]
+}

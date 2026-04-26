@@ -1,0 +1,103 @@
+[
+  {
+    "id": "chris-instructor",
+    "duration_sec": 340,
+    "description": "Instructor (dark gi) drills/rolls with Chris (white belt, light gi). Instructor finishes 4 submissions across ~5m40s.",
+    "fighters": {
+      "instructor": {
+        "role": "submitter",
+        "visual": "dark gi, instructor",
+        "ai_descriptor": "DARK GI",
+        "rich_gt_descriptor": "DARK GI"
+      },
+      "chris": {
+        "role": "submittee",
+        "visual": "light/white gi, white belt student",
+        "ai_descriptor": "LIGHT GI",
+        "rich_gt_descriptor": "LIGHT GI"
+      }
+    },
+    "submissions": [
+      {
+        "timestamp": 141,
+        "technique": "rnc",
+        "submitter": "instructor",
+        "submittee": "chris",
+        "notes": "2:21 - Instructor taps Chris with RNC from back control"
+      },
+      {
+        "timestamp": 204,
+        "technique": "americana",
+        "submitter": "instructor",
+        "submittee": "chris",
+        "notes": "3:24 - Instructor taps Chris with Americana from mount"
+      },
+      {
+        "timestamp": 231,
+        "technique": "arm_triangle",
+        "submitter": "instructor",
+        "submittee": "chris",
+        "notes": "3:51 - Instructor taps Chris with arm-triangle head pressure (original GT label: 'triangle/pressure')"
+      },
+      {
+        "timestamp": 291,
+        "technique": "smother",
+        "submitter": "instructor",
+        "submittee": "chris",
+        "notes": "4:51 - Instructor taps Chris with smother from mount"
+      }
+    ],
+    "video_url": "/public/games/chris-instructor/video.mov"
+  },
+  {
+    "id": "ryan-thomas",
+    "duration_sec": 370,
+    "description": "Ryan vs Thomas rolling session. BALD dominates and finishes 5 submissions across 6 minutes.",
+    "fighters": {
+      "BALD": {
+        "visual": "bald, black rashguard"
+      },
+      "STRIPED": {
+        "visual": "striped rashguard with green stripe"
+      }
+    },
+    "submissions": [
+      {
+        "timestamp": 68,
+        "technique": "armbar",
+        "submitter": "BALD",
+        "submittee": "STRIPED",
+        "notes": "1:08 - BALD armbars STRIPED"
+      },
+      {
+        "timestamp": 155,
+        "technique": "armbar",
+        "submitter": "BALD",
+        "submittee": "STRIPED",
+        "notes": "2:35 - BALD armbars STRIPED"
+      },
+      {
+        "timestamp": 185,
+        "technique": "rnc",
+        "submitter": "BALD",
+        "submittee": "STRIPED",
+        "notes": "3:05 - BALD chokes STRIPED (rear naked choke)"
+      },
+      {
+        "timestamp": 267,
+        "technique": "armbar",
+        "submitter": "BALD",
+        "submittee": "STRIPED",
+        "notes": "4:27 - BALD armbars STRIPED"
+      },
+      {
+        "timestamp": 318,
+        "technique": "rnc",
+        "submitter": "BALD",
+        "submittee": "STRIPED",
+        "notes": "5:18 - BALD chokes STRIPED (rear naked choke)"
+      }
+    ],
+    "video_url": "/public/games/ryan-thomas/video.mov"
+  }
+]

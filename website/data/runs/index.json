@@ -1,0 +1,18 @@
+[
+  {
+    "id": "handtuned-ryan-thomas",
+    "label": "Hand-tuned arc \u00b7 ryan-thomas",
+    "video": "ryan-thomas",
+    "model": "gemini-3-flash-preview",
+    "n_iterations": 4,
+    "peak_f1": 1.0
+  },
+  {
+    "id": "naive-ryan-thomas",
+    "label": "Naive seed arc \u00b7 ryan-thomas",
+    "video": "ryan-thomas",
+    "model": "gemini-3-flash-preview",
+    "n_iterations": 6,
+    "peak_f1": 0.8000000000000002
+  }
+]

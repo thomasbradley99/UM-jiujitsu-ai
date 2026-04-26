@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BJJ submission detector — experimental record</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --panel: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --good: #3fb950;
+      --bad: #f85149;
+      --warn: #d29922;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 14px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      padding: 32px 48px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 { margin: 0 0 6px; font-weight: 600; font-size: 20px; }
+    header p { margin: 0; color: var(--muted); }
+    main { max-width: 1200px; margin: 0 auto; padding: 32px 48px; }
+    section { margin-bottom: 48px; }
+    section h2 {
+      font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--muted); font-weight: 500; margin: 0 0 16px;
+    }
+    .grid { display: grid; gap: 12px; }
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+    .card h3 { margin: 0 0 8px; font-size: 14px; font-weight: 600; }
+    .card .meta { color: var(--muted); font-size: 12px; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(88,166,255,0.15);
+      color: var(--accent);
+      margin-right: 6px;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+    th { color: var(--muted); font-weight: 500; font-size: 11px; text-transform: uppercase; }
+    .f1 { font-variant-numeric: tabular-nums; font-weight: 500; }
+    .f1-good { color: var(--good); }
+    .f1-warn { color: var(--warn); }
+    .f1-bad { color: var(--bad); }
+    .pv { font-family: ui-monospace, SFMono-Regular, monospace; color: var(--muted); font-size: 11px; }
+    .video-wrap { background: black; border-radius: 6px; overflow: hidden; max-width: 480px; }
+    .video-wrap video { display: block; width: 100%; }
+    .empty { padding: 24px; color: var(--muted); text-align: center; font-style: italic; }
+    code { font-family: ui-monospace, monospace; background: rgba(110,118,129,0.15); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+    .footer-note {
+      margin-top: 64px; padding: 20px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--muted); font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>BJJ submission detector — experimental record</h1>
+    <p>
+      Read-only data bundle. All metrics, prompts, predictions, and videos live under
+      <code>website/data/</code> and <code>website/public/</code>. Built by
+      <code>website/build.py</code>.
+    </p>
+  </header>
+  <main>
+    <section>
+      <h2>Manifest</h2>
+      <div id="manifest"></div>
+    </section>
+
+    <section>
+      <h2>Games</h2>
+      <div id="games" class="grid grid-2"></div>
+    </section>
+
+    <section>
+      <h2>Flywheel arcs</h2>
+      <div id="arcs"></div>
+    </section>
+
+    <section>
+      <h2>Cross-eval (handtuned arc × games)</h2>
+      <div id="cross"></div>
+    </section>
+
+    <div class="footer-note">
+      <strong>For developers building the real frontend:</strong> see
+      <code>website/SCHEMA.md</code> for JSON shapes and <code>website/README.md</code>
+      for build instructions. This <code>index.html</code> is a minimal scaffold —
+      replace with React / Vue / Next / Astro / whatever.
+    </div>
+  </main>
+
+  <script>
+    const f1class = (v) => v === null || v === undefined ? "" :
+      v >= 0.8 ? "f1-good" : v >= 0.5 ? "f1-warn" : "f1-bad";
+    const pct = (v) => v === null || v === undefined ? "—" : Math.round(v * 100) + "%";
+
+    async function load() {
+      const manifest = await fetch("data/manifest.json").then(r => r.json());
+      document.getElementById("manifest").innerHTML = `
+        <div class="card">
+          <div class="meta">Built ${new Date(manifest.built_at).toLocaleString()}</div>
+          <div style="margin-top:8px">
+            <span class="badge">${manifest.games.length} games</span>
+            <span class="badge">${manifest.arcs.length} arcs</span>
+            <span class="badge">${manifest.cross_eval_games.length} cross-eval games</span>
+          </div>
+        </div>`;
+
+      const games = await fetch("data/games/index.json").then(r => r.json());
+      document.getElementById("games").innerHTML = games.map(g => `
+        <div class="card">
+          <h3>${g.id}</h3>
+          <div class="meta">${g.duration_sec}s · ${g.submissions.length} submissions · ${Object.keys(g.fighters).length} fighters</div>
+          <p style="color:var(--muted);font-size:13px;margin:8px 0">${g.description || ""}</p>
+          ${g.video_url ? `<div class="video-wrap"><video src="${g.video_url.replace(/^\//,'')}" controls preload="metadata"></video></div>` : ""}
+        </div>
+      `).join("");
+
+      const arcs = await fetch("data/runs/index.json").then(r => r.json());
+      const arcDetails = await Promise.all(arcs.map(a =>
+        fetch(`data/runs/${a.id}/index.json`).then(r => r.json())
+      ));
+      document.getElementById("arcs").innerHTML = arcDetails.map((arc, i) => {
+        const summary = arcs[i];
+        return `
+        <div class="card" style="margin-bottom:12px">
+          <h3>${arc.label} <span class="badge">${arc.model}</span></h3>
+          <div class="meta">video <code>${arc.video}</code> · peak F1 <span class="${f1class(summary.peak_f1)}">${pct(summary.peak_f1)}</span></div>
+          <table style="margin-top:12px">
+            <thead><tr><th>iter</th><th>F1</th><th>Recall</th><th>Precision</th><th>Matched</th><th>Halls</th><th>Prompt</th></tr></thead>
+            <tbody>
+              ${arc.iterations.map(it => `
+                <tr>
+                  <td>v${it.iteration}</td>
+                  <td class="f1 ${f1class(it.f1)}">${pct(it.f1)}</td>
+                  <td class="f1">${pct(it.recall)}</td>
+                  <td class="f1">${pct(it.precision)}</td>
+                  <td>${it.n_matched}/${it.n_gt}</td>
+                  <td>${it.n_hallucinations}</td>
+                  <td class="pv">${(it.prompt_version_id || "").slice(0, 18)}…</td>
+                </tr>`).join("")}
+            </tbody>
+          </table>
+        </div>`;
+      }).join("");
+
+      const cross = await fetch("data/cross_eval/index.json").then(r => r.json());
+      document.getElementById("cross").innerHTML = cross.length === 0
+        ? `<div class="empty">No cross-eval data yet</div>`
+        : cross.map(m => `
+        <div class="card" style="margin-bottom:12px">
+          <h3>game: <code>${m.game}</code></h3>
+          <table style="margin-top:8px">
+            <thead><tr><th>prompt</th><th>F1</th><th>Recall</th><th>Precision</th><th>TechAcc</th><th>SubAcc</th><th>Matched</th><th>Halls</th></tr></thead>
+            <tbody>
+              ${m.cells.map(c => `
+                <tr>
+                  <td><strong>${c.label}</strong> <span class="pv">${(c.prompt_version_id || "").slice(0, 14)}…</span></td>
+                  <td class="f1 ${f1class(c.f1)}">${pct(c.f1)}</td>
+                  <td class="f1">${pct(c.recall)}</td>
+                  <td class="f1">${pct(c.precision)}</td>
+                  <td class="f1">${pct(c.technique_acc)}</td>
+                  <td class="f1 ${f1class(c.submitter_acc)}">${pct(c.submitter_acc)}</td>
+                  <td>${c.matched}/${c.n_gt}</td>
+                  <td>${c.hallucinations}</td>
+                </tr>`).join("")}
+            </tbody>
+          </table>
+        </div>`).join("");
+    }
+    load().catch(e => {
+      document.body.insertAdjacentHTML("beforeend",
+        `<pre style="color:var(--bad);padding:24px">Load failed: ${e}</pre>`);
+    });
+  </script>
+</body>
+</html>

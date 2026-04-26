@@ -1,0 +1,82 @@
+{
+  "config": "chris-instructor:v2",
+  "tau": 10.0,
+  "n_gt": 4,
+  "n_pred": 4,
+  "matched": 3,
+  "sub_recall": 0.75,
+  "sub_precision": 0.75,
+  "f1": 0.75,
+  "technique_acc": 0.3333333333333333,
+  "submitter_acc": 0.0,
+  "timestamp_mae": 2.3333333333333335,
+  "hallucinations": 1,
+  "details": [
+    {
+      "gt_t": 204.0,
+      "gt_technique": "americana",
+      "gt_submitter": "instructor",
+      "pred_t": 202.0,
+      "pred_technique": "other",
+      "pred_submitter_raw": "WHITE PURPLE BELT",
+      "pred_submitter_resolved": "chris",
+      "delta_t": -2.0,
+      "technique_correct": false,
+      "submitter_correct": false,
+      "status": "matched"
+    },
+    {
+      "gt_t": 231.0,
+      "gt_technique": "other",
+      "gt_submitter": "instructor",
+      "pred_t": 233.0,
+      "pred_technique": "other",
+      "pred_submitter_raw": "NAVY WHITE BELT",
+      "pred_submitter_resolved": "chris",
+      "delta_t": 2.0,
+      "technique_correct": true,
+      "submitter_correct": false,
+      "status": "matched"
+    },
+    {
+      "gt_t": 291.0,
+      "gt_technique": "smother",
+      "gt_submitter": "instructor",
+      "pred_t": 288.0,
+      "pred_technique": "triangle",
+      "pred_submitter_raw": "NAVY WHITE BELT",
+      "pred_submitter_resolved": "chris",
+      "delta_t": -3.0,
+      "technique_correct": false,
+      "submitter_correct": false,
+      "status": "matched"
+    },
+    {
+      "gt_t": 141.0,
+      "gt_technique": "rnc",
+      "gt_submitter": "instructor",
+      "pred_t": null,
+      "pred_technique": null,
+      "pred_submitter_raw": null,
+      "pred_submitter_resolved": null,
+      "delta_t": null,
+      "technique_correct": null,
+      "submitter_correct": null,
+      "status": "missed_gt"
+    },
+    {
+      "gt_t": null,
+      "gt_technique": null,
+      "gt_submitter": null,
+      "pred_t": 152.0,
+      "pred_technique": "other",
+      "pred_submitter_raw": "WHITE PURPLE BELT",
+      "pred_submitter_resolved": "chris",
+      "delta_t": null,
+      "technique_correct": null,
+      "submitter_correct": null,
+      "status": "hallucination"
+    }
+  ],
+  "extras": {}
+}

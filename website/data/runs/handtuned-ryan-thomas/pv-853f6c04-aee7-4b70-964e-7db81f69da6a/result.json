@@ -1,0 +1,434 @@
+{
+  "video": "video.mov",
+  "duration_sec": 370.985,
+  "fighters": {
+    "STRIPED RASHGUARD": {
+      "visual": "Athletic fighter with dark hair wearing a green and white horizontally striped rashguard and black shorts."
+    },
+    "BALD BLACK RASHGUARD": {
+      "visual": "Muscular bald fighter wearing a black short-sleeved rashguard and black shorts."
+    }
+  },
+  "submissions": [
+    {
+      "timestamp": 53.0,
+      "technique": "guillotine",
+      "submitter": "BALD BLACK RASHGUARD",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The BALD BLACK RASHGUARD athlete applies a front headlock/guillotine choke during a scramble, and the STRIPED RASHGUARD athlete taps clearly with his left hand before they reset.",
+      "cluster_size": 2,
+      "window_starts": [
+        30.0,
+        45.0
+      ]
+    },
+    {
+      "timestamp": 102.0,
+      "technique": "other",
+      "submitter": "BALD BLACK RASHGUARD",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "BALD BLACK RASHGUARD applies a leg lock from the bottom position, leading to a visible tap from STRIPED RASHGUARD at 27 seconds.",
+      "cluster_size": 1,
+      "window_starts": [
+        75.0
+      ]
+    },
+    {
+      "timestamp": 154.0,
+      "technique": "guillotine",
+      "submitter": "BALD BLACK RASHGUARD",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "BALD BLACK RASHGUARD catches STRIPED RASHGUARD in a guillotine choke during a scramble, leading to a clear tap at 19 seconds.",
+      "cluster_size": 1,
+      "window_starts": [
+        135.0
+      ]
+    },
+    {
+      "timestamp": 187.0,
+      "technique": "guillotine",
+      "submitter": "BALD BLACK RASHGUARD",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The athlete in the STRIPED RASHGUARD taps on the shoulder of the BALD BLACK RASHGUARD athlete while caught in a front headlock/guillotine choke.",
+      "cluster_size": 2,
+      "window_starts": [
+        165.0,
+        150.0
+      ]
+    },
+    {
+      "timestamp": 235.0,
+      "technique": "triangle",
+      "submitter": "STRIPED RASHGUARD",
+      "submittee": "BALD BLACK RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The athlete in the striped rashguard locks in a triangle choke from the bottom, causing the bald athlete in the black rashguard to tap on his hip at 36 seconds.",
+      "cluster_size": 2,
+      "window_starts": [
+        180.0,
+        210.0
+      ]
+    },
+    {
+      "timestamp": 323.0,
+      "technique": "other",
+      "submitter": "STRIPED RASHGUARD",
+      "submittee": "BALD BLACK RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The target pair in the background stops their engagement with a fist bump at 8 seconds after the athlete in the striped rashguard established dominant top control.",
+      "cluster_size": 1,
+      "window_starts": [
+        315.0
+      ]
+    },
+    {
+      "timestamp": 361.0,
+      "technique": "other",
+      "submitter": "STRIPED RASHGUARD",
+      "submittee": "BALD BLACK RASHGUARD",
+      "confidence": "medium",
+      "reasoning": "In the background, the fighter in the striped rashguard maintains top control until the bald fighter in the black rashguard taps on his back and they reset.",
+      "cluster_size": 1,
+      "window_starts": [
+        330.0
+      ]
+    }
+  ],
+  "metadata": {
+    "model": "gemini-3-flash-preview",
+    "window_sec": 40.0,
+    "grid_step": 15.0,
+    "cluster_tau": 20.0,
+    "workers": 12,
+    "n_windows": 25,
+    "n_yes_windows": 10,
+    "stage1_elapsed_sec": 113.3,
+    "total_elapsed_sec": 134.8,
+    "domain_rules_source": "custom",
+    "all_window_rows": [
+      {
+        "start": 0.0,
+        "end": 40.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The athletes engage in active grappling throughout the entire clip without any tap, verbal yield, or reset occurring before the video ends.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 0.0
+      },
+      {
+        "start": 15.0,
+        "end": 55.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The bald black rashguard maintains top control and works from mount, but the striped rashguard continues to actively grapple throughout the clip without a tap or reset signal.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 15.0
+      },
+      {
+        "start": 30.0,
+        "end": 70.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD BLACK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The BALD BLACK RASHGUARD athlete applies a front headlock/guillotine choke during a scramble, and the STRIPED RASHGUARD athlete taps clearly with his left hand before they reset.",
+        "tap_offset_sec": 23.0,
+        "absolute_timestamp": 53.0
+      },
+      {
+        "start": 45.0,
+        "end": 85.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "triangle",
+        "submitter": "BALD BLACK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD BLACK RASHGUARD applies a triangle choke from the bottom, causing STRIPED RASHGUARD to tap with his left hand at approximately 8 seconds into the clip.",
+        "tap_offset_sec": 8.0,
+        "absolute_timestamp": 53.0
+      },
+      {
+        "start": 60.0,
+        "end": 100.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair is seen grappling with the bald athlete in a dominant top position initially, followed by a neutral reset and fist bump at 00:15, with no clear submission or tap occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 60.0
+      },
+      {
+        "start": 75.0,
+        "end": 115.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD BLACK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD BLACK RASHGUARD applies a leg lock from the bottom position, leading to a visible tap from STRIPED RASHGUARD at 27 seconds.",
+        "tap_offset_sec": 27.0,
+        "absolute_timestamp": 102.0
+      },
+      {
+        "start": 90.0,
+        "end": 130.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in continuous grappling with a neutral reset and fist bump at 00:10, but no submission is ever applied or completed.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 90.0
+      },
+      {
+        "start": 105.0,
+        "end": 145.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The striped rashguard and bald black rashguard athletes engage in continuous grappling for the duration of the clip without any clear submission or formal reset occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 105.0
+      },
+      {
+        "start": 120.0,
+        "end": 160.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in situational grappling with two resets involving fist bumps, but no clear submission hold or tap is observed during the clip.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 120.0
+      },
+      {
+        "start": 135.0,
+        "end": 175.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD BLACK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD BLACK RASHGUARD catches STRIPED RASHGUARD in a guillotine choke during a scramble, leading to a clear tap at 19 seconds.",
+        "tap_offset_sec": 19.0,
+        "absolute_timestamp": 154.0
+      },
+      {
+        "start": 150.0,
+        "end": 190.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "triangle",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD BLACK RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The athlete in the striped rashguard locks in a triangle choke from the bottom and transitions toward the top, leading to a clear tap from the bald athlete at the 37-second mark.",
+        "tap_offset_sec": 37.0,
+        "absolute_timestamp": 187.0
+      },
+      {
+        "start": 165.0,
+        "end": 205.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD BLACK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The athlete in the STRIPED RASHGUARD taps on the shoulder of the BALD BLACK RASHGUARD athlete while caught in a front headlock/guillotine choke.",
+        "tap_offset_sec": 19.0,
+        "absolute_timestamp": 184.0
+      },
+      {
+        "start": 180.0,
+        "end": 220.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "triangle",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD BLACK RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The athlete in the striped rashguard locks in a triangle choke from the bottom, causing the bald athlete in the black rashguard to tap on his hip at 36 seconds.",
+        "tap_offset_sec": 36.0,
+        "absolute_timestamp": 216.0
+      },
+      {
+        "start": 195.0,
+        "end": 235.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in continuous grappling from the start of the clip through the end without any tap, verbal yield, or reset occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 195.0
+      },
+      {
+        "start": 210.0,
+        "end": 250.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD BLACK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The bald black rashguard athlete applies pressure from a dominant top position, leading to a tap and a subsequent reset with a fist bump.",
+        "tap_offset_sec": 25.0,
+        "absolute_timestamp": 235.0
+      },
+      {
+        "start": 225.0,
+        "end": 265.0,
+        "duration": 40.0,
+        "error": "Command '['ffmpeg', '-ss', '225.00', '-i', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/VLM-gemini/input-data/ryan-thomas/video.mov', '-t', '40.00', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-an', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/flywheel/outputs/runs/verify:video/pv-853f6c04-aee7-4b70-964e-7db81f69da6a/clips/win_0225s_40s.mp4', '-loglevel', 'error', '-y']' died with <Signals.SIGABRT: 6>.",
+        "is_submission": false
+      },
+      {
+        "start": 240.0,
+        "end": 280.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair is seen resetting and standing up between rounds rather than engaging in an active grappling sequence leading to a submission.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 240.0
+      },
+      {
+        "start": 255.0,
+        "end": 295.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in continuous grappling throughout the clip with a neutral reset and fist bump at 00:16, but no submission or dominant finish is observed.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 255.0
+      },
+      {
+        "start": 270.0,
+        "end": 310.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair fist bumps to start their round at 0:09 and grapples continuously without a submission or reset until the clip ends.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 270.0
+      },
+      {
+        "start": 285.0,
+        "end": 325.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target athletes in the background grapple for the duration of the clip until they stop and separate around 00:35 without any visible submission or tap occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 285.0
+      },
+      {
+        "start": 300.0,
+        "end": 340.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair in the background stops grappling and fist bumps as the round ends, which is a neutral match event rather than a submission.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 300.0
+      },
+      {
+        "start": 315.0,
+        "end": 355.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD BLACK RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The target pair in the background stops their engagement with a fist bump at 8 seconds after the athlete in the striped rashguard established dominant top control.",
+        "tap_offset_sec": 8.0,
+        "absolute_timestamp": 323.0
+      },
+      {
+        "start": 330.0,
+        "end": 370.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD BLACK RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "In the background, the fighter in the striped rashguard maintains top control until the bald fighter in the black rashguard taps on his back and they reset.",
+        "tap_offset_sec": 31.0,
+        "absolute_timestamp": 361.0
+      },
+      {
+        "start": 345.0,
+        "end": 370.985,
+        "duration": 25.985000000000014,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target athletes are visible in the gym but are not engaged in an active grappling round with each other during this video segment.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 345.0
+      },
+      {
+        "start": 360.0,
+        "end": 370.985,
+        "duration": 10.985000000000014,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair is not engaged in any grappling activity during this segment of the video.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 360.0
+      }
+    ]
+  }
+}

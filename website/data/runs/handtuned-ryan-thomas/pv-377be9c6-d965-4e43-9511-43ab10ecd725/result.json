@@ -1,0 +1,411 @@
+{
+  "video": "video.mov",
+  "duration_sec": 370.985,
+  "fighters": {
+    "BALD MUSCULAR MAN": {
+      "visual": "A muscular, bald man with dark facial hair wearing a black or dark green rashguard with white shoulder markings and black shorts."
+    },
+    "STRIPED GREEN RASHGUARD": {
+      "visual": "An athletic man with dark curly hair wearing a green and white horizontally striped or hooped rashguard and dark shorts."
+    }
+  },
+  "submissions": [
+    {
+      "timestamp": 68.0,
+      "technique": "guillotine",
+      "submitter": "BALD MUSCULAR MAN",
+      "submittee": "STRIPED GREEN RASHGUARD",
+      "confidence": "high",
+      "reasoning": "BALD MUSCULAR MAN secures a front headlock/guillotine grip during a scramble and forces a tap or reset at 39 seconds.",
+      "cluster_size": 4,
+      "window_starts": [
+        15.0,
+        30.0,
+        60.0,
+        45.0
+      ]
+    },
+    {
+      "timestamp": 153.0,
+      "technique": "guillotine",
+      "submitter": "BALD MUSCULAR MAN",
+      "submittee": "STRIPED GREEN RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The bald man locks in a guillotine from a top front-headlock position, forcing the athlete in the striped rashguard to tap the mat at 18 seconds, followed by a celebratory fist bump.",
+      "cluster_size": 1,
+      "window_starts": [
+        135.0
+      ]
+    },
+    {
+      "timestamp": 185.0,
+      "technique": "guillotine",
+      "submitter": "BALD MUSCULAR MAN",
+      "submittee": "STRIPED GREEN RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The bald man applies a front headlock/guillotine from the top position, causing the man in the striped rashguard to tap with his right hand before they reset.",
+      "cluster_size": 1,
+      "window_starts": [
+        165.0
+      ]
+    },
+    {
+      "timestamp": 272.0,
+      "technique": "guillotine",
+      "submitter": "BALD MUSCULAR MAN",
+      "submittee": "STRIPED GREEN RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The bald muscular man secures a guillotine choke from the front headlock position, leading to a clear tap and a subsequent fist-bump reset.",
+      "cluster_size": 2,
+      "window_starts": [
+        240.0,
+        255.0
+      ]
+    },
+    {
+      "timestamp": 323.0,
+      "technique": "other",
+      "submitter": "STRIPED GREEN RASHGUARD",
+      "submittee": "BALD MUSCULAR MAN",
+      "confidence": "medium",
+      "reasoning": "In the background, the athlete in the striped green rashguard maintains a dominant top position until the pair separates and performs a handshake/fist bump at approximately 8 seconds, indicating the conclusion of the exchange.",
+      "cluster_size": 1,
+      "window_starts": [
+        315.0
+      ]
+    }
+  ],
+  "metadata": {
+    "model": "gemini-3-flash-preview",
+    "window_sec": 40.0,
+    "grid_step": 15.0,
+    "cluster_tau": 20.0,
+    "workers": 12,
+    "n_windows": 25,
+    "n_yes_windows": 9,
+    "stage1_elapsed_sec": 108.1,
+    "total_elapsed_sec": 142.2,
+    "domain_rules_source": "custom",
+    "all_window_rows": [
+      {
+        "start": 0.0,
+        "end": 40.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The two athletes engage in continuous, active grappling throughout the entire 40-second clip without any clear tap or reset occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 0.0
+      },
+      {
+        "start": 15.0,
+        "end": 55.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED GREEN RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD MUSCULAR MAN secures a front headlock/guillotine grip during a scramble and forces a tap or reset at 39 seconds.",
+        "tap_offset_sec": 39.0,
+        "absolute_timestamp": 54.0
+      },
+      {
+        "start": 30.0,
+        "end": 70.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED GREEN RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The Bald Muscular Man applies a front headlock/guillotine choke from a dominant top position, resulting in a tap at 24 seconds followed by a fist-bump reset.",
+        "tap_offset_sec": 24.0,
+        "absolute_timestamp": 54.0
+      },
+      {
+        "start": 45.0,
+        "end": 85.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "triangle",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED GREEN RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The bald muscular man applies a mounted triangle on the man in the striped rashguard, resulting in a tap and a subsequent reset at the 26-second mark.",
+        "tap_offset_sec": 26.0,
+        "absolute_timestamp": 71.0
+      },
+      {
+        "start": 60.0,
+        "end": 100.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "armbar",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED GREEN RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The bald muscular man secures an armbar from the top position, leading the athlete in the striped green rashguard to tap on his leg at the 8-second mark.",
+        "tap_offset_sec": 8.0,
+        "absolute_timestamp": 68.0
+      },
+      {
+        "start": 75.0,
+        "end": 115.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in neutral grappling from a fist bump at approximately 00:10 until they stop and stand up for a routine reset at 00:28 with no clear tap or submission sequence.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 75.0
+      },
+      {
+        "start": 90.0,
+        "end": 130.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The athletes maintain active positional grappling throughout the entire video without any clear submission attempt or tap occurring between them.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 90.0
+      },
+      {
+        "start": 105.0,
+        "end": 145.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in continuous positional grappling and scrambles throughout the entire video without any clear submission finish or tap.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 105.0
+      },
+      {
+        "start": 120.0,
+        "end": 160.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in continuous grappling and scrambles without any clear tap, verbal submission, or end-of-round signal throughout the video.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 120.0
+      },
+      {
+        "start": 135.0,
+        "end": 175.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED GREEN RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The bald man locks in a guillotine from a top front-headlock position, forcing the athlete in the striped rashguard to tap the mat at 18 seconds, followed by a celebratory fist bump.",
+        "tap_offset_sec": 18.0,
+        "absolute_timestamp": 153.0
+      },
+      {
+        "start": 150.0,
+        "end": 190.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in active grappling throughout the clip, experiencing two neutral resets (at approximately 00:08 and 00:35) that do not follow any clear submission or finishing hold.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 150.0
+      },
+      {
+        "start": 165.0,
+        "end": 205.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED GREEN RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The bald man applies a front headlock/guillotine from the top position, causing the man in the striped rashguard to tap with his right hand before they reset.",
+        "tap_offset_sec": 20.0,
+        "absolute_timestamp": 185.0
+      },
+      {
+        "start": 180.0,
+        "end": 220.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair grapples actively throughout the video, with a neutral reset around 00:08, but no tap or submission finish occurs.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 180.0
+      },
+      {
+        "start": 195.0,
+        "end": 235.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The two athletes engage in continuous grappling throughout the entire 40-second clip without any clear tap, verbal submission, or reset.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 195.0
+      },
+      {
+        "start": 210.0,
+        "end": 250.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in continuous grappling throughout the clip without any visible tap, verbal submission, or clear end-of-sequence reset.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 210.0
+      },
+      {
+        "start": 225.0,
+        "end": 265.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The bald muscular man and the man in the striped green rashguard maintain active grappling throughout the entire 40-second clip without any tap, reset, or submission.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 225.0
+      },
+      {
+        "start": 240.0,
+        "end": 280.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED GREEN RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The target pair concludes a sequence where the Bald Muscular Man has established dominant back control, followed by a clear separation and fist bump reset.",
+        "tap_offset_sec": 29.0,
+        "absolute_timestamp": 269.0
+      },
+      {
+        "start": 255.0,
+        "end": 295.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD MUSCULAR MAN",
+        "submittee": "STRIPED GREEN RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The bald muscular man secures a guillotine choke from the front headlock position, leading to a clear tap and a subsequent fist-bump reset.",
+        "tap_offset_sec": 17.0,
+        "absolute_timestamp": 272.0
+      },
+      {
+        "start": 270.0,
+        "end": 310.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair (Bald Muscular Man and Striped Green Rashguard) are seen actively grappling in the background throughout the clip without any submission, tap, or reset occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 270.0
+      },
+      {
+        "start": 285.0,
+        "end": 325.0,
+        "duration": 40.0,
+        "error": "Command '['ffmpeg', '-ss', '285.00', '-i', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/VLM-gemini/input-data/ryan-thomas/video.mov', '-t', '40.00', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-an', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/flywheel/outputs/runs/verify:video/pv-377be9c6-d965-4e43-9511-43ab10ecd725/clips/win_0285s_40s.mp4', '-loglevel', 'error', '-y']' died with <Signals.SIGABRT: 6>.",
+        "is_submission": false
+      },
+      {
+        "start": 300.0,
+        "end": 340.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair in the background stops grappling and performs a neutral reset/handshake at approximately 21 seconds without a visible submission or dominant finish.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 300.0
+      },
+      {
+        "start": 315.0,
+        "end": 355.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "STRIPED GREEN RASHGUARD",
+        "submittee": "BALD MUSCULAR MAN",
+        "confidence": "medium",
+        "reasoning": "In the background, the athlete in the striped green rashguard maintains a dominant top position until the pair separates and performs a handshake/fist bump at approximately 8 seconds, indicating the conclusion of the exchange.",
+        "tap_offset_sec": 8.0,
+        "absolute_timestamp": 323.0
+      },
+      {
+        "start": 330.0,
+        "end": 370.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair is seen grappling in the background and eventually separates to reset or end their round without any clear submission occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 330.0
+      },
+      {
+        "start": 345.0,
+        "end": 370.985,
+        "duration": 25.985000000000014,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair is not shown grappling in this video segment; the bald muscular man only appears at the end of the clip and does not engage with anyone.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 345.0
+      },
+      {
+        "start": 360.0,
+        "end": 370.985,
+        "duration": 10.985000000000014,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target athletes are not engaged in active grappling or a submission sequence during this 10-second clip; one is just entering the frame and sitting down.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 360.0
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+[
+  {
+    "game": "chris-instructor",
+    "cells": [
+      {
+        "label": "v1",
+        "prompt_version_id": "pv-ac5575b2",
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "technique_acc": 0.25,
+        "submitter_acc": 0.0,
+        "n_gt": 4,
+        "matched": 4,
+        "hallucinations": 0
+      },
+      {
+        "label": "v2",
+        "prompt_version_id": "pv-b535d177",
+        "f1": 0.75,
+        "precision": 0.75,
+        "recall": 0.75,
+        "technique_acc": 0.3333333333333333,
+        "submitter_acc": 0.0,
+        "n_gt": 4,
+        "matched": 3,
+        "hallucinations": 1
+      },
+      {
+        "label": "v3",
+        "prompt_version_id": "pv-853f6c04",
+        "f1": 0.28571428571428575,
+        "precision": 0.3333333333333333,
+        "recall": 0.25,
+        "technique_acc": 0.0,
+        "submitter_acc": 0.0,
+        "n_gt": 4,
+        "matched": 1,
+        "hallucinations": 2
+      },
+      {
+        "label": "v4",
+        "prompt_version_id": "pv-377be9c6",
+        "f1": 0.5,
+        "precision": 0.5,
+        "recall": 0.5,
+        "technique_acc": 0.0,
+        "submitter_acc": 0.0,
+        "n_gt": 4,
+        "matched": 2,
+        "hallucinations": 2
+      }
+    ]
+  }
+]
