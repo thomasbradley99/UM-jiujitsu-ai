@@ -22,6 +22,11 @@ dist
 dist-ssr
 *.local
 
+# Secrets — NEVER commit. Use .env.example for placeholders.
+.env
+.env.*
+!.env.example
+
 # Python venvs
 .venv/
 __pycache__/
