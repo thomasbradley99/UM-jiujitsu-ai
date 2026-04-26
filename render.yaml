@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: sports-analytics
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Set these secret values in the Render Dashboard (not here)
+      - key: ANAM_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: VITE_GEMINI_API_KEY
+        sync: false
+      # Optional: restrict CORS to your Render URL or custom domain
+      # - key: CORS_ORIGIN
+      #   value: https://sports-analytics.onrender.com
+    healthCheckPath: /api/health

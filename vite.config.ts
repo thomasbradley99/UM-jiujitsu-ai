@@ -13,6 +13,14 @@ export default defineConfig(({ mode }) => {
         alias: {
           '@': path.resolve(__dirname, '.'),
         }
+      },
+      server: {
+        proxy: {
+          '/api': {
+            target: `http://localhost:${env.PORT || 10000}`,
+            changeOrigin: true,
+          }
+        }
       }
     };
 });
