@@ -6,9 +6,11 @@ import MuBitResults from './MuBitResults';
 import VisualizationDashboard from './VisualizationDashboard';
 import { fetchManifest, triggerBuild, type Manifest } from '../services/labService';
 
-type Tab = 'games' | 'arcs' | 'cross-eval' | 'visualization' | 'mubit';
+type Tab = 'arc-report' | 'integration' | 'games' | 'arcs' | 'cross-eval' | 'visualization' | 'mubit';
 
-const TABS: { id: Tab; label: string }[] = [
+const TABS: { id: Tab; label: string; highlight?: boolean }[] = [
+  { id: 'arc-report', label: '★ ARC REPORT', highlight: true },
+  { id: 'integration', label: '★ MUBIT INTEGRATION', highlight: true },
   { id: 'visualization', label: 'VISUALIZATION' },
   { id: 'mubit', label: 'MUBIT RESULTS' },
   { id: 'games', label: 'GAME LIBRARY' },
@@ -16,8 +18,19 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'cross-eval', label: 'CROSS-EVAL MATRIX' },
 ];
 
+const ReportFrame: React.FC<{ src: string; title: string }> = ({ src, title }) => (
+  <div className="-mx-6 -my-6">
+    <iframe
+      src={src}
+      title={title}
+      className="w-full border-0 bg-[#0b0c10]"
+      style={{ height: 'calc(100vh - 140px)' }}
+    />
+  </div>
+);
+
 const LabView: React.FC = () => {
-  const [tab, setTab] = useState<Tab>('games');
+  const [tab, setTab] = useState<Tab>('arc-report');
   const [manifest, setManifest] = useState<Manifest | null>(null);
   const [building, setBuilding] = useState(false);
   const [buildMsg, setBuildMsg] = useState<string | null>(null);
@@ -84,7 +97,7 @@ const LabView: React.FC = () => {
       {/* Tab bar */}
       <div className="border-b border-white/10 px-6">
         <div className="max-w-5xl mx-auto flex gap-0">
-          {TABS.map(({ id, label }) => (
+          {TABS.map(({ id, label, highlight }) => (
             <button
               key={id}
               type="button"
@@ -92,6 +105,8 @@ const LabView: React.FC = () => {
               className={`px-4 py-2.5 text-[11px] tracking-widest font-mono transition-colors border-b-2 -mb-px ${
                 tab === id
                   ? 'text-[#FFB000] border-[#FFB000]'
+                  : highlight
+                  ? 'text-[#FFB000]/70 border-transparent hover:text-[#FFB000]'
                   : 'text-white/30 border-transparent hover:text-white/60'
               }`}
             >
@@ -102,7 +117,9 @@ const LabView: React.FC = () => {
       </div>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-6 py-6">
+      <div className={`mx-auto px-6 py-6 ${tab === 'arc-report' || tab === 'integration' ? 'max-w-[1400px]' : 'max-w-5xl'}`}>
+        {tab === 'arc-report' && <ReportFrame src="/reports/arc.html" title="Arc report — handtuned" />}
+        {tab === 'integration' && <ReportFrame src="/reports/mubit.html" title="MuBit integration tour" />}
         {tab === 'visualization' && <VisualizationDashboard />}
         {tab === 'mubit' && <MuBitResults />}
         {tab === 'games' && <GameLibrary />}
