@@ -11,11 +11,17 @@ import { ProVideoWindow } from './components/ProVideoWindow';
 import { ProVideoControls } from './components/ProVideoControls';
 import { BackgroundChanger } from './components/BackgroundChanger';
 import { PersonaChanger } from './components/PersonaChanger';
+import LabView from './components/LabView';
 import type { PersonaConfig } from './services/anamService';
 
 export type PersonaStatus = 'inactive' | 'loading' | 'ready' | 'error';
 
+type AppView = 'analyser' | 'lab';
+
 const App: React.FC = () => {
+  // Top-level view: 'analyser' (main app) | 'lab' (research lab)
+  const [appView, setAppView] = useState<AppView>('analyser');
+
   // Core state
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -928,13 +934,42 @@ ${fighterProfiles.fighter2.name} (${fighterProfiles.fighter2.fightingStyle}):
             backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : 'none',
         }}
     >
+      {/* ── Global nav bar ── */}
+      <div className="fixed top-0 left-0 right-0 z-50 flex items-center gap-1 px-3 py-1.5 bg-black/80 backdrop-blur border-b border-white/10">
+        <span className="font-display text-[#FFB000] text-base mr-3 select-none">P1Co</span>
+        {(['analyser', 'lab'] as AppView[]).map((v) => (
+          <button
+            key={v}
+            type="button"
+            onClick={() => setAppView(v)}
+            className={`px-3 py-1 text-[11px] font-mono tracking-widest rounded transition-colors ${
+              appView === v
+                ? 'bg-[#FFB000]/20 text-[#FFB000] border border-[#FFB000]/40'
+                : 'text-white/40 hover:text-white/70 border border-transparent'
+            }`}
+          >
+            {v === 'analyser' ? 'ANALYSER' : 'RESEARCH LAB'}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Research Lab ── */}
+      {appView === 'lab' && (
+        <div className="pt-10">
+          <LabView />
+        </div>
+      )}
+
+      {/* ── Main Analyser (existing app) ── */}
+      {appView === 'analyser' && (
+        <>
       <BackgroundChanger onBackgroundChange={handleBackgroundChange} />
       <PersonaChanger 
         currentPersona={selectedPersonaConfig}
         onPersonaChange={handlePersonaChange}
         personaStatus={personaStatus}
       />
-      <div className="min-h-screen flex items-start justify-center p-4">
+      <div className="min-h-screen flex items-start justify-center p-4 pt-14">
         {/* Left Panel - Analysis Log */}
         <div className="w-1/3 flex flex-col">
           <div className="h-[580px]">
@@ -991,6 +1026,8 @@ ${fighterProfiles.fighter2.name} (${fighterProfiles.fighter2.fightingStyle}):
         </ProVideoWindow>
         </div>
       </div>
+        </>
+      )}
     </div>
   );
 };

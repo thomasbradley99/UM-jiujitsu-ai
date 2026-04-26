@@ -32,6 +32,16 @@ WEB_DATA = WEB_ROOT / "data"
 WEB_PUBLIC = WEB_ROOT / "public"
 
 
+def iso_from_path(path: Path) -> str:
+    return datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).isoformat()
+
+
+def read_existing_json(path: Path, default):
+    if not path.exists():
+        return default
+    return json.loads(path.read_text())
+
+
 # ---------------------------------------------------------------------------
 # Games
 # ---------------------------------------------------------------------------
@@ -39,6 +49,11 @@ WEB_PUBLIC = WEB_ROOT / "public"
 def build_games() -> list[dict]:
     """Index all input games + their GT, copy videos into public/."""
     games = []
+    existing_games = {
+        game["id"]: game
+        for game in read_existing_json(WEB_DATA / "games" / "index.json", [])
+        if isinstance(game, dict) and game.get("id")
+    }
     for game_dir in sorted(INPUT_DATA.iterdir()):
         if not game_dir.is_dir():
             continue
@@ -47,13 +62,21 @@ def build_games() -> list[dict]:
         if not gt_path.exists():
             continue
         gt = json.loads(gt_path.read_text())
+        existing = existing_games.get(game_dir.name, {})
+        fallback_fight_date = iso_from_path(video_path if video_path.exists() else gt_path)
         games.append({
             "id": game_dir.name,
+            "fight_date": gt.get("fight_date") or gt.get("event_date") or existing.get("fight_date") or fallback_fight_date,
+            "source_updated_at": iso_from_path(gt_path),
             "duration_sec": gt.get("duration_sec"),
             "description": gt.get("description"),
             "fighters": gt.get("fighters", {}),
             "submissions": gt.get("submissions", []),
-            "video_url": f"/public/games/{game_dir.name}/video.mov" if video_path.exists() else None,
+            "video_url": (
+                f"/public/games/{game_dir.name}/video.mov"
+                if video_path.exists()
+                else existing.get("video_url")
+            ),
         })
 
         # Copy GT next to the video for self-contained per-game folder
@@ -100,10 +123,21 @@ CURATED_ARCS = [
 def build_arcs() -> list[dict]:
     """For each curated arc, compile per-iteration data into a clean bundle."""
     arc_index = []
+    existing_index = {
+        arc["id"]: arc
+        for arc in read_existing_json(WEB_DATA / "runs" / "index.json", [])
+        if isinstance(arc, dict) and arc.get("id")
+    }
     for arc in CURATED_ARCS:
         arc_path = FLYWHEEL_OUT / arc["loop_arc_file"]
         if not arc_path.exists():
-            print(f"  skip {arc['id']}: missing {arc['loop_arc_file']}")
+            existing = existing_index.get(arc["id"])
+            existing_detail = WEB_DATA / "runs" / arc["id"] / "index.json"
+            if existing and existing_detail.exists():
+                arc_index.append(existing)
+                print(f"  preserve {arc['id']}: using existing generated bundle")
+            else:
+                print(f"  skip {arc['id']}: missing {arc['loop_arc_file']}")
             continue
 
         loop_arc = json.loads(arc_path.read_text())
@@ -167,6 +201,10 @@ def build_arcs() -> list[dict]:
 def build_cross_eval() -> list[dict]:
     """Read flywheel/outputs/cross_eval/ and emit a clean matrix."""
     if not CROSS_EVAL_DIR.exists():
+        existing = read_existing_json(WEB_DATA / "cross_eval" / "index.json", [])
+        if existing:
+            print("  preserve existing cross_eval data")
+            return existing
         print("  no cross_eval data on disk")
         return []
 

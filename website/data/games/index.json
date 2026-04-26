@@ -1,6 +1,8 @@
 [
   {
     "id": "chris-instructor",
+    "fight_date": "2026-04-26T09:51:25.293062+00:00",
+    "source_updated_at": "2026-04-26T09:51:25.293062+00:00",
     "duration_sec": 340,
     "description": "Instructor (dark gi) drills/rolls with Chris (white belt, light gi). Instructor finishes 4 submissions across ~5m40s.",
     "fighters": {
@@ -51,6 +53,8 @@
   },
   {
     "id": "ryan-thomas",
+    "fight_date": "2026-04-25T20:19:01.203245+00:00",
+    "source_updated_at": "2026-04-25T20:19:01.203245+00:00",
     "duration_sec": 370,
     "description": "Ryan vs Thomas rolling session. BALD dominates and finishes 5 submissions across 6 minutes.",
     "fighters": {

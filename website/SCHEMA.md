@@ -33,6 +33,8 @@ Array of every input game with full GT inline.
 ```ts
 interface Game {
   id: string;              // folder name, e.g. "ryan-thomas"
+  fight_date: string;      // ISO 8601 date for the fight; sourced from GT metadata or file timestamp fallback
+  source_updated_at: string; // ISO 8601 timestamp of the GT annotation source file
   duration_sec: number;
   description: string;
   fighters: Record<string, {

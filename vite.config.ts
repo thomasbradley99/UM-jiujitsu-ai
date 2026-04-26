@@ -19,7 +19,11 @@ export default defineConfig(({ mode }) => {
           '/api': {
             target: `http://localhost:${env.PORT || 10000}`,
             changeOrigin: true,
-          }
+          },
+          '/website/public': {
+            target: `http://localhost:${env.PORT || 10000}`,
+            changeOrigin: true,
+          },
         }
       }
     };
