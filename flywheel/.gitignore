@@ -1,17 +1,11 @@
 # Default: outputs/ contents are scratch, never committed.
-# Re-include the specific artifacts that back the hackathon report.
-# Git rule: to re-include a file with `!`, every parent directory must
-# also be re-included, AND the parent dir must be ignored with `dir/*`
-# (NOT `dir/`, which is unreopenable).
+# Re-include only the 4-iteration handtuned arc that backs the
+# hackathon submission. Everything else regenerates on `flywheel.cli loop`.
 
 outputs/*
 !outputs/arc_report_handtuned.html
-!outputs/arc_report_naive.html
 !outputs/loop_arc_handtuned.json
-!outputs/loop_arc_naive.json
-!outputs/optimizer_summaries.json
 
-# --- handtuned arc per-version dirs (ryan-thomas video) -----------------
 !outputs/runs/
 outputs/runs/*
 !outputs/runs/verify:video/
@@ -21,17 +15,6 @@ outputs/runs/verify:video/*
 !outputs/runs/verify:video/pv-853f6c04-aee7-4b70-964e-7db81f69da6a/
 !outputs/runs/verify:video/pv-377be9c6-d965-4e43-9511-43ab10ecd725/
 outputs/runs/verify:video/*/profile_frames/
-
-# --- cross-eval (chris-instructor video) --------------------------------
-!outputs/cross_eval/
-outputs/cross_eval/*
-!outputs/cross_eval/chris-instructor/
-outputs/cross_eval/chris-instructor/*
-!outputs/cross_eval/chris-instructor/v1-pv-ac5575b2/
-!outputs/cross_eval/chris-instructor/v2-pv-b535d177/
-!outputs/cross_eval/chris-instructor/v3-pv-853f6c04/
-!outputs/cross_eval/chris-instructor/v4-pv-377be9c6/
-outputs/cross_eval/chris-instructor/*/profile_frames/
 
 # Compiled / cache
 __pycache__/

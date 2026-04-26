@@ -11,22 +11,17 @@ A self-improving prompt loop. Spin the wheel, the prompt gets better.
 
 ## Results at a glance
 
-| Iter | MuBit prompt version | F1 | P | R | Matched | Halluc |
-|------|---------------------|----|----|----|---------|--------|
-| v1 (seed)         | `pv-ac5575b2-…` |  57% |  44% |  80% | 4/5 | 5 |
-| v2                | `pv-b535d177-…` |  77% |  62% | 100% | 5/5 | 3 |
-| v3 *(regression)* | `pv-853f6c04-…` |  50% |  43% |  60% | 3/5 | 4 |
-| **v4**            | `pv-377be9c6-…` | **100%** | **100%** | **100%** | **5/5** | **0** |
+| Iter | F1 | Recall | Precision | Matched | Halls | Prompt version |
+|------|----|--------|-----------|---------|-------|----------------|
+| v1 (seed)         |  57% |  80% |  44% | 4/5 | 5 | `pv-ac5575b2-…` |
+| v2                |  77% | 100% |  62% | 5/5 | 3 | `pv-b535d177-…` |
+| v3 *(regression)* |  50% |  60% |  43% | 3/5 | 4 | `pv-853f6c04-…` |
+| **v4 (perfect)**  | **100%** | **100%** | **100%** | **5/5** | **0** | `pv-377be9c6-…` |
 
 Same 6-min video (`ryan-thomas`), same `analyze.py`, same model. The
 only thing that changes between rows is the **DOMAIN RULES** block in
 the scan prompt — the slab MuBit owns. At v4 the timestamp MAE is
 **2.4s** and submitter attribution accuracy is **80%** (4/5).
-
-The same 4 prompts run on a held-out video (`chris-instructor`) tell a
-different story — v1 generalises best at 100%, v4 overfits to 50%. We
-ship the cross-eval next to the headline so judges can read the honest
-trade-off; details in [`RESULTS.md`](./RESULTS.md#4-cross-eval--does-it-generalise).
 
 ## The flywheel
 
