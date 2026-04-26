@@ -2,15 +2,20 @@
 
 A self-improving prompt loop. Spin the wheel, the prompt gets better.
 
-> **Hackathon judges, start here:**
-> 👉 [**Visual arc report (rendered HTML)**](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/arc_report_handtuned.html)
-> · [`RESULTS.md`](./RESULTS.md) (plain-text tour of every artifact)
+> **Hackathon judges, two browser-rendered reports:**
 >
-> The visual report shows F1 climbing **57% → 77% → 50% → 100%** across
-> 4 prompt versions on the same fight, with prompt diffs and the
-> optimizer's rationale at every step. The local file is at
+> 📊 **[The results](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/arc_report_handtuned.html)** —
+> F1 climbing **57% → 77% → 50% → 100%** across 4 prompt versions on the
+> same fight, with prompt diffs and the optimizer's rationale at every step.
+>
+> 🔧 **[How we use MuBit](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/mubit_integration.html)** —
+> the integration tour: 5 SDK calls, 1 file of glue, 4 touch-points, with the
+> actual code excerpts.
+>
+> Plain-text artifact tour: [`RESULTS.md`](./RESULTS.md). Local files are at
 > [`outputs/arc_report_handtuned.html`](./outputs/arc_report_handtuned.html)
-> if you'd rather clone and `open` it.
+> and [`outputs/mubit_integration.html`](./outputs/mubit_integration.html)
+> if you'd rather clone and `open` them.
 
 ## Results at a glance
 

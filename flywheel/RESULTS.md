@@ -12,12 +12,15 @@ submission timestamps with the existing `VLM-gemini/eval/` module. Then
 we activate the new version and spin again. Same fight, smarter rules,
 F1 climbs.
 
-**👉 [Open the rendered visual arc report (htmlpreview)](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/arc_report_handtuned.html)**
+**Two browser-rendered reports back this submission:**
 
-*Self-contained — side-by-side iterations, prompt diffs, optimizer
-rationales, per-event outcomes. The file lives at
-[`flywheel/outputs/arc_report_handtuned.html`](./outputs/arc_report_handtuned.html)
-if you'd rather clone and `open` it.*
+- 📊 **[The results — arc_report_handtuned.html](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/arc_report_handtuned.html)** —
+  side-by-side iterations, prompt diffs, optimizer rationales, per-event outcomes.
+- 🔧 **[How we use MuBit — mubit_integration.html](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/mubit_integration.html)** —
+  the integration tour: 5 SDK calls, 1 file of glue, 4 touch-points, with code excerpts.
+
+*Local files: [`flywheel/outputs/arc_report_handtuned.html`](./outputs/arc_report_handtuned.html)
+and [`flywheel/outputs/mubit_integration.html`](./outputs/mubit_integration.html).*
 
 | Iter | F1 | Recall | Precision | Matched | Halls | Prompt version |
 |------|----|--------|-----------|---------|-------|----------------|

@@ -4,6 +4,7 @@
 
 outputs/*
 !outputs/arc_report_handtuned.html
+!outputs/mubit_integration.html
 !outputs/loop_arc_handtuned.json
 
 !outputs/runs/

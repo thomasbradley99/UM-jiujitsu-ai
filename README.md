@@ -4,7 +4,14 @@ AI-powered fight-video analysis and live coaching app.
 
 > # 🥋 Hackathon submission — MuBit prompt-optimization flywheel
 >
-> ### 👉 [**Open the visual arc report**](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/arc_report_handtuned.html) · [Source code tour](./flywheel/) · [Results explained](./flywheel/RESULTS.md)
+> ### 👉 Two reports, both rendered live in your browser
+>
+> | | |
+> |--|--|
+> | 📊 **[The results](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/arc_report_handtuned.html)** | F1 climbs **57% → 77% → 50% → 100%** across 4 prompt versions. Side-by-side iterations, prompt diffs, optimizer rationales, per-event outcomes. |
+> | 🔧 **[How we use MuBit](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/mubit_integration.html)** | The integration tour. 5 SDK calls, 1 file of glue, 4 touch-points — with the actual code, the rationale strategy, and what MuBit does/doesn't do. |
+>
+> ---
 >
 > A **self-improving prompt loop** that uses MuBit as a versioned prompt
 > store + outcome log + LLM-based prompt rewriter. We optimise the
@@ -30,12 +37,13 @@ AI-powered fight-video analysis and live coaching app.
 >
 > | Where | What it is |
 > |-------|------------|
-> | [📊 **arc_report_handtuned.html** (rendered)](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/arc_report_handtuned.html) | Self-contained HTML — full arc, prompt diffs, optimizer rationales, per-event TP/FP/FN |
+> | [📊 **arc_report_handtuned.html** (rendered)](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/arc_report_handtuned.html) | The headline F1 arc, fully visual |
+> | [🔧 **mubit_integration.html** (rendered)](https://htmlpreview.github.io/?https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/outputs/mubit_integration.html) | How we use the MuBit SDK end-to-end |
 > | [`flywheel/RESULTS.md`](./flywheel/RESULTS.md) | Plain-text tour of every result artifact |
 > | [`flywheel/outputs/loop_arc_handtuned.json`](./flywheel/outputs/loop_arc_handtuned.json) | Raw per-iteration metrics |
 > | [`flywheel/outputs/runs/verify:video/`](./flywheel/outputs/runs/verify:video/) | Per-prompt-version receipts: prompt text, predictions, eval scores |
-> | [`flywheel/mubit_client.py`](./flywheel/mubit_client.py) | The only file that imports the MuBit SDK (full integration in 160 lines) |
-> | [`flywheel/README.md`](./flywheel/README.md) | How the flywheel works end-to-end |
+> | [`flywheel/mubit_client.py`](./flywheel/mubit_client.py) | The only file that imports the MuBit SDK (160 lines) |
+> | [`flywheel/README.md`](./flywheel/README.md) | Repo-internal how-it-works |
 >
 > Reproduce: `python -m flywheel.cli loop --iterations 4` (after
 > `flywheel.cli setup`). See [`flywheel/README.md`](./flywheel/README.md).

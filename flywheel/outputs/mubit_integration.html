@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MuBit integration · UM-jiujitsu-ai flywheel</title>
+<style>
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body {
+  font-family: ui-monospace, Menlo, "SF Mono", monospace;
+  background: #0b0c10;
+  color: #e6e6e6;
+  margin: 0;
+  padding: 32px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+h1 { font-size: 26px; margin: 0 0 4px 0; font-weight: 600; letter-spacing: -0.01em; }
+h2 { font-size: 18px; margin: 0; font-weight: 600; color: #e6e6e6; }
+h3 { font-size: 14px; margin: 32px 0 10px 0; color: #9ad; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
+.sub { color: #8a8d96; margin-bottom: 24px; font-size: 13px; }
+.sub code, .sub a { background: #16181f; padding: 2px 6px; border-radius: 3px; font-size: 12px; color: #9ad; text-decoration: none; }
+.sub a:hover { background: #1d2030; }
+
+.hero {
+  background: #11131a;
+  border: 1px solid #2a2d36;
+  border-radius: 8px;
+  padding: 22px 26px;
+  margin: 16px 0 28px 0;
+}
+.hero-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.hero-stat { border-left: 3px solid #2a2d36; padding: 4px 0 4px 16px; }
+.hero-stat .n { font-size: 36px; font-weight: 700; line-height: 1; color: #5cb85c; }
+.hero-stat .l { font-size: 11px; color: #8a8d96; margin-top: 8px; letter-spacing: 0.06em; text-transform: uppercase; }
+.hero-stat .d { font-size: 12px; color: #c8cad1; margin-top: 6px; line-height: 1.45; }
+
+.panel {
+  background: #11131a;
+  border: 1px solid #2a2d36;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 14px 0;
+}
+
+.diagram {
+  background: #0e1018;
+  border: 1px solid #2a2d36;
+  border-radius: 6px;
+  padding: 18px 16px;
+  margin: 12px 0;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 12.5px;
+  color: #c8cad1;
+  white-space: pre;
+  overflow-x: auto;
+  line-height: 1.45;
+}
+.diagram .mubit { color: #f0c040; }
+.diagram .local { color: #5bc0de; }
+.diagram .arrow { color: #9ad; }
+.diagram b { color: #e6e6e6; }
+
+table.surface { border-collapse: collapse; width: 100%; font-size: 12px; margin: 8px 0 6px 0; }
+table.surface th, table.surface td { border: 1px solid #2a2d36; padding: 8px 12px; text-align: left; vertical-align: top; }
+table.surface th { background: #16181f; font-weight: 600; color: #9ad; }
+table.surface code { background: #0b0c10; padding: 1px 5px; border-radius: 3px; color: #c8cad1; font-size: 11.5px; }
+table.surface .sdk code { color: #f0c040; }
+table.surface tr:hover td { background: #15171f; }
+
+.tp { color: #5cb85c; font-weight: 700; }
+.fp { color: #d9534f; font-weight: 700; }
+.fn { color: #f0ad4e; font-weight: 700; }
+
+section.touch {
+  background: #11131a;
+  border: 1px solid #2a2d36;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 14px 0;
+}
+section.touch > header { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; }
+section.touch h2 .num { display: inline-block; font-size: 12px; color: #f0c040; background: #2d2308; padding: 2px 8px; border-radius: 999px; margin-right: 8px; vertical-align: middle; border: 1px solid #604a08; letter-spacing: 0.04em; }
+section.touch .pv-sdk { font-size: 11px; color: #f0c040; }
+section.touch p { color: #c8cad1; font-size: 13px; line-height: 1.55; margin: 8px 0; font-family: -apple-system, system-ui, sans-serif; }
+section.touch ul { font-family: -apple-system, system-ui, sans-serif; color: #c8cad1; font-size: 13px; line-height: 1.55; padding-left: 22px; }
+section.touch ul li { margin: 4px 0; }
+section.touch code { background: #0e1018; padding: 1px 5px; border-radius: 3px; font-size: 11.5px; color: #9ad; }
+
+pre.code {
+  background: #0b0c10;
+  border: 1px solid #2a2d36;
+  border-radius: 6px;
+  padding: 14px 16px;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: #c8cad1;
+  margin: 10px 0;
+  overflow-x: auto;
+}
+pre.code .kw { color: #c678dd; }
+pre.code .fn { color: #61afef; }
+pre.code .str { color: #98c379; }
+pre.code .com { color: #5c6370; font-style: italic; }
+pre.code .mubit { color: #f0c040; }
+
+.rationale-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+.rcard { border: 1px solid #2a2d36; border-left-width: 4px; padding: 12px 14px; border-radius: 4px; background: #0e1018; font-size: 12.5px; line-height: 1.55; font-family: -apple-system, system-ui, sans-serif; color: #c8cad1; }
+.rcard.tp { border-left-color: #5cb85c; }
+.rcard.fp { border-left-color: #d9534f; }
+.rcard.fn { border-left-color: #f0ad4e; background: #1c1814; }
+.rcard .lbl { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 3px; letter-spacing: 0.04em; text-transform: uppercase; margin-right: 8px; font-family: ui-monospace, Menlo, monospace; }
+.rcard.tp .lbl { background: #1f3d20; color: #9c9; }
+.rcard.fp .lbl { background: #3a1f1f; color: #f99; }
+.rcard.fn .lbl { background: #3a2f1f; color: #fc9; }
+.rcard q { color: #e6e6e6; font-style: italic; }
+.rcard .killer { color: #f0c040; font-weight: 600; }
+
+.layered { display: flex; flex-direction: column; gap: 0; max-width: 540px; margin: 8px 0; font-size: 12.5px; }
+.layered .l { padding: 14px 18px; border: 1px solid #2a2d36; border-radius: 4px; margin-bottom: -1px; display: flex; justify-content: space-between; align-items: center; }
+.layered .l.locked { background: #0e1018; color: #888; }
+.layered .l.versioned { background: #1f1a08; color: #f0c040; border-color: #604a08; font-weight: 600; }
+.layered .l .who { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.75; }
+
+.notdoing { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+.notdoing .col { border: 1px solid #2a2d36; border-radius: 6px; padding: 14px 16px; background: #0e1018; }
+.notdoing .col h4 { margin: 0 0 8px 0; font-size: 13px; }
+.notdoing .col.is h4 { color: #5cb85c; }
+.notdoing .col.isnt h4 { color: #d9534f; }
+.notdoing .col ul { font-family: -apple-system, system-ui, sans-serif; color: #c8cad1; font-size: 12.5px; line-height: 1.6; margin: 0; padding-left: 18px; }
+.notdoing .col ul li { margin: 4px 0; }
+
+footer { margin: 36px 0 16px 0; padding-top: 20px; border-top: 1px solid #2a2d36; color: #6a6d78; font-size: 12px; line-height: 1.6; font-family: -apple-system, system-ui, sans-serif; }
+footer code, footer a { color: #9ad; text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+@media (max-width: 760px) {
+  .hero-grid { grid-template-columns: repeat(2, 1fr); }
+  .notdoing { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<h1>MuBit integration · <span style="color:#f0c040">flywheel</span></h1>
+<div class="sub">
+  How <code>flywheel/</code> uses the MuBit SDK to drive a self-improving prompt loop ·
+  <a href="./arc_report_handtuned.html">see the F1 arc this produced →</a>
+</div>
+
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-stat">
+      <div class="n">5</div>
+      <div class="l">SDK calls in production paths</div>
+      <div class="d">get_prompt, archive, record_outcome, optimize_prompt, activate_prompt_version. Three more in setup/reporting.</div>
+    </div>
+    <div class="hero-stat">
+      <div class="n">1</div>
+      <div class="l">file imports the SDK</div>
+      <div class="d"><code style="background:#0b0c10;padding:1px 5px;border-radius:3px;color:#9ad;">flywheel/mubit_client.py</code> — 160 lines. Everything else in flywheel/ is plain Python.</div>
+    </div>
+    <div class="hero-stat">
+      <div class="n">4</div>
+      <div class="l">touch-points in the loop</div>
+      <div class="d">setup → predict → feedback → improve. Each is a single function call.</div>
+    </div>
+    <div class="hero-stat">
+      <div class="n">3</div>
+      <div class="l">things MuBit owns</div>
+      <div class="d">Versioned prompts. Outcome log keyed by version + run. LLM that rewrites the prompt from outcomes.</div>
+    </div>
+  </div>
+</section>
+
+<h3>The mental model</h3>
+
+<div class="panel">
+<p style="font-family:-apple-system,system-ui,sans-serif;color:#c8cad1;font-size:13px;line-height:1.6;margin:0 0 10px 0;">
+We treat MuBit as <b>three small services we glue together</b>, not a framework we live inside.
+MuBit owns the prompt as a versioned object (like git for prompts) and the per-event outcome log.
+Every spin asks MuBit "what's the active version?", runs the pipeline locally, scores against
+ground truth locally, then tells MuBit how each event went. Periodically, MuBit's optimizer LLM
+reads our outcomes and rewrites the prompt.
+</p>
+
+<div class="diagram">     ┌────────────────────────────────────────────────────────────┐
+     │                       <b class="mubit">MuBit (cloud)</b>                        │
+     │                                                            │
+     │   <b class="mubit">versioned prompts</b>     <b class="mubit">outcome log</b>     <b class="mubit">LLM rewriter</b>       │
+     │   (prompt store)        (per event)     (optimize_prompt)  │
+     │           ▲   │              ▲              │              │
+     └───────────│───│──────────────│──────────────│──────────────┘
+                 │   │              │              │
+       <span class="arrow">activate</span>  │   │ <span class="arrow">get_active</span>   │ <span class="arrow">record</span>       │ <span class="arrow">request</span>
+                 │   ▼              │              ▼
+     ┌────────────────────────────────────────────────────────────┐
+     │                  <b class="local">flywheel/spin.py + improve.py</b>               │
+     │                                                            │
+     │  predict ──▶ measure ──▶ feedback ──▶ improve ──▶ activate │
+     │  (analyze.py + GT eval)              (auto in loop mode)   │
+     └────────────────────────────────────────────────────────────┘</div>
+</div>
+
+<h3>The full SDK surface area</h3>
+
+<div class="panel" style="padding:14px 18px;">
+<p style="font-family:-apple-system,system-ui,sans-serif;color:#c8cad1;font-size:13px;line-height:1.55;margin:0 0 12px 0;">
+Every MuBit call lives in <code style="background:#0b0c10;padding:1px 5px;border-radius:3px;color:#9ad;">flywheel/mubit_client.py</code>.
+Eight wrapper functions, five distinct SDK calls. Nothing else in <code style="background:#0b0c10;padding:1px 5px;border-radius:3px;color:#9ad;">flywheel/</code>
+imports <code style="background:#0b0c10;padding:1px 5px;border-radius:3px;color:#9ad;">mubit</code>.
+</p>
+
+<table class="surface">
+  <thead><tr>
+    <th style="width:30%">Wrapper in <code>mubit_client.py</code></th>
+    <th class="sdk" style="width:34%">MuBit SDK call</th>
+    <th>When it fires</th>
+  </tr></thead>
+  <tbody>
+    <tr><td><code>find_agent()</code></td><td class="sdk"><code>client.advanced.list_agent_definitions(project_id)</code></td><td>setup — idempotency check</td></tr>
+    <tr><td><code>create_agent(role, description, system_prompt)</code></td><td class="sdk"><code>client.advanced.create_agent_definition(...)</code></td><td>setup — first run only, seeds v1</td></tr>
+    <tr><td><code>get_active_prompt() → (text, version_id)</code></td><td class="sdk"><code>client.advanced.get_prompt(agent_id)</code></td><td>every <code>spin</code> · predict step</td></tr>
+    <tr><td><code>archive_event(run_id, content, kind, labels) → ref_id</code></td><td class="sdk"><code>client.archive(session_id=run_id, ...)</code></td><td>every event <span class="tp">TP</span> / <span class="fp">FP</span> / <span class="fn">FN</span></td></tr>
+    <tr><td><code>record_outcome(run_id, ref_id, success, signal, rationale)</code></td><td class="sdk"><code>client.record_outcome(session_id=run_id, ...)</code></td><td>every event — paired with <code>archive_event</code></td></tr>
+    <tr><td><code>request_optimization() → {candidate, summary, confidence}</code></td><td class="sdk"><code>client.optimize_prompt(agent_id, project_id)</code></td><td>every <code>improve</code> — asks MuBit's LLM for a new prompt</td></tr>
+    <tr><td><code>activate_version(version_id)</code></td><td class="sdk"><code>client.advanced.activate_prompt_version(...)</code></td><td>auto-loop mode — promote candidate to active</td></tr>
+    <tr><td><code>get_prompt_diff(va, vb) → text</code></td><td class="sdk"><code>client.advanced.get_prompt_diff(...)</code></td><td>HTML report rendering only</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>The four touch-points</h3>
+
+<section class="touch">
+  <header>
+    <h2><span class="num">1</span>setup &middot; provision the agent once</h2>
+    <span class="pv-sdk">find_agent · create_agent_definition</span>
+  </header>
+  <p>
+    <code>flywheel/setup.py</code> runs once per project. It calls <code>find_agent()</code>; if the agent doesn't exist
+    in our MuBit project, it creates one with a precise role + description + the seed prompt from
+    <code>flywheel/prompts/verifier_v1.md</code>.
+  </p>
+  <pre class="code"><span class="com"># flywheel/setup.py</span>
+existing = <span class="fn">find_agent</span>()                     <span class="com"># MuBit: list_agent_definitions</span>
+<span class="kw">if</span> existing: <span class="kw">return</span>                       <span class="com"># idempotent</span>
+<span class="fn">create_agent</span>(                              <span class="com"># MuBit: create_agent_definition</span>
+    role=<span class="str">"bjj submission detector"</span>,
+    description=_AGENT_DESCRIPTION,         <span class="com"># spells out exactly which prompt slab MuBit owns</span>
+    system_prompt=SEED_PROMPT.read_text(),  <span class="com"># verifier_v1.md → first version on MuBit</span>
+)</pre>
+  <p>
+    <b style="color:#9ad;">Key choice:</b> the description we give MuBit is precise — it tells the
+    optimizer that MuBit only owns the DOMAIN RULES layer, that framing/fighter-block/JSON-schema
+    are locked, and that outcomes come from a windowed scan. The optimizer reads this every time
+    it rewrites; it shapes how it interprets our rationales.
+  </p>
+</section>
+
+<section class="touch">
+  <header>
+    <h2><span class="num">2</span>predict &middot; pull the active prompt at the start of every spin</h2>
+    <span class="pv-sdk">get_prompt</span>
+  </header>
+  <p>
+    <code>flywheel/spin.py:predict()</code> is one MuBit call.
+    The <code>version_id</code> becomes the cache key for everything that follows — the prompt text
+    we wrote to disk, the <code>result.json</code> we'll generate, the report we'll score.
+  </p>
+  <pre class="code"><span class="com"># flywheel/spin.py — predict()</span>
+prompt_text, version_id = <span class="fn">get_active_prompt</span>()      <span class="com"># MuBit: get_prompt</span>
+out_dir = OUTPUTS_DIR / <span class="str">"runs"</span> / run_id / version_id
+(out_dir / <span class="str">"domain_rules.md"</span>).<span class="fn">write_text</span>(prompt_text)  <span class="com"># local audit trail</span>
+<span class="fn">_run_analyze</span>(video, out_dir, rules_path, gt_path)    <span class="com"># subprocess into VLM-gemini/analyze.py</span></pre>
+  <p>
+    The pipeline runs as a subprocess because <code>analyze.py</code> uses
+    <code>google.generativeai</code> while the MuBit SDK uses <code>google-genai</code> — one venv
+    would conflict, two interpreters keep them clean. The active prompt gets injected into Stage 1
+    of <code>analyze.py</code> via its <code>--domain-rules-file</code> flag.
+  </p>
+
+  <p style="margin-top:14px;"><b style="color:#9ad;">What the prompt looks like</b> &middot; only the middle slab changes between iterations:</p>
+  <div class="layered">
+    <div class="l locked"><span>FRAMING + FIGHTER BLOCK</span><span class="who">Python · locked</span></div>
+    <div class="l versioned"><span>DOMAIN RULES</span><span class="who" style="opacity:1;">MuBit · versioned</span></div>
+    <div class="l locked"><span>OUTPUT SCHEMA (JSON)</span><span class="who">Python · locked</span></div>
+  </div>
+  <p>
+    This is the smallest unit of optimization that still meaningfully changes behaviour. Smaller
+    and the optimizer can't move the metrics; larger and you can't isolate cause/effect.
+  </p>
+</section>
+
+<section class="touch">
+  <header>
+    <h2><span class="num">3</span>feedback &middot; per-event outcomes with specific rationales</h2>
+    <span class="pv-sdk">archive · record_outcome</span>
+  </header>
+  <p>
+    This is the most important integration choice and the thing that actually makes the optimizer
+    work. After <code>measure()</code> produces a Report with per-event details, we iterate the
+    events and call <b>two</b> MuBit APIs per event.
+  </p>
+  <pre class="code"><span class="com"># flywheel/spin.py — feedback() (per event)</span>
+ref_id = <span class="fn">archive_event</span>(                          <span class="com"># MuBit: archive (the artifact)</span>
+    run_id, content=detailed_artifact_text,
+    kind=<span class="str">"pipeline_cluster_tp"</span>,                  <span class="com"># or _fp, _window_fn</span>
+    labels=[<span class="str">"submission"</span>, <span class="str">"true_positive"</span>, <span class="str">"armbar"</span>],
+)
+<span class="fn">record_outcome</span>(                                  <span class="com"># MuBit: record_outcome (the verdict)</span>
+    run_id, ref_id,
+    success=<span class="kw">True</span>,                                <span class="com"># or False</span>
+    signal=0.85,                                <span class="com"># numeric reward in [-1, 1]</span>
+    rationale=specific_english_text,            <span class="com"># the optimizer reads THIS</span>
+)</pre>
+
+  <p>
+    Rationales are free-form English — the optimizer's LLM reads them as-is. Effort goes into
+    making them <b>concrete and actionable</b>. Three styles by event status:
+  </p>
+
+  <div class="rationale-grid">
+    <div class="rcard tp">
+      <span class="lbl">TP cluster</span>
+      <q>Correctly detected armbar at 02:34 (within 3s of GT). The DOMAIN RULES produced YES on the windows around this moment. Keep the parts of the rules that produced this detection.</q>
+      <br><span style="font-size:12px;color:#888;margin-top:6px;display:inline-block;">If technique was wrong, we add: <i>"Mis-classified as guillotine; correct canonical name is armbar. Rules can be more specific…"</i></span>
+    </div>
+
+    <div class="rcard fp">
+      <span class="lbl">FP cluster (hallucination)</span>
+      <q>Hallucinated submission at 03:55 (guillotine). The DOMAIN RULES were too liberal. Sample window reasoning: '&lt;the actual model output for that window&gt;'. Tighten the rules to require stronger corroboration…</q>
+    </div>
+
+    <div class="rcard fn">
+      <span class="lbl">FN (missed GT) <span class="killer">— the killer feedback</span></span>
+      <q>Missed real armbar by BALD at 01:08. 2 windows covered this moment and ALL returned is_submission=false. One window's reasoning: '&lt;the actual NO reasoning&gt;'. To recover this case, the rules likely need to allow end-of-round reset signals…</q>
+      <br><span style="font-size:12px;color:#fc9;margin-top:6px;display:inline-block;">The FN rationale literally <b>quotes the pipeline's own NO-reasoning back at the optimizer</b>. The optimizer sees: "you said NO at the moment a real submission happened, here's why you said NO." That's how a strict-tap-only seed evolved into the reset-aware v4 prompt.</span>
+    </div>
+  </div>
+
+  <p style="margin-top:12px;">
+    We also push a numeric <code>signal</code> alongside the rationale: <code>+0.5..+1.0</code> for TPs scaled by
+    technique/submitter correctness, <code>-0.7</code> for FPs, <code>-0.85</code> for FNs.
+    MuBit can use this as a secondary input if it wants.
+  </p>
+</section>
+
+<section class="touch">
+  <header>
+    <h2><span class="num">4</span>improve &middot; ask MuBit's optimizer for a new prompt</h2>
+    <span class="pv-sdk">optimize_prompt · activate_prompt_version</span>
+  </header>
+  <p>
+    One MuBit call plus optional auto-activation. <code>request_optimization()</code> returns
+    a candidate prompt in <i>pending</i> state by default — a human approves in the MuBit Console.
+    With <code>auto_activate=True</code> (used by <code>flywheel.cli loop</code>) we promote it
+    ourselves so the next <code>spin</code> sees it as active.
+  </p>
+  <pre class="code"><span class="com"># flywheel/improve.py</span>
+resp = <span class="fn">request_optimization</span>()              <span class="com"># MuBit: optimize_prompt (LLM rewrite)</span>
+candidate  = resp[<span class="str">"candidate"</span>]              <span class="com"># {"version_id": "pv-377be9c6-…", ...}</span>
+summary    = resp[<span class="str">"optimization_summary"</span>]   <span class="com"># the optimizer's English rationale</span>
+confidence = resp[<span class="str">"confidence"</span>]             <span class="com"># 0.0–1.0</span>
+
+<span class="kw">if</span> auto_activate:
+    <span class="fn">activate_version</span>(candidate[<span class="str">"version_id"</span>])  <span class="com"># MuBit: activate_prompt_version</span></pre>
+  <p>
+    The next <code>spin</code>'s <code>get_active_prompt()</code> automatically sees the new version.
+    Loop closed.
+  </p>
+</section>
+
+<h3>How outcomes group · session keys</h3>
+
+<div class="panel">
+<p style="font-family:-apple-system,system-ui,sans-serif;color:#c8cad1;font-size:13px;line-height:1.55;margin:0 0 12px 0;">
+Every outcome carries a <code style="background:#0e1018;padding:1px 5px;border-radius:3px;color:#9ad;">session_id</code>
+(we call it <code style="background:#0e1018;padding:1px 5px;border-radius:3px;color:#9ad;">run_id</code> in our wrapper).
+One run_id per video. Re-running the same video accumulates outcomes in the same MuBit session, so the
+optimizer sees the full history. Switching videos gets a new session, so outcomes don't bleed across datasets.
+</p>
+<pre class="code" style="margin:0;"><span class="kw">def</span> <span class="fn">run_id_for_video</span>(video_path: Path) -> <span class="kw">str</span>:
+    <span class="kw">return</span> <span class="str">f"verify:{video_path.stem}"</span>     <span class="com"># e.g. "verify:video"</span></pre>
+<p style="font-family:-apple-system,system-ui,sans-serif;color:#c8cad1;font-size:13px;line-height:1.55;margin:12px 0 0 0;">
+Combined with <code style="background:#0e1018;padding:1px 5px;border-radius:3px;color:#9ad;">agent_id</code>, this gives MuBit
+enough structure: <b>agent</b> = which prompt-slab is being optimised, <b>session</b> = which dataset/run-context.
+</p>
+</div>
+
+<h3>What MuBit is &middot; what MuBit isn't</h3>
+
+<div class="notdoing">
+  <div class="col is">
+    <h4>What MuBit does for us</h4>
+    <ul>
+      <li><b>Versioned prompt store</b> with monotonic IDs — every <code>result.json</code> lives next to a <code>domain_rules.md</code> and a <code>pv-…</code> version_id you can look up in the Console.</li>
+      <li><b>Persistent outcome log</b> keyed by version + session. We don't need our own database.</li>
+      <li><b>LLM rewriter</b> that reads English rationales (not metrics). Quality of the rewrite scales with quality of the rationales we send.</li>
+      <li><b>Atomic publish</b>. <code>activate_prompt_version</code> flips the active pointer; the next <code>get_active_prompt</code> sees it. This is what makes the autonomous loop possible.</li>
+    </ul>
+  </div>
+  <div class="col isnt">
+    <h4>What MuBit doesn't do (we do)</h4>
+    <ul>
+      <li>MuBit doesn't run inference. <b>Gemini</b> does that.</li>
+      <li>MuBit doesn't compute F1 or compare to ground truth. <code>VLM-gemini/eval/</code> does that.</li>
+      <li>MuBit's optimizer doesn't see metrics. It sees <b>our rationales</b>. Generic feedback → generic rewrites.</li>
+      <li>MuBit doesn't prevent regressions. We saw v3 drop from 77% to 50% — the rewriter "improved" the prompt by its own logic but lost recall. Multi-iteration arcs are how we surface this.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Code map</h3>
+
+<div class="panel">
+<pre class="code" style="margin:0;">flywheel/
+├── <b style="color:#f0c040;">mubit_client.py</b>     ← all 8 SDK call wrappers, ONLY MuBit-importing file
+├── setup.py            ← create_agent / find_agent          <span class="com">(touch-point 1)</span>
+├── spin.py             ← get_active_prompt + archive + record_outcome  <span class="com">(touch-points 2 &amp; 3)</span>
+├── improve.py          ← request_optimization + activate_version  <span class="com">(touch-point 4)</span>
+├── loop.py             ← orchestrates spin → improve(auto_activate=<span class="kw">True</span>) → spin
+├── report.py           ← renders <a href="./arc_report_handtuned.html" style="color:#9ad;">arc_report_handtuned.html</a> from cached domain_rules.md + report.json
+├── cli.py              ← thin CLI: setup / spin / improve / loop / report
+├── config.py           ← PROJECT_ID, AGENT_ID, paths, analyze.py knobs
+└── prompts/
+    └── verifier_v1.md  ← seed for the handtuned arc (reset-rule grounded)</pre>
+</div>
+
+<footer>
+<b>Source on GitHub:</b> &nbsp;
+<a href="https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/mubit_client.py"><code>flywheel/mubit_client.py</code></a> ·
+<a href="https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/spin.py"><code>spin.py</code></a> ·
+<a href="https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/improve.py"><code>improve.py</code></a> ·
+<a href="https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/loop.py"><code>loop.py</code></a> ·
+<a href="https://github.com/thomasbradley99/UM-jiujitsu-ai/blob/main/flywheel/setup.py"><code>setup.py</code></a>
+<br><br>
+<b>The arc this integration produced:</b> &nbsp;
+<a href="./arc_report_handtuned.html">arc_report_handtuned.html</a> — F1 climbs 57% → 77% → 50% → 100% across 4 prompt versions.
+<br><br>
+MuBit project · <code>jiujitsu-rt3hsz</code> · <code>proj-0ea4de0c-5ca2-4eed-a443-9df064ec2099</code>
+&nbsp;·&nbsp;
+agent · <code>submission-verifier</code>
+</footer>
+</body>
+</html>
