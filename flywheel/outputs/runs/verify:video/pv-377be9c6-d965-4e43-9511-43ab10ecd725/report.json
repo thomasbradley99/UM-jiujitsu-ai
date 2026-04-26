@@ -1,0 +1,82 @@
+{
+  "config": "verify:video:pv-377be9c6-",
+  "tau": 10.0,
+  "n_gt": 5,
+  "n_pred": 5,
+  "matched": 5,
+  "sub_recall": 1.0,
+  "sub_precision": 1.0,
+  "f1": 1.0,
+  "technique_acc": 0.0,
+  "submitter_acc": 0.8,
+  "timestamp_mae": 2.4,
+  "hallucinations": 0,
+  "details": [
+    {
+      "gt_t": 68.0,
+      "gt_technique": "armbar",
+      "gt_submitter": "BALD",
+      "pred_t": 68.0,
+      "pred_technique": "guillotine",
+      "pred_submitter_raw": "BALD MUSCULAR MAN",
+      "pred_submitter_resolved": "BALD",
+      "delta_t": 0.0,
+      "technique_correct": false,
+      "submitter_correct": true,
+      "status": "matched"
+    },
+    {
+      "gt_t": 155.0,
+      "gt_technique": "armbar",
+      "gt_submitter": "BALD",
+      "pred_t": 153.0,
+      "pred_technique": "guillotine",
+      "pred_submitter_raw": "BALD MUSCULAR MAN",
+      "pred_submitter_resolved": "BALD",
+      "delta_t": -2.0,
+      "technique_correct": false,
+      "submitter_correct": true,
+      "status": "matched"
+    },
+    {
+      "gt_t": 185.0,
+      "gt_technique": "rnc",
+      "gt_submitter": "BALD",
+      "pred_t": 185.0,
+      "pred_technique": "guillotine",
+      "pred_submitter_raw": "BALD MUSCULAR MAN",
+      "pred_submitter_resolved": "BALD",
+      "delta_t": 0.0,
+      "technique_correct": false,
+      "submitter_correct": true,
+      "status": "matched"
+    },
+    {
+      "gt_t": 267.0,
+      "gt_technique": "armbar",
+      "gt_submitter": "BALD",
+      "pred_t": 272.0,
+      "pred_technique": "guillotine",
+      "pred_submitter_raw": "BALD MUSCULAR MAN",
+      "pred_submitter_resolved": "BALD",
+      "delta_t": 5.0,
+      "technique_correct": false,
+      "submitter_correct": true,
+      "status": "matched"
+    },
+    {
+      "gt_t": 318.0,
+      "gt_technique": "rnc",
+      "gt_submitter": "BALD",
+      "pred_t": 323.0,
+      "pred_technique": "other",
+      "pred_submitter_raw": "STRIPED GREEN RASHGUARD",
+      "pred_submitter_resolved": "STRIPED",
+      "delta_t": 5.0,
+      "technique_correct": false,
+      "submitter_correct": false,
+      "status": "matched"
+    }
+  ],
+  "extras": {}
+}

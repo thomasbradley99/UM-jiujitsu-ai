@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Flywheel arc — verify:video · gemini-3-flash-preview</title>
+<style>
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body {
+  font-family: ui-monospace, Menlo, "SF Mono", monospace;
+  background: #0b0c10;
+  color: #e6e6e6;
+  margin: 0;
+  padding: 32px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+h1 { font-size: 26px; margin: 0 0 4px 0; font-weight: 600; letter-spacing: -0.01em; }
+h2 { font-size: 18px; margin: 0; font-weight: 600; color: #e6e6e6; }
+h3 { font-size: 14px; margin: 24px 0 8px 0; color: #9ad; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; }
+.sub { color: #8a8d96; margin-bottom: 24px; font-size: 13px; }
+.sub code { background: #16181f; padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+
+.hero {
+  background: #11131a;
+  border: 1px solid #2a2d36;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 16px 0 28px 0;
+}
+.hero-grid { display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: center; }
+.big-stat { font-size: 56px; font-weight: 700; line-height: 1; color: #5cb85c; }
+.big-stat small { display:block; font-size: 13px; color: #8a8d96; font-weight: 400; margin-top: 6px; letter-spacing: 0.04em; text-transform: uppercase; }
+.spark { width: 100%; height: auto; }
+ul.legend { list-style: none; padding: 0; margin: 18px 0 0 0; display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #c8cad1; }
+ul.legend li { display: flex; align-items: center; gap: 8px; }
+ul.legend .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+
+table.arc { border-collapse: collapse; width: 100%; font-size: 13px; margin: 12px 0 32px 0; }
+table.arc th, table.arc td { border: 1px solid #2a2d36; padding: 8px 12px; text-align: left; }
+table.arc th { background: #16181f; font-weight: 600; color: #9ad; }
+table.arc tr.best td { background: #15291a; }
+table.arc code { background: #0b0c10; padding: 1px 4px; border-radius: 3px; font-size: 11px; color: #9ad; }
+.d { font-size: 11px; margin-left: 6px; }
+.d.up { color: #5cb85c; }
+.d.down { color: #d9534f; }
+.d.zero { color: #666; }
+
+section.iter {
+  background: #11131a;
+  border: 1px solid #2a2d36;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 16px 0;
+}
+section.iter > header { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+section.iter .kv { display: flex; gap: 18px; font-size: 12px; color: #c8cad1; flex-wrap: wrap; }
+section.iter .kv b { color: #9ad; font-weight: 500; margin-right: 4px; }
+section.iter .pv code { background: #0b0c10; padding: 2px 6px; border-radius: 3px; color: #888; font-size: 11px; }
+
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; margin-left: 10px; vertical-align: middle; }
+.badge.gold { background: #2d2308; color: #f0c040; border: 1px solid #604a08; }
+.badge.warn { background: #2d1408; color: #e69060; border: 1px solid #6a3010; }
+
+details { margin: 12px 0; border: 1px solid #2a2d36; border-radius: 6px; background: #0e1018; }
+details > summary { cursor: pointer; padding: 8px 14px; font-size: 12px; color: #9ad; user-select: none; }
+details > summary:hover { background: #16181f; }
+details[open] > summary { border-bottom: 1px solid #2a2d36; }
+.opt .reason { padding: 12px 14px; color: #c8cad1; font-size: 13px; line-height: 1.5; font-family: -apple-system, system-ui, sans-serif; }
+.prompt-body { margin: 0; padding: 14px; font-size: 12px; line-height: 1.5; color: #c8cad1; white-space: pre-wrap; max-height: 480px; overflow: auto; }
+.diff-body { padding: 8px 14px; font-size: 12px; line-height: 1.45; }
+.dl { white-space: pre-wrap; padding: 1px 6px; border-radius: 2px; font-family: ui-monospace, Menlo, monospace; }
+.dl.add { background: #0e2a16; color: #9be7af; border-left: 3px solid #2c8045; padding-left: 8px; margin: 1px 0; }
+.dl.rem { background: #2a0e0e; color: #f29a9a; border-left: 3px solid #80302c; padding-left: 8px; margin: 1px 0; text-decoration: line-through; opacity: 0.85; }
+.dl.ctx { color: #6a6d78; padding-left: 8px; }
+
+.events { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px; margin-top: 10px; }
+.ev { border: 1px solid #2a2d36; border-left-width: 4px; padding: 10px 12px; border-radius: 4px; background: #0e1018; font-size: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ev.matched { border-left-color: #5cb85c; }
+.ev.hallucination { border-left-color: #d9534f; }
+.ev.missed_gt { border-left-color: #f0ad4e; background: #1c1814; }
+.ev .ts { color: #9ad; font-weight: 700; min-width: 38px; }
+.ev .tag { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 3px; letter-spacing: 0.04em; text-transform: uppercase; }
+.ev .tag.matched { background: #1f3d20; color: #9c9; }
+.ev .tag.hallucination { background: #3a1f1f; color: #f99; }
+.ev .tag.missed_gt { background: #3a2f1f; color: #fc9; }
+.ev .body { flex: 1; min-width: 0; }
+.ev .body i { color: #9ad; font-style: normal; }
+.ev .vs { color: #666; font-size: 11px; }
+.ev .dt { color: #888; font-size: 11px; }
+.tick.ok { color: #5cb85c; font-weight: 700; }
+.tick.bad { color: #d9534f; font-weight: 700; }
+
+footer { margin: 36px 0 16px 0; padding-top: 20px; border-top: 1px solid #2a2d36; color: #6a6d78; font-size: 12px; line-height: 1.6; }
+footer code { color: #9ad; }
+</style>
+</head>
+<body>
+
+<h1>Flywheel arc · <span style="color:#9ad">verify:video</span></h1>
+<div class="sub">
+  Self-improving prompt loop · model <code>gemini-3-flash-preview</code> · video <code>ryan-thomas</code> · rendered 2026-04-25 20:33
+</div>
+
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="big-stat">100%<small>peak F1 · v4</small></div>
+      <div style="margin-top:14px; color:#8a8d96; font-size:12px; line-height:1.7;">
+        start v1 → <b style="color:#e6e6e6">57%</b><br>
+        peak v4 → <b style="color:#5cb85c">100%</b><br>
+        Δ <b style="color:#5cb85c">+43pp</b> over 4 iterations
+      </div>
+      <ul class="legend">
+        <li><span class="sw" style="background:#5cb85c"></span>F1</li>
+        <li><span class="sw" style="background:#5bc0de"></span>Recall</li>
+        <li><span class="sw" style="background:#f0ad4e"></span>Precision</li>
+      </ul>
+    </div>
+    <div><svg class="spark" viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg"><line x1="28" y1="172.0" x2="692" y2="172.0" stroke="#222" stroke-dasharray="2,3"/><text x="6" y="176.0" fill="#666" font-size="11">0%</text><line x1="28" y1="136.0" x2="692" y2="136.0" stroke="#222" stroke-dasharray="2,3"/><text x="6" y="140.0" fill="#666" font-size="11">25%</text><line x1="28" y1="100.0" x2="692" y2="100.0" stroke="#222" stroke-dasharray="2,3"/><text x="6" y="104.0" fill="#666" font-size="11">50%</text><line x1="28" y1="64.0" x2="692" y2="64.0" stroke="#222" stroke-dasharray="2,3"/><text x="6" y="68.0" fill="#666" font-size="11">75%</text><line x1="28" y1="28.0" x2="692" y2="28.0" stroke="#222" stroke-dasharray="2,3"/><text x="6" y="32.0" fill="#666" font-size="11">100%</text><polyline fill="none" stroke="#5bc0de" stroke-width="2.5" points="28.0,56.8 249.3,28.0 470.7,85.6 692.0,28.0"/><circle cx="28.0" cy="56.8" r="5" fill="#5bc0de"/><circle cx="249.3" cy="28.0" r="5" fill="#5bc0de"/><circle cx="470.7" cy="85.6" r="5" fill="#5bc0de"/><circle cx="692.0" cy="28.0" r="5" fill="#5bc0de"/><polyline fill="none" stroke="#f0ad4e" stroke-width="2.5" points="28.0,108.0 249.3,82.0 470.7,110.3 692.0,28.0"/><circle cx="28.0" cy="108.0" r="5" fill="#f0ad4e"/><circle cx="249.3" cy="82.0" r="5" fill="#f0ad4e"/><circle cx="470.7" cy="110.3" r="5" fill="#f0ad4e"/><circle cx="692.0" cy="28.0" r="5" fill="#f0ad4e"/><polyline fill="none" stroke="#5cb85c" stroke-width="2.5" points="28.0,89.7 249.3,61.2 470.7,100.0 692.0,28.0"/><circle cx="28.0" cy="89.7" r="5" fill="#5cb85c"/><circle cx="249.3" cy="61.2" r="5" fill="#5cb85c"/><circle cx="470.7" cy="100.0" r="5" fill="#5cb85c"/><circle cx="692.0" cy="28.0" r="5" fill="#5cb85c"/><text x="28.0" y="192" fill="#888" font-size="11" text-anchor="middle">v1</text><text x="249.3" y="192" fill="#888" font-size="11" text-anchor="middle">v2</text><text x="470.7" y="192" fill="#888" font-size="11" text-anchor="middle">v3</text><text x="692.0" y="192" fill="#888" font-size="11" text-anchor="middle">v4</text></svg></div>
+  </div>
+</section>
+
+<h3>The arc</h3>
+<table class='arc'><thead><tr><th>iter</th><th>F1</th><th>Recall</th><th>Precision</th><th>Matched</th><th>Halls</th><th>prompt</th></tr></thead><tbody><tr><td><b>v1</b></td><td>57% </td><td>80% </td><td>44% </td><td>4/5</td><td>5</td><td><code>pv-ac5575b2-…</code></td></tr><tr><td><b>v2</b></td><td>77% <span class="d up">▲ +20pp</span></td><td>100% <span class="d up">▲ +20pp</span></td><td>62% <span class="d up">▲ +18pp</span></td><td>5/5</td><td>3</td><td><code>pv-b535d177-…</code></td></tr><tr><td><b>v3</b></td><td>50% <span class="d down">▼ -27pp</span></td><td>60% <span class="d down">▼ -40pp</span></td><td>43% <span class="d down">▼ -20pp</span></td><td>3/5</td><td>4</td><td><code>pv-853f6c04-…</code></td></tr><tr class='best'><td><b>v4</b></td><td>100% <span class="d up">▲ +50pp</span></td><td>100% <span class="d up">▲ +40pp</span></td><td>100% <span class="d up">▲ +57pp</span></td><td>5/5</td><td>0</td><td><code>pv-377be9c6-…</code></td></tr></tbody></table>
+
+<h3>Per iteration · prompt · diff · events</h3>
+<section class='iter'><header><h2>v1 </h2><div class='kv'><span><b>F1</b> 57%</span><span><b>R</b> 80%</span><span><b>P</b> 44%</span><span><b>matched</b> 4/5</span><span><b>halls</b> 5</span><span class='pv'><code>pv-ac5575b2-da74-4…</code></span></div></header><details class='prompt'><summary>full prompt (797 chars)</summary><pre class='prompt-body'>DOMAIN RULE — BJJ TRAINING ROUND FINISH:
+Rounds in training do not end mid-roll without a submission. A submission
+is confirmed by ANY of:
+  (a) a clear tap (hand/foot tapping mat or partner), OR
+  (b) a verbal yield, OR
+  (c) the partner being put to sleep, OR
+  (d) a RESET signal at the end of an active grappling sequence: pair
+      stops, separates, fist bump, both stand up, brief pause before
+      restarting. The reset by itself is sufficient evidence — taps are
+      often hidden behind bodies or below frame.
+Attribute the submission to whoever was applying pressure / had positional
+control in the final 3-5 seconds before the reset.
+
+Only return is_submission=false if the clip shows continuous grappling the
+entire {window_sec} seconds with NO reset and NO end-of-round behaviour.
+</pre></details><div class='events'><div class="ev hallucination"><span class="ts">53s</span><span class="tag hallucination">hallucination</span><span class="body"><b>armbar</b> ghost — claimed by BALD DARK RASHGUARD</span></div><div class="ev missed_gt"><span class="ts">68s</span><span class="tag missed_gt">missed gt</span><span class="body"><b>armbar</b> missed (gt: BALD)</span></div><div class="ev hallucination"><span class="ts">101s</span><span class="tag hallucination">hallucination</span><span class="body"><b>other</b> ghost — claimed by BALD DARK RASHGUARD</span></div><div class="ev hallucination"><span class="ts">132s</span><span class="tag hallucination">hallucination</span><span class="body"><b>other</b> ghost — claimed by BALD DARK RASHGUARD</span></div><div class="ev matched"><span class="ts">158s</span><span class="tag matched">matched</span><span class="body"><b>other</b> <span class='vs'>vs gt</span> <i>armbar</i> <span class='dt'>Δt=+3s</span> <span class='tick bad'>✗</span> tech <span class='tick ok'>✓</span> sub</span></div><div class="ev matched"><span class="ts">186s</span><span class="tag matched">matched</span><span class="body"><b>other</b> <span class='vs'>vs gt</span> <i>rnc</i> <span class='dt'>Δt=+1s</span> <span class='tick bad'>✗</span> tech <span class='tick bad'>✗</span> sub</span></div><div class="ev hallucination"><span class="ts">234s</span><span class="tag hallucination">hallucination</span><span class="body"><b>guillotine</b> ghost — claimed by STRIPED RASHGUARD</span></div><div class="ev matched"><span class="ts">270s</span><span class="tag matched">matched</span><span class="body"><b>other</b> <span class='vs'>vs gt</span> <i>armbar</i> <span class='dt'>Δt=+3s</span> <span class='tick bad'>✗</span> tech <span class='tick ok'>✓</span> sub</span></div><div class="ev matched"><span class="ts">322s</span><span class="tag matched">matched</span><span class="body"><b>other</b> <span class='vs'>vs gt</span> <i>rnc</i> <span class='dt'>Δt=+4s</span> <span class='tick bad'>✗</span> tech <span class='tick ok'>✓</span> sub</span></div><div class="ev hallucination"><span class="ts">356s</span><span class="tag hallucination">hallucination</span><span class="body"><b>guillotine</b> ghost — claimed by STRIPED RASHGUARD</span></div></div></section><section class='iter'><header><h2>v2 </h2><div class='kv'><span><b>F1</b> 77%</span><span><b>R</b> 100%</span><span><b>P</b> 62%</span><span><b>matched</b> 5/5</span><span><b>halls</b> 3</span><span class='pv'><code>pv-b535d177-bf2c-4…</code></span></div></header><details class='opt'><summary>optimizer's note (confidence 0.95)</summary><div class='reason'>Expanded the prompt to explicitly enforce 'continuous, non-overlapping sliding windows' to address the recurring lesson regarding temporal gaps and False Negatives. Added a 'CRITICAL DISTINCTION' section to explicitly instruct the model to differentiate between neutral end-of-round events and actual submissions, addressing the failure pattern where resets were being conflated with submissions improperly.</div></details><details class='diff' open><summary>diff vs v1 <code>pv-ac5575b2-… → pv-b535d177-…</code></summary><div class='diff-body'><div class="dl ctx"> DOMAIN RULE — BJJ TRAINING ROUND FINISH:</div><div class="dl rem">-Rounds in training do not end mid-roll without a submission. A submission</div><div class="dl rem">-is confirmed by ANY of:</div><div class="dl rem">-  (a) a clear tap (hand/foot tapping mat or partner), OR</div><div class="dl rem">-  (b) a verbal yield, OR</div><div class="dl add">+Rounds in training do not end mid-roll without a submission. You must evaluate the entire video duration using continuous, non-overlapping sliding windows to ensure no temporal gaps occur, as these lead to False Negatives.</div><div class="dl add">+</div><div class="dl add">+A submission is confirmed by ANY of:</div><div class="dl add">+  (a) a clear tap (hand/foot tapping mat or partner),</div><div class="dl add">+  (b) a verbal yield,</div><div class="dl ctx">   (c) the partner being put to sleep, OR</div><div class="dl rem">-  (d) a RESET signal at the end of an active grappling sequence: pair</div><div class="dl rem">-      stops, separates, fist bump, both stand up, brief pause before</div><div class="dl rem">-      restarting. The reset by itself is sufficient evidence — taps are</div><div class="dl rem">-      often hidden behind bodies or below frame.</div><div class="dl rem">-Attribute the submission to whoever was applying pressure / had positional</div><div class="dl rem">-control in the final 3-5 seconds before the reset.</div><div class="dl add">+  (d) a RESET signal (pair stops, separates, fist bump, both stand up). The reset is a valid proxy for a finished interaction.</div><div class="dl ctx"> </div><div class="dl rem">-Only return is_submission=false if the clip shows continuous grappling the</div><div class="dl rem">-entire {window_sec} seconds with NO reset and NO end-of-round behaviour.</div><div class="dl add">+CRITICAL DISTINCTION:</div><div class="dl add">+You must explicitly distinguish between tactical submission attempts and neutral end-of-round interactions (e.g., separations, fist-bumps, resets). A neutral interaction only counts as a 'submission' if it indicates the end of a round sequence where one party held dominant positional control.</div><div class="dl add">+</div><div class="dl add">+Attribute the submission to whoever was applying pressure or held dominant positional control in the final 3-5 seconds before the reset/tap.</div><div class="dl add">+</div><div class="dl add">+Only return is_submission=false if the clip shows continuous, active grappling the entire {window_sec} seconds with NO submission evidence and NO neutral reset/end-of-round behaviour.</div></div></details><details class='prompt'><summary>full prompt (1189 chars)</summary><pre class='prompt-body'>DOMAIN RULE — BJJ TRAINING ROUND FINISH:
+Rounds in training do not end mid-roll without a submission. You must evaluate the entire video duration using continuous, non-overlapping sliding windows to ensure no temporal gaps occur, as these lead to False Negatives.
+
+A submission is confirmed by ANY of:
+  (a) a clear tap (hand/foot tapping mat or partner),
+  (b) a verbal yield,
+  (c) the partner being put to sleep, OR
+  (d) a RESET signal (pair stops, separates, fist bump, both stand up). The reset is a valid proxy for a finished interaction.
+
+CRITICAL DISTINCTION:
+You must explicitly distinguish between tactical submission attempts and neutral end-of-round interactions (e.g., separations, fist-bumps, resets). A neutral interaction only counts as a 'submission' if it indicates the end of a round sequence where one party held dominant positional control.
+
+Attribute the submission to whoever was applying pressure or held dominant positional control in the final 3-5 seconds before the reset/tap.
+
+Only return is_submission=false if the clip shows continuous, active grappling the entire {window_sec} seconds with NO submission evidence and NO neutral reset/end-of-round behaviour.</pre></details><div class='events'><div class="ev hallucination"><span class="ts">52s</span><span class="tag hallucination">hallucination</span><span class="body"><b>triangle</b> ghost — claimed by BALD MUSCULAR MAN</span></div><div class="ev matched"><span class="ts">73s</span><span class="tag matched">matched</span><span class="body"><b>other</b> <span class='vs'>vs gt</span> <i>armbar</i> <span class='dt'>Δt=+5s</span> <span class='tick bad'>✗</span> tech <span class='tick bad'>✗</span> sub</span></div><div class="ev hallucination"><span class="ts">104s</span><span class="tag hallucination">hallucination</span><span class="body"><b>other</b> ghost — claimed by STRIPED RASHGUARD</span></div><div class="ev matched"><span class="ts">154s</span><span class="tag matched">matched</span><span class="body"><b>other</b> <span class='vs'>vs gt</span> <i>armbar</i> <span class='dt'>Δt=-1s</span> <span class='tick bad'>✗</span> tech <span class='tick ok'>✓</span> sub</span></div><div class="ev matched"><span class="ts">188s</span><span class="tag matched">matched</span><span class="body"><b>other</b> <span class='vs'>vs gt</span> <i>rnc</i> <span class='dt'>Δt=+3s</span> <span class='tick bad'>✗</span> tech <span class='tick ok'>✓</span> sub</span></div><div class="ev hallucination"><span class="ts">231s</span><span class="tag hallucination">hallucination</span><span class="body"><b>guillotine</b> ghost — claimed by BALD MUSCULAR MAN</span></div><div class="ev matched"><span class="ts">271s</span><span class="tag matched">matched</span><span class="body"><b>other</b> <span class='vs'>vs gt</span> <i>armbar</i> <span class='dt'>Δt=+4s</span> <span class='tick bad'>✗</span> tech <span class='tick ok'>✓</span> sub</span></div><div class="ev matched"><span class="ts">323s</span><span class="tag matched">matched</span><span class="body"><b>other</b> <span class='vs'>vs gt</span> <i>rnc</i> <span class='dt'>Δt=+5s</span> <span class='tick bad'>✗</span> tech <span class='tick ok'>✓</span> sub</span></div></div></section><section class='iter'><header><h2>v3 <span class="badge warn">REGRESSION</span></h2><div class='kv'><span><b>F1</b> 50%</span><span><b>R</b> 60%</span><span><b>P</b> 43%</span><span><b>matched</b> 3/5</span><span><b>halls</b> 4</span><span class='pv'><code>pv-853f6c04-aee7-4…</code></span></div></header><details class='opt'><summary>optimizer's note (confidence 0.90)</summary><div class='reason'>Refined the instructions to emphasize that 'Resets' should only trigger a submission result if they follow clear dominant positional control or applied pressure, helping to reduce False Positives from neutral movements. Clarified the logic for 'is_submission=false' to reinforce that both evidence of a submission AND evidence of a match-ending sequence must be absent. Restructured to prioritize the sliding window continuity as a hard constraint.</div></details><details class='diff' open><summary>diff vs v2 <code>pv-b535d177-… → pv-853f6c04-…</code></summary><div class='diff-body'><div class="dl ctx"> DOMAIN RULE — BJJ TRAINING ROUND FINISH:</div><div class="dl rem">-Rounds in training do not end mid-roll without a submission. You must evaluate the entire video duration using continuous, non-overlapping sliding windows to ensure no temporal gaps occur, as these lead to False Negatives.</div><div class="dl add">+You must evaluate the entire video duration using strict, continuous, non-overlapping sliding windows to ensure no temporal gaps exist. Any gap or oversight in the timeline will result in a False Negative.</div><div class="dl ctx"> </div><div class="dl ctx"> A submission is confirmed by ANY of:</div><div class="dl ctx">   (b) a verbal yield,</div><div class="dl ctx">   (c) the partner being put to sleep, OR</div><div class="dl rem">-  (d) a RESET signal (pair stops, separates, fist bump, both stand up). The reset is a valid proxy for a finished interaction.</div><div class="dl add">+  (d) a RESET signal (pair stops, separates, fist bump, both stand up).</div><div class="dl ctx"> </div><div class="dl rem">-CRITICAL DISTINCTION:</div><div class="dl rem">-You must explicitly distinguish between tactical submission attempts and neutral end-of-round interactions (e.g., separations, fist-bumps, resets). A neutral interaction only counts as a 'submission' if it indicates the end of a round sequence where one party held dominant positional control.</div><div class="dl rem">-</div><div class="dl rem">-Attribute the submission to whoever was applying pressure or held dominant positional control in the final 3-5 seconds before the reset/tap.</div><div class="dl rem">-</div><div class="dl rem">-Only return is_submission=false if the clip shows continuous, active grappling the entire {window_sec} seconds with NO submission evidence and NO neutral reset/end-of-round behaviour.</div><div class="dl add">+CRITICAL DISTINCTION &amp; LOGIC:</div><div class="dl add">+1. SUBMISSION VS. NEUTRAL: You must strictly distinguish between tactical submission finishes and neutral match events (resets, separations, or post-round fist bumps). </div><div class="dl add">+2. ATTRIBUTION: If a reset/separation occurs, determine if it concludes an interaction where one party held dominant positional control or applied pressure in the final 3-5 seconds. Only if a clear winner or dominant position is established at the end of the window should this count as a submission.</div><div class="dl add">+3. FALSE NEGATIVES: Only return is_submission=false if the clip shows continuous, active grappling the entire {window_sec} seconds with NO submission evidence AND no neutral termination of a dominant sequence.</div><div class="dl add">+4. GRANULARITY: When analyzing, differentiate between successful submissions (taps) and neutral resets/separations. Assign 'is_submission=true' only when a high-probability end-of-round state is reached through dominance.</div></div></details><details class='prompt'><summary>full prompt (1406 chars)</summary><pre class='prompt-body'>DOMAIN RULE — BJJ TRAINING ROUND FINISH:
+You must evaluate the entire video duration using strict, continuous, non-overlapping sliding windows to ensure no temporal gaps exist. Any gap or oversight in the timeline will result in a False Negative.
+
+A submission is confirmed by ANY of:
+  (a) a clear tap (hand/foot tapping mat or partner),
+  (b) a verbal yield,
+  (c) the partner being put to sleep, OR
+  (d) a RESET signal (pair stops, separates, fist bump, both stand up).
+
+CRITICAL DISTINCTION &amp; LOGIC:
+1. SUBMISSION VS. NEUTRAL: You must strictly distinguish between tactical submission finishes and neutral match events (resets, separations, or post-round fist bumps). 
+2. ATTRIBUTION: If a reset/separation occurs, determine if it concludes an interaction where one party held dominant positional control or applied pressure in the final 3-5 seconds. Only if a clear winner or dominant position is established at the end of the window should this count as a submission.
+3. FALSE NEGATIVES: Only return is_submission=false if the clip shows continuous, active grappling the entire {window_sec} seconds with NO submission evidence AND no neutral termination of a dominant sequence.
+4. GRANULARITY: When analyzing, differentiate between successful submissions (taps) and neutral resets/separations. Assign 'is_submission=true' only when a high-probability end-of-round state is reached through dominance.</pre></details><div class='events'><div class="ev hallucination"><span class="ts">53s</span><span class="tag hallucination">hallucination</span><span class="body"><b>guillotine</b> ghost — claimed by BALD BLACK RASHGUARD</span></div><div class="ev missed_gt"><span class="ts">68s</span><span class="tag missed_gt">missed gt</span><span class="body"><b>armbar</b> missed (gt: BALD)</span></div><div class="ev hallucination"><span class="ts">102s</span><span class="tag hallucination">hallucination</span><span class="body"><b>other</b> ghost — claimed by BALD BLACK RASHGUARD</span></div><div class="ev matched"><span class="ts">154s</span><span class="tag matched">matched</span><span class="body"><b>guillotine</b> <span class='vs'>vs gt</span> <i>armbar</i> <span class='dt'>Δt=-1s</span> <span class='tick bad'>✗</span> tech <span class='tick ok'>✓</span> sub</span></div><div class="ev matched"><span class="ts">187s</span><span class="tag matched">matched</span><span class="body"><b>guillotine</b> <span class='vs'>vs gt</span> <i>rnc</i> <span class='dt'>Δt=+2s</span> <span class='tick bad'>✗</span> tech <span class='tick ok'>✓</span> sub</span></div><div class="ev hallucination"><span class="ts">235s</span><span class="tag hallucination">hallucination</span><span class="body"><b>triangle</b> ghost — claimed by STRIPED RASHGUARD</span></div><div class="ev missed_gt"><span class="ts">267s</span><span class="tag missed_gt">missed gt</span><span class="body"><b>armbar</b> missed (gt: BALD)</span></div><div class="ev matched"><span class="ts">323s</span><span class="tag matched">matched</span><span class="body"><b>other</b> <span class='vs'>vs gt</span> <i>rnc</i> <span class='dt'>Δt=+5s</span> <span class='tick bad'>✗</span> tech <span class='tick bad'>✗</span> sub</span></div><div class="ev hallucination"><span class="ts">361s</span><span class="tag hallucination">hallucination</span><span class="body"><b>other</b> ghost — claimed by STRIPED RASHGUARD</span></div></div></section><section class='iter'><header><h2>v4 <span class="badge gold">PERFECT</span></h2><div class='kv'><span><b>F1</b> 100%</span><span><b>R</b> 100%</span><span><b>P</b> 100%</span><span><b>matched</b> 5/5</span><span><b>halls</b> 0</span><span class='pv'><code>pv-377be9c6-d965-4…</code></span></div></header><details class='opt'><summary>optimizer's note (confidence 0.95)</summary><div class='reason'>Refined the instructions to emphasize that 'resets/separations' are only submission-equivalent when paired with 'demonstrable dominant control' to prevent False Positives. Clarified the 'temporal integrity' requirement to be more directive, and simplified the criteria to ensure better adherence to the distinction between active submission attempts and mere neutral resets.</div></details><details class='diff' open><summary>diff vs v3 <code>pv-853f6c04-… → pv-377be9c6-…</code></summary><div class='diff-body'><div class="dl ctx"> DOMAIN RULE — BJJ TRAINING ROUND FINISH:</div><div class="dl rem">-You must evaluate the entire video duration using strict, continuous, non-overlapping sliding windows to ensure no temporal gaps exist. Any gap or oversight in the timeline will result in a False Negative.</div><div class="dl add">+You must evaluate the entire video duration using strict, continuous, non-overlapping sliding windows to ensure zero temporal gaps. Any gap in the timeline will result in a failure.</div><div class="dl ctx"> </div><div class="dl rem">-A submission is confirmed by ANY of:</div><div class="dl rem">-  (a) a clear tap (hand/foot tapping mat or partner),</div><div class="dl add">+SUBMISSION CONFIRMATION CRITERIA:</div><div class="dl add">+A submission is confirmed by:</div><div class="dl add">+  (a) a clear tap (hand/foot against mat or partner),</div><div class="dl ctx">   (b) a verbal yield,</div><div class="dl ctx">   (c) the partner being put to sleep, OR</div><div class="dl rem">-  (d) a RESET signal (pair stops, separates, fist bump, both stand up).</div><div class="dl add">+  (d) an unambiguous end-of-round signal (pair stops, separates, performs a fist bump, or resets).</div><div class="dl ctx"> </div><div class="dl rem">-CRITICAL DISTINCTION &amp; LOGIC:</div><div class="dl rem">-1. SUBMISSION VS. NEUTRAL: You must strictly distinguish between tactical submission finishes and neutral match events (resets, separations, or post-round fist bumps). </div><div class="dl rem">-2. ATTRIBUTION: If a reset/separation occurs, determine if it concludes an interaction where one party held dominant positional control or applied pressure in the final 3-5 seconds. Only if a clear winner or dominant position is established at the end of the window should this count as a submission.</div><div class="dl rem">-3. FALSE NEGATIVES: Only return is_submission=false if the clip shows continuous, active grappling the entire {window_sec} seconds with NO submission evidence AND no neutral termination of a dominant sequence.</div><div class="dl rem">-4. GRANULARITY: When analyzing, differentiate between successful submissions (taps) and neutral resets/separations. Assign 'is_submission=true' only when a high-probability end-of-round state is reached through dominance.</div><div class="dl add">+CRITICAL LOGIC &amp; DISCRIMINATION:</div><div class="dl add">+1. SUBMISSION VS. NEUTRAL: You must explicitly distinguish between active submission finishes and neutral match events. If a reset or separation occurs, it is only a 'submission' if it concludes a sequence where one party exerted clear, sustained, dominant positional control or significant pressure in the final 3-5 seconds.</div><div class="dl add">+2. FALSE NEGATIVE AVOIDANCE: Only return is_submission=false if the clip shows continuous, active grappling throughout the {window_sec} second window without a tap AND without any neutral termination of a dominant sequence.</div><div class="dl add">+3. GRANULARITY: Differentiate clearly between successful submissions (taps) and routine neutral resets or separations. Do not label random resets as submissions unless they clearly finalize a dominant exchange.</div><div class="dl add">+4. TEMPORAL INTEGRITY: You must ensure every second of the video is accounted for in your analysis windows. Any oversight in the timeline renders the analysis invalid.</div></div></details><details class='prompt'><summary>full prompt (1466 chars)</summary><pre class='prompt-body'>DOMAIN RULE — BJJ TRAINING ROUND FINISH:
+You must evaluate the entire video duration using strict, continuous, non-overlapping sliding windows to ensure zero temporal gaps. Any gap in the timeline will result in a failure.
+
+SUBMISSION CONFIRMATION CRITERIA:
+A submission is confirmed by:
+  (a) a clear tap (hand/foot against mat or partner),
+  (b) a verbal yield,
+  (c) the partner being put to sleep, OR
+  (d) an unambiguous end-of-round signal (pair stops, separates, performs a fist bump, or resets).
+
+CRITICAL LOGIC &amp; DISCRIMINATION:
+1. SUBMISSION VS. NEUTRAL: You must explicitly distinguish between active submission finishes and neutral match events. If a reset or separation occurs, it is only a 'submission' if it concludes a sequence where one party exerted clear, sustained, dominant positional control or significant pressure in the final 3-5 seconds.
+2. FALSE NEGATIVE AVOIDANCE: Only return is_submission=false if the clip shows continuous, active grappling throughout the {window_sec} second window without a tap AND without any neutral termination of a dominant sequence.
+3. GRANULARITY: Differentiate clearly between successful submissions (taps) and routine neutral resets or separations. Do not label random resets as submissions unless they clearly finalize a dominant exchange.
+4. TEMPORAL INTEGRITY: You must ensure every second of the video is accounted for in your analysis windows. Any oversight in the timeline renders the analysis invalid.</pre></details><div class='events'><div class="ev matched"><span class="ts">68s</span><span class="tag matched">matched</span><span class="body"><b>guillotine</b> <span class='vs'>vs gt</span> <i>armbar</i> <span class='dt'>Δt=+0s</span> <span class='tick bad'>✗</span> tech <span class='tick ok'>✓</span> sub</span></div><div class="ev matched"><span class="ts">153s</span><span class="tag matched">matched</span><span class="body"><b>guillotine</b> <span class='vs'>vs gt</span> <i>armbar</i> <span class='dt'>Δt=-2s</span> <span class='tick bad'>✗</span> tech <span class='tick ok'>✓</span> sub</span></div><div class="ev matched"><span class="ts">185s</span><span class="tag matched">matched</span><span class="body"><b>guillotine</b> <span class='vs'>vs gt</span> <i>rnc</i> <span class='dt'>Δt=+0s</span> <span class='tick bad'>✗</span> tech <span class='tick ok'>✓</span> sub</span></div><div class="ev matched"><span class="ts">272s</span><span class="tag matched">matched</span><span class="body"><b>guillotine</b> <span class='vs'>vs gt</span> <i>armbar</i> <span class='dt'>Δt=+5s</span> <span class='tick bad'>✗</span> tech <span class='tick ok'>✓</span> sub</span></div><div class="ev matched"><span class="ts">323s</span><span class="tag matched">matched</span><span class="body"><b>other</b> <span class='vs'>vs gt</span> <i>rnc</i> <span class='dt'>Δt=+5s</span> <span class='tick bad'>✗</span> tech <span class='tick bad'>✗</span> sub</span></div></div></section>
+
+<footer>
+<b>Where the data lives</b><br>
+This page is rendered from <code>flywheel/outputs/loop_arc.json</code> + per-version <code>domain_rules.md</code> /
+<code>report.json</code> in <code>flywheel/outputs/runs/verify:video/</code>. Optimizer notes parsed from the loop terminal log
+into <code>flywheel/outputs/optimizer_summaries.json</code>. Every prompt version and outcome is also versioned in MuBit Console.
+<br><br>
+Re-render anytime with <code>python -m flywheel.render_arc</code> (or <code>--log path/to/log.txt</code> to refresh optimizer notes).
+</footer>
+</body>
+</html>

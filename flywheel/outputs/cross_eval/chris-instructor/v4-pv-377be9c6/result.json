@@ -1,0 +1,392 @@
+{
+  "video": "video.mov",
+  "duration_sec": 340.04,
+  "fighters": {
+    "PURPLE BELT WHITE GI": {
+      "visual": "A fighter with short dark hair wearing a white or light grey gi featuring a purple belt and a circular shoulder patch."
+    },
+    "NAVY GI WHITE BELT": {
+      "visual": "An athletic or larger-built fighter with short dark hair wearing a navy blue or dark-colored gi and a white belt."
+    }
+  },
+  "submissions": [
+    {
+      "timestamp": 135.0,
+      "technique": "other",
+      "submitter": "PURPLE BELT WHITE GI",
+      "submittee": "NAVY GI WHITE BELT",
+      "confidence": "high",
+      "reasoning": "The PURPLE BELT WHITE GI maintains dominant top positional control for the duration of the clip until the pair stops to reset with a fist bump at 30 seconds.",
+      "cluster_size": 1,
+      "window_starts": [
+        105.0
+      ]
+    },
+    {
+      "timestamp": 180.0,
+      "technique": "armbar",
+      "submitter": "PURPLE BELT WHITE GI",
+      "submittee": "NAVY GI WHITE BELT",
+      "confidence": "high",
+      "reasoning": "The PURPLE BELT WHITE GI transitions to a cross-body armbar from the bottom guard, forcing the NAVY GI WHITE BELT to tap at the 30-second mark.",
+      "cluster_size": 1,
+      "window_starts": [
+        150.0
+      ]
+    },
+    {
+      "timestamp": 203.0,
+      "technique": "armbar",
+      "submitter": "PURPLE BELT WHITE GI",
+      "submittee": "NAVY GI WHITE BELT",
+      "confidence": "high",
+      "reasoning": "The purple belt in the white gi executes an armbar from the top position, leading the navy gi fighter to tap and both to reset.",
+      "cluster_size": 1,
+      "window_starts": [
+        165.0
+      ]
+    },
+    {
+      "timestamp": 276.0,
+      "technique": "triangle",
+      "submitter": "PURPLE BELT WHITE GI",
+      "submittee": "NAVY GI WHITE BELT",
+      "confidence": "high",
+      "reasoning": "The purple belt in the white gi catches the navy-clad partner in a triangle choke from the bottom, resulting in a clear tap on the thigh.",
+      "cluster_size": 2,
+      "window_starts": [
+        240.0,
+        255.0
+      ]
+    }
+  ],
+  "metadata": {
+    "model": "gemini-3-flash-preview",
+    "window_sec": 40.0,
+    "grid_step": 15.0,
+    "cluster_tau": 20.0,
+    "workers": 12,
+    "n_windows": 23,
+    "n_yes_windows": 5,
+    "stage1_elapsed_sec": 47.3,
+    "total_elapsed_sec": 71.9,
+    "domain_rules_source": "custom",
+    "all_window_rows": [
+      {
+        "start": 0.0,
+        "end": 40.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in active grappling throughout the clip without a tap, verbal yield, or any reset signaling a submission.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 0.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The target pair engages in active grappling throughout the clip without a tap, verbal yield, or any reset signaling a submission.\"\n}"
+      },
+      {
+        "start": 15.0,
+        "end": 55.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair grapples continuously for the entire duration without any tap, verbal yield, or reset occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 15.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The target pair grapples continuously for the entire duration without any tap, verbal yield, or reset occurring.\"\n}"
+      },
+      {
+        "start": 30.0,
+        "end": 70.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair actively grapples for the entire 40-second duration without any tap, submission, or reset occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 30.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The target pair actively grapples for the entire 40-second duration without any tap, submission, or reset occurring.\"\n}"
+      },
+      {
+        "start": 45.0,
+        "end": 85.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair remains in an active grappling position with the purple belt in mount until the end of the clip, with no tap or reset occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 45.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The target pair remains in an active grappling position with the purple belt in mount until the end of the clip, with no tap or reset occurring.\"\n}"
+      },
+      {
+        "start": 60.0,
+        "end": 100.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair grapples continuously for the entire 40-second duration with the purple belt maintaining side control, but no tap or reset occurs.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 60.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The target pair grapples continuously for the entire 40-second duration with the purple belt maintaining side control, but no tap or reset occurs.\"\n}"
+      },
+      {
+        "start": 75.0,
+        "end": 115.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The athlete in the purple belt white gi maintains dominant mount control throughout the clip, but the athletes are still actively grappling when the video ends without a tap or reset.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 75.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The athlete in the purple belt white gi maintains dominant mount control throughout the clip, but the athletes are still actively grappling when the video ends without a tap or reset.\"\n}"
+      },
+      {
+        "start": 90.0,
+        "end": 130.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The athletes engage in continuous active grappling and positional transitions without any submission or reset occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 90.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The athletes engage in continuous active grappling and positional transitions without any submission or reset occurring.\"\n}"
+      },
+      {
+        "start": 105.0,
+        "end": 145.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "PURPLE BELT WHITE GI",
+        "submittee": "NAVY GI WHITE BELT",
+        "confidence": "high",
+        "reasoning": "The PURPLE BELT WHITE GI maintains dominant top positional control for the duration of the clip until the pair stops to reset with a fist bump at 30 seconds.",
+        "tap_offset_sec": 30.0,
+        "absolute_timestamp": 135.0,
+        "raw_response": "{\n  \"is_submission\": true,\n  \"technique\": \"other\",\n  \"submitter\": \"PURPLE BELT WHITE GI\",\n  \"submittee\": \"NAVY GI WHITE BELT\",\n  \"tap_offset_sec\": 30,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The PURPLE BELT WHITE GI maintains dominant top positional control for the duration of the clip until the pair stops to reset with a fist bump at 30 seconds.\"\n}"
+      },
+      {
+        "start": 120.0,
+        "end": 160.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in continuous rolling before neutrally separating and resetting with a fist bump around the 31-second mark.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 120.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The target pair engages in continuous rolling before neutrally separating and resetting with a fist bump around the 31-second mark.\"\n}"
+      },
+      {
+        "start": 135.0,
+        "end": 175.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in active grappling from approximately 00:17 until the end of the 40-second window without any submission, tap, or reset occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 135.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The target pair engages in active grappling from approximately 00:17 until the end of the 40-second window without any submission, tap, or reset occurring.\"\n}"
+      },
+      {
+        "start": 150.0,
+        "end": 190.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "armbar",
+        "submitter": "PURPLE BELT WHITE GI",
+        "submittee": "NAVY GI WHITE BELT",
+        "confidence": "high",
+        "reasoning": "The PURPLE BELT WHITE GI transitions to a cross-body armbar from the bottom guard, forcing the NAVY GI WHITE BELT to tap at the 30-second mark.",
+        "tap_offset_sec": 30.0,
+        "absolute_timestamp": 180.0,
+        "raw_response": "{\n  \"is_submission\": true,\n  \"technique\": \"armbar\",\n  \"submitter\": \"PURPLE BELT WHITE GI\",\n  \"submittee\": \"NAVY GI WHITE BELT\",\n  \"tap_offset_sec\": 30,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The PURPLE BELT WHITE GI transitions to a cross-body armbar from the bottom guard, forcing the NAVY GI WHITE BELT to tap at the 30-second mark.\"\n}"
+      },
+      {
+        "start": 165.0,
+        "end": 205.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "armbar",
+        "submitter": "PURPLE BELT WHITE GI",
+        "submittee": "NAVY GI WHITE BELT",
+        "confidence": "high",
+        "reasoning": "The purple belt in the white gi executes an armbar from the top position, leading the navy gi fighter to tap and both to reset.",
+        "tap_offset_sec": 38.0,
+        "absolute_timestamp": 203.0,
+        "raw_response": "{\n  \"is_submission\": true,\n  \"technique\": \"armbar\",\n  \"submitter\": \"PURPLE BELT WHITE GI\",\n  \"submittee\": \"NAVY GI WHITE BELT\",\n  \"tap_offset_sec\": 38.0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The purple belt in the white gi executes an armbar from the top position, leading the navy gi fighter to tap and both to reset.\"\n}"
+      },
+      {
+        "start": 180.0,
+        "end": 220.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The pair grapples continuously until 00:21, where they stop and reset for a new round without a clear tap or submission being visible.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 180.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The pair grapples continuously until 00:21, where they stop and reset for a new round without a clear tap or submission being visible.\"\n}"
+      },
+      {
+        "start": 195.0,
+        "end": 235.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in active grappling throughout the clip, including a neutral reset and restart, without any clear tap or submission being performed.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 195.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The target pair engages in active grappling throughout the clip, including a neutral reset and restart, without any clear tap or submission being performed.\"\n}"
+      },
+      {
+        "start": 210.0,
+        "end": 250.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in a brief scramble followed by a neutral reset and period of conversation before restarting.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 210.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The target pair engages in a brief scramble followed by a neutral reset and period of conversation before restarting.\"\n}"
+      },
+      {
+        "start": 225.0,
+        "end": 265.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in a brief scramble at the start, resets neutrally to adjust their equipment, and continues active grappling until the end of the clip without any submission occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 225.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The target pair engages in a brief scramble at the start, resets neutrally to adjust their equipment, and continues active grappling until the end of the clip without any submission occurring.\"\n}"
+      },
+      {
+        "start": 240.0,
+        "end": 280.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "triangle",
+        "submitter": "PURPLE BELT WHITE GI",
+        "submittee": "NAVY GI WHITE BELT",
+        "confidence": "high",
+        "reasoning": "The purple belt in the white gi catches the navy-clad partner in a triangle choke from the bottom, resulting in a clear tap on the thigh.",
+        "tap_offset_sec": 36.0,
+        "absolute_timestamp": 276.0,
+        "raw_response": "{\n  \"is_submission\": true,\n  \"technique\": \"triangle\",\n  \"submitter\": \"PURPLE BELT WHITE GI\",\n  \"submittee\": \"NAVY GI WHITE BELT\",\n  \"tap_offset_sec\": 36,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The purple belt in the white gi catches the navy-clad partner in a triangle choke from the bottom, resulting in a clear tap on the thigh.\"\n}"
+      },
+      {
+        "start": 255.0,
+        "end": 295.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "triangle",
+        "submitter": "PURPLE BELT WHITE GI",
+        "submittee": "NAVY GI WHITE BELT",
+        "confidence": "high",
+        "reasoning": "Purple Belt White Gi locks a triangle choke from his guard, leading to a clear tap from Navy Gi White Belt at 21 seconds.",
+        "tap_offset_sec": 21.0,
+        "absolute_timestamp": 276.0,
+        "raw_response": "{\n  \"is_submission\": true,\n  \"technique\": \"triangle\",\n  \"submitter\": \"PURPLE BELT WHITE GI\",\n  \"submittee\": \"NAVY GI WHITE BELT\",\n  \"tap_offset_sec\": 21,\n  \"confidence\": \"high\",\n  \"reasoning\": \"Purple Belt White Gi locks a triangle choke from his guard, leading to a clear tap from Navy Gi White Belt at 21 seconds.\"\n}"
+      },
+      {
+        "start": 270.0,
+        "end": 310.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The athletes conclude their rolling session and reset with a fist bump at 34 seconds without any submission being finished or a tap occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 270.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The athletes conclude their rolling session and reset with a fist bump at 34 seconds without any submission being finished or a tap occurring.\"\n}"
+      },
+      {
+        "start": 285.0,
+        "end": 325.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair resets for a new round with a fist bump at 18 seconds and continues to grapple actively until the end of the video without any submission occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 285.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The target pair resets for a new round with a fist bump at 18 seconds and continues to grapple actively until the end of the video without any submission occurring.\"\n}"
+      },
+      {
+        "start": 300.0,
+        "end": 340.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair begins their roll at approximately 00:04 and remains in continuous, active engagement until the video concludes.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 300.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The target pair begins their roll at approximately 00:04 and remains in continuous, active engagement until the video concludes.\"\n}"
+      },
+      {
+        "start": 315.0,
+        "end": 340.04,
+        "duration": 25.04000000000002,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair is actively grappling for position throughout the entire clip until the video fades out, with no tap or submission occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 315.0,
+        "raw_response": "{\n  \"is_submission\": false,\n  \"technique\": \"other\",\n  \"submitter\": \"\",\n  \"submittee\": \"\",\n  \"tap_offset_sec\": 0,\n  \"confidence\": \"high\",\n  \"reasoning\": \"The target pair is actively grappling for position throughout the entire clip until the video fades out, with no tap or submission occurring.\"\n}"
+      },
+      {
+        "start": 330.0,
+        "end": 340.04,
+        "duration": 10.04000000000002,
+        "error": "Command '['ffmpeg', '-ss', '330.00', '-i', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/VLM-gemini/input-data/chris-instructor/video.mov', '-t', '10.04', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-an', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/flywheel/outputs/cross_eval/chris-instructor/v4-pv-377be9c6/clips/win_0330s_10s.mp4', '-loglevel', 'error', '-y']' died with <Signals.SIGABRT: 6>.",
+        "is_submission": false
+      }
+    ]
+  }
+}

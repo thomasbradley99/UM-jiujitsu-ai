@@ -2,6 +2,32 @@
 
 A self-improving prompt loop. Spin the wheel, the prompt gets better.
 
+> **Hackathon judges, start here:** [`RESULTS.md`](./RESULTS.md) — every
+> artifact, what it means, where it lives. The headline visual is
+> [`outputs/arc_report_handtuned.html`](./outputs/arc_report_handtuned.html)
+> (open in a browser); it shows F1 climbing **57% → 77% → 50% → 100%**
+> across 4 prompt versions on the same fight, with prompt diffs and the
+> optimizer's rationale at every step.
+
+## Results at a glance
+
+| Iter | MuBit prompt version | F1 | P | R | Matched | Halluc |
+|------|---------------------|----|----|----|---------|--------|
+| v1 (seed)         | `pv-ac5575b2-…` |  57% |  44% |  80% | 4/5 | 5 |
+| v2                | `pv-b535d177-…` |  77% |  62% | 100% | 5/5 | 3 |
+| v3 *(regression)* | `pv-853f6c04-…` |  50% |  43% |  60% | 3/5 | 4 |
+| **v4**            | `pv-377be9c6-…` | **100%** | **100%** | **100%** | **5/5** | **0** |
+
+Same 6-min video (`ryan-thomas`), same `analyze.py`, same model. The
+only thing that changes between rows is the **DOMAIN RULES** block in
+the scan prompt — the slab MuBit owns. At v4 the timestamp MAE is
+**2.4s** and submitter attribution accuracy is **80%** (4/5).
+
+The same 4 prompts run on a held-out video (`chris-instructor`) tell a
+different story — v1 generalises best at 100%, v4 overfits to 50%. We
+ship the cross-eval next to the headline so judges can read the honest
+trade-off; details in [`RESULTS.md`](./RESULTS.md#4-cross-eval--does-it-generalise).
+
 ## The flywheel
 
 ```

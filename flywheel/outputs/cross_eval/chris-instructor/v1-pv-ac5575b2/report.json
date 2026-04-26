@@ -1,0 +1,69 @@
+{
+  "config": "chris-instructor:v1",
+  "tau": 10.0,
+  "n_gt": 4,
+  "n_pred": 4,
+  "matched": 4,
+  "sub_recall": 1.0,
+  "sub_precision": 1.0,
+  "f1": 1.0,
+  "technique_acc": 0.25,
+  "submitter_acc": 0.0,
+  "timestamp_mae": 2.5,
+  "hallucinations": 0,
+  "details": [
+    {
+      "gt_t": 141.0,
+      "gt_technique": "rnc",
+      "gt_submitter": "instructor",
+      "pred_t": 143.0,
+      "pred_technique": "other",
+      "pred_submitter_raw": "DARK GI WHITE BELT",
+      "pred_submitter_resolved": "chris",
+      "delta_t": 2.0,
+      "technique_correct": false,
+      "submitter_correct": false,
+      "status": "matched"
+    },
+    {
+      "gt_t": 204.0,
+      "gt_technique": "americana",
+      "gt_submitter": "instructor",
+      "pred_t": 201.0,
+      "pred_technique": "armbar",
+      "pred_submitter_raw": "PURPLE BELT WHITE GI",
+      "pred_submitter_resolved": "chris",
+      "delta_t": -3.0,
+      "technique_correct": false,
+      "submitter_correct": false,
+      "status": "matched"
+    },
+    {
+      "gt_t": 231.0,
+      "gt_technique": "other",
+      "gt_submitter": "instructor",
+      "pred_t": 230.0,
+      "pred_technique": "other",
+      "pred_submitter_raw": "DARK GI WHITE BELT",
+      "pred_submitter_resolved": "chris",
+      "delta_t": -1.0,
+      "technique_correct": true,
+      "submitter_correct": false,
+      "status": "matched"
+    },
+    {
+      "gt_t": 291.0,
+      "gt_technique": "smother",
+      "gt_submitter": "instructor",
+      "pred_t": 295.0,
+      "pred_technique": "triangle",
+      "pred_submitter_raw": "PURPLE BELT WHITE GI",
+      "pred_submitter_resolved": "chris",
+      "delta_t": 4.0,
+      "technique_correct": false,
+      "submitter_correct": false,
+      "status": "matched"
+    }
+  ],
+  "extras": {}
+}

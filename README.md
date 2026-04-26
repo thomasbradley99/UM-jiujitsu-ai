@@ -1,7 +1,38 @@
 # UM Jiujitsu AI
 
-AI-powered fight-video analysis and live coaching app, built originally for the
-Antler / ElevenLabs hackathon.
+AI-powered fight-video analysis and live coaching app.
+
+> ## Hackathon submission — MuBit prompt-optimization flywheel
+>
+> The submitted track is a **self-improving prompt loop** that uses MuBit
+> as a versioned prompt store + outcome log + LLM-based prompt rewriter.
+> We optimise the **DOMAIN RULES** layer of `VLM-gemini/analyze.py`'s scan
+> prompt — the slab that defines what counts as a finished BJJ submission
+> in training footage.
+>
+> **Headline result on the `ryan-thomas` 6-min sparring video:**
+> F1 climbs **57% → 77% → 50% → 100%** across 4 prompt versions, ending
+> at perfect precision/recall (5/5 matched, 0 hallucinations) with
+> 2.4s timestamp MAE.
+>
+> | Where to look | What it is |
+> |---------------|------------|
+> | [`flywheel/RESULTS.md`](./flywheel/RESULTS.md) | **Start here.** Tour of every result artifact, with explanation. |
+> | [`flywheel/outputs/arc_report_handtuned.html`](./flywheel/outputs/arc_report_handtuned.html) | Self-contained HTML — open in a browser to see the full arc, prompt diffs, optimizer rationales, per-event TP/FP/FN. |
+> | [`flywheel/outputs/arc_report_naive.html`](./flywheel/outputs/arc_report_naive.html) | Contrast: same loop, weaker seed → F1 drifts down. Demonstrates why anchoring/ground-truth feedback matters. |
+> | [`flywheel/outputs/loop_arc_handtuned.json`](./flywheel/outputs/loop_arc_handtuned.json) | Raw per-iteration metrics. |
+> | [`flywheel/outputs/runs/verify:video/`](./flywheel/outputs/runs/verify:video/) | Per-prompt-version snapshots: prompt text, predictions, eval scores. |
+> | [`flywheel/outputs/cross_eval/chris-instructor/`](./flywheel/outputs/cross_eval/chris-instructor/) | Same 4 prompts run on a held-out video — generalisation evidence (and v4-overfit warning). |
+> | [`flywheel/`](./flywheel/) source | All glue code. `mubit_client.py` is the only file that touches the SDK. |
+>
+> Reproduce with `python -m flywheel.cli loop --iterations 4` (after
+> `flywheel.cli setup`). See [`flywheel/README.md`](./flywheel/README.md)
+> for the full how-it-works.
+
+---
+
+The rest of this README covers the original product — an interactive
+fight-analysis web app, built for the Antler / ElevenLabs hackathon.
 
 - **Vision / event detection**: Google Gemini (`@google/genai`)
 - **Live talking-head coach**: Anam AI (`@anam-ai/js-sdk`)

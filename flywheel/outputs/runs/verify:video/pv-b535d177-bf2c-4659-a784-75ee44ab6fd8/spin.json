@@ -1,0 +1,26 @@
+{
+  "video": "/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/VLM-gemini/input-data/ryan-thomas/video.mov",
+  "run_id": "verify:video",
+  "prompt_version_id": "pv-b535d177-bf2c-4659-a784-75ee44ab6fd8",
+  "result_path": "/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/flywheel/outputs/runs/verify:video/pv-b535d177-bf2c-4659-a784-75ee44ab6fd8/result.json",
+  "n_windows": 25,
+  "n_yes_windows": 17,
+  "n_clustered_subs": 8,
+  "counts": {
+    "tp": 5,
+    "fp": 3,
+    "fn": 0
+  },
+  "metrics": {
+    "f1": 0.7692307692307693,
+    "precision": 0.625,
+    "recall": 1.0,
+    "n_gt": 5,
+    "n_pred": 8,
+    "n_matched": 5,
+    "n_hallucinations": 3,
+    "technique_acc": 0.0,
+    "submitter_acc": 0.8,
+    "timestamp_mae": 3.6
+  }
+}

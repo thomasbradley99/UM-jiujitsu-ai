@@ -1,0 +1,458 @@
+{
+  "video": "video.mov",
+  "duration_sec": 370.985,
+  "fighters": {
+    "STRIPED RASHGUARD": {
+      "visual": "Athletic man with dark curly hair wearing a green and white horizontally striped rashguard and black shorts."
+    },
+    "BALD DARK RASHGUARD": {
+      "visual": "Muscular bald man with a dark beard wearing a black or dark green rashguard with white shoulder markings and black shorts."
+    }
+  },
+  "submissions": [
+    {
+      "timestamp": 53.0,
+      "technique": "armbar",
+      "submitter": "BALD DARK RASHGUARD",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "BALD DARK RASHGUARD extends the arm in an armbar sequence, forcing a tap from STRIPED RASHGUARD at the 8-second mark.",
+      "cluster_size": 3,
+      "window_starts": [
+        15.0,
+        45.0,
+        60.0
+      ]
+    },
+    {
+      "timestamp": 101.0,
+      "technique": "other",
+      "submitter": "BALD DARK RASHGUARD",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The BALD DARK RASHGUARD applies a leg lock on the STRIPED RASHGUARD, resulting in a tap and a subsequent reset and fist bump.",
+      "cluster_size": 1,
+      "window_starts": [
+        75.0
+      ]
+    },
+    {
+      "timestamp": 132.0,
+      "technique": "other",
+      "submitter": "BALD DARK RASHGUARD",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "high",
+      "reasoning": "The bald athlete applies a leg lock, causing the striped athlete to yield, followed by a clear separation and reset.",
+      "cluster_size": 2,
+      "window_starts": [
+        90.0,
+        120.0
+      ]
+    },
+    {
+      "timestamp": 158.0,
+      "technique": "other",
+      "submitter": "BALD DARK RASHGUARD",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "medium",
+      "reasoning": "The athletes separate from a dominant top position held by BALD DARK RASHGUARD and perform a clear reset and fist-bump at 23 seconds.",
+      "cluster_size": 2,
+      "window_starts": [
+        135.0,
+        150.0
+      ]
+    },
+    {
+      "timestamp": 186.0,
+      "technique": "other",
+      "submitter": "STRIPED RASHGUARD",
+      "submittee": "BALD DARK RASHGUARD",
+      "confidence": "medium",
+      "reasoning": "The athletes stop grappling at 21 seconds and both stand up to reset, with the striped rashguard athlete having gained top control just before the break.",
+      "cluster_size": 1,
+      "window_starts": [
+        165.0
+      ]
+    },
+    {
+      "timestamp": 234.0,
+      "technique": "guillotine",
+      "submitter": "STRIPED RASHGUARD",
+      "submittee": "BALD DARK RASHGUARD",
+      "confidence": "high",
+      "reasoning": "STRIPED RASHGUARD applies a guillotine choke from the front headlock position, resulting in a clear tap from BALD DARK RASHGUARD followed by a reset and fist bump.",
+      "cluster_size": 4,
+      "window_starts": [
+        195.0,
+        180.0,
+        210.0,
+        225.0
+      ]
+    },
+    {
+      "timestamp": 270.0,
+      "technique": "other",
+      "submitter": "BALD DARK RASHGUARD",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "medium",
+      "reasoning": "The target pair in the background resets with a fist bump at approximately 17 seconds after the bald athlete in the dark rashguard had maintained top positional dominance.",
+      "cluster_size": 1,
+      "window_starts": [
+        255.0
+      ]
+    },
+    {
+      "timestamp": 322.0,
+      "technique": "other",
+      "submitter": "BALD DARK RASHGUARD",
+      "submittee": "STRIPED RASHGUARD",
+      "confidence": "medium",
+      "reasoning": "The target pair stops an active grappling sequence where the striped rashguard athlete is in a dominant top position, followed by a separation and a fist bump reset.",
+      "cluster_size": 3,
+      "window_starts": [
+        300.0,
+        285.0,
+        315.0
+      ]
+    },
+    {
+      "timestamp": 356.0,
+      "technique": "guillotine",
+      "submitter": "STRIPED RASHGUARD",
+      "submittee": "BALD DARK RASHGUARD",
+      "confidence": "medium",
+      "reasoning": "The pair in the background resets with a fist bump after the striped rashguard athlete catches the bald athlete in a front headlock/guillotine position.",
+      "cluster_size": 1,
+      "window_starts": [
+        330.0
+      ]
+    }
+  ],
+  "metadata": {
+    "model": "gemini-3-flash-preview",
+    "window_sec": 40.0,
+    "grid_step": 15.0,
+    "cluster_tau": 20.0,
+    "workers": 12,
+    "n_windows": 25,
+    "n_yes_windows": 18,
+    "stage1_elapsed_sec": 122.5,
+    "total_elapsed_sec": 143.5,
+    "domain_rules_source": "custom",
+    "all_window_rows": [
+      {
+        "start": 0.0,
+        "end": 40.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The two identified athletes engage in continuous grappling from their initial fist bump at the start of the clip until the video ends, with no visible tap or reset occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 0.0
+      },
+      {
+        "start": 15.0,
+        "end": 55.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "BALD DARK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "BALD DARK RASHGUARD maintains dominant pressure and attacks the neck throughout the sequence, leading to a reset where he stands up and the pair separates at 38 seconds.",
+        "tap_offset_sec": 38.0,
+        "absolute_timestamp": 53.0
+      },
+      {
+        "start": 30.0,
+        "end": 70.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair grapples continuously for the entire clip without any visible tap, verbal yield, or reset signal.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 30.0
+      },
+      {
+        "start": 45.0,
+        "end": 85.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "armbar",
+        "submitter": "BALD DARK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "BALD DARK RASHGUARD extends the arm in an armbar sequence, forcing a tap from STRIPED RASHGUARD at the 8-second mark.",
+        "tap_offset_sec": 8.0,
+        "absolute_timestamp": 53.0
+      },
+      {
+        "start": 60.0,
+        "end": 100.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "armbar",
+        "submitter": "BALD DARK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The bald man in the dark rashguard transitions from top control into a seated armbar, extending the arm and causing the pair to separate and reset.",
+        "tap_offset_sec": 11.0,
+        "absolute_timestamp": 71.0
+      },
+      {
+        "start": 75.0,
+        "end": 115.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD DARK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The BALD DARK RASHGUARD applies a leg lock on the STRIPED RASHGUARD, resulting in a tap and a subsequent reset and fist bump.",
+        "tap_offset_sec": 26.0,
+        "absolute_timestamp": 101.0
+      },
+      {
+        "start": 90.0,
+        "end": 130.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD DARK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "high",
+        "reasoning": "The bald athlete applies a leg lock, causing the striped athlete to yield, followed by a clear separation and reset.",
+        "tap_offset_sec": 39.0,
+        "absolute_timestamp": 129.0
+      },
+      {
+        "start": 105.0,
+        "end": 145.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair engages in continuous guard passing and scrambling throughout the entire clip without any submission, tap, or formal reset.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 105.0
+      },
+      {
+        "start": 120.0,
+        "end": 160.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD DARK RASHGUARD",
+        "confidence": "high",
+        "reasoning": "STRIPED RASHGUARD secures a leg entanglement from the bottom and BALD DARK RASHGUARD taps on his hip before they separate to reset.",
+        "tap_offset_sec": 12.0,
+        "absolute_timestamp": 132.0
+      },
+      {
+        "start": 135.0,
+        "end": 175.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD DARK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The athletes separate from a dominant top position held by BALD DARK RASHGUARD and perform a clear reset and fist-bump at 23 seconds.",
+        "tap_offset_sec": 21.0,
+        "absolute_timestamp": 156.0
+      },
+      {
+        "start": 150.0,
+        "end": 190.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD DARK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The pair stops an active sequence at 8 seconds with the bald athlete in the dominant top position, followed by a clear reset where they separate and stand up.",
+        "tap_offset_sec": 8.0,
+        "absolute_timestamp": 158.0
+      },
+      {
+        "start": 165.0,
+        "end": 205.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD DARK RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The athletes stop grappling at 21 seconds and both stand up to reset, with the striped rashguard athlete having gained top control just before the break.",
+        "tap_offset_sec": 21.0,
+        "absolute_timestamp": 186.0
+      },
+      {
+        "start": 180.0,
+        "end": 220.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD DARK RASHGUARD",
+        "confidence": "high",
+        "reasoning": "STRIPED RASHGUARD pulls BALD DARK RASHGUARD into a guillotine choke from the bottom, and BALD DARK RASHGUARD taps twice on his hip before they reset.",
+        "tap_offset_sec": 36.0,
+        "absolute_timestamp": 216.0
+      },
+      {
+        "start": 195.0,
+        "end": 235.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD DARK RASHGUARD",
+        "confidence": "high",
+        "reasoning": "STRIPED RASHGUARD applies a guillotine choke from the front headlock position, resulting in a clear tap from BALD DARK RASHGUARD followed by a reset and fist bump.",
+        "tap_offset_sec": 17.0,
+        "absolute_timestamp": 212.0
+      },
+      {
+        "start": 210.0,
+        "end": 250.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD DARK RASHGUARD",
+        "confidence": "high",
+        "reasoning": "STRIPED RASHGUARD catches BALD DARK RASHGUARD in a guillotine choke from the bottom, resulting in a tap and a subsequent reset with a fist bump.",
+        "tap_offset_sec": 24.0,
+        "absolute_timestamp": 234.0
+      },
+      {
+        "start": 225.0,
+        "end": 265.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD DARK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The target pair stops their sequence and fist bumps at 12 seconds after BALD DARK RASHGUARD attacked the legs from a top-side position.",
+        "tap_offset_sec": 10.0,
+        "absolute_timestamp": 235.0
+      },
+      {
+        "start": 240.0,
+        "end": 280.0,
+        "duration": 40.0,
+        "error": "Command '['ffmpeg', '-ss', '240.00', '-i', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/VLM-gemini/input-data/ryan-thomas/video.mov', '-t', '40.00', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-an', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/flywheel/outputs/runs/verify:video/pv-ac5575b2-da74-46ed-93c0-af646accf89b/clips/win_0240s_40s.mp4', '-loglevel', 'error', '-y']' died with <Signals.SIGABRT: 6>.",
+        "is_submission": false
+      },
+      {
+        "start": 255.0,
+        "end": 295.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD DARK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The target pair in the background resets with a fist bump at approximately 17 seconds after the bald athlete in the dark rashguard had maintained top positional dominance.",
+        "tap_offset_sec": 15.0,
+        "absolute_timestamp": 270.0
+      },
+      {
+        "start": 270.0,
+        "end": 310.0,
+        "duration": 40.0,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair grapples continuously from the start of the round until the end of the clip without any visible tap or reset.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 270.0
+      },
+      {
+        "start": 285.0,
+        "end": 325.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD DARK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The pair stops their active grappling sequence, the striped rashguard athlete stands up, and they shake hands, confirming a reset.",
+        "tap_offset_sec": 37.0,
+        "absolute_timestamp": 322.0
+      },
+      {
+        "start": 300.0,
+        "end": 340.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD DARK RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The target pair stops an active grappling sequence where the striped rashguard athlete is in a dominant top position, followed by a separation and a fist bump reset.",
+        "tap_offset_sec": 16.0,
+        "absolute_timestamp": 316.0
+      },
+      {
+        "start": 315.0,
+        "end": 355.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "other",
+        "submitter": "BALD DARK RASHGUARD",
+        "submittee": "STRIPED RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The target pair in the background resets and fist bumps at 8 seconds after the bald athlete finishes a period of positional dominance on top.",
+        "tap_offset_sec": 8.0,
+        "absolute_timestamp": 323.0
+      },
+      {
+        "start": 330.0,
+        "end": 370.0,
+        "duration": 40.0,
+        "is_submission": true,
+        "technique": "guillotine",
+        "submitter": "STRIPED RASHGUARD",
+        "submittee": "BALD DARK RASHGUARD",
+        "confidence": "medium",
+        "reasoning": "The pair in the background resets with a fist bump after the striped rashguard athlete catches the bald athlete in a front headlock/guillotine position.",
+        "tap_offset_sec": 26.0,
+        "absolute_timestamp": 356.0
+      },
+      {
+        "start": 345.0,
+        "end": 370.985,
+        "duration": 25.985000000000014,
+        "error": "Command '['ffmpeg', '-ss', '345.00', '-i', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/VLM-gemini/input-data/ryan-thomas/video.mov', '-t', '25.99', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-an', '/Users/thomasbradley/clann-repos/UM-jiujitsu-ai/flywheel/outputs/runs/verify:video/pv-ac5575b2-da74-46ed-93c0-af646accf89b/clips/win_0345s_25s.mp4', '-loglevel', 'error', '-y']' died with <Signals.SIGABRT: 6>.",
+        "is_submission": false
+      },
+      {
+        "start": 360.0,
+        "end": 370.985,
+        "duration": 10.985000000000014,
+        "is_submission": false,
+        "technique": "other",
+        "submitter": "",
+        "submittee": "",
+        "confidence": "high",
+        "reasoning": "The target pair is actively grappling and transitioning between positions throughout the end of the clip without any submission or reset occurring.",
+        "tap_offset_sec": 0.0,
+        "absolute_timestamp": 360.0
+      }
+    ]
+  }
+}
